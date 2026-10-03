@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Gordura Corporal - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Saúde</a> / Calculadora de Gordura Corporal</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Gordura Corporal</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="peso">Peso (kg)</label>
+          <input type="number" id="peso" step="0.1" min="1" required>
+        </div>
+        <div class="form-group">
+          <label for="altura">Altura (cm)</label>
+          <input type="number" id="altura" step="0.1" min="1" required>
+        </div>
+        <div class="form-group">
+          <label for="idade">Idade (anos)</label>
+          <input type="number" id="idade" min="1" max="120" required>
+        </div>
+        <div class="form-group">
+          <label for="sexo">Sexo</label>
+          <select id="sexo" required>
+            <option value="M">Masculino</option>
+            <option value="F">Feminino</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="pescoco">Pescoço (cm)</label>
+          <input type="number" id="pescoco" step="0.1" min="1" required>
+        </div>
+        <div class="form-group">
+          <label for="cintura">Cintura (cm)</label>
+          <input type="number" id="cintura" step="0.1" min="1" required>
+        </div>
+        <div class="form-group">
+          <label for="quadril">Quadril (cm) <small>(apenas para mulheres)</small></label>
+          <input type="number" id="quadril" step="0.1" min="1">
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>&copy; 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var peso = parseFloat(document.getElementById('peso').value);
+    var altura = parseFloat(document.getElementById('altura').value);
+    var idade = parseInt(document.getElementById('idade').value);
+    var sexo = document.getElementById('sexo').value;
+    var pescoco = parseFloat(document.getElementById('pescoco').value);
+    var cintura = parseFloat(document.getElementById('cintura').value);
+    var quadril = parseFloat(document.getElementById('quadril').value);
+
+    if (isNaN(peso) || isNaN(altura) || isNaN(idade) || isNaN(pescoco) || isNaN(cintura) ||
+        peso <= 0 || altura <= 0 || idade <= 0 || pescoco <= 0 || cintura <= 0) {
+      alert('Por favor, insira valores válidos.');
+      return false;
+    }
+
+    var gordura;
+    if (sexo === 'M') {
+      gordura = 495 / (1.0324 - 0.19077 * Math.log10(cintura - pescoco) + 0.15456 * Math.log10(altura)) - 450;
+    } else {
+      if (isNaN(quadril) || quadril <= 0) {
+        alert('Para mulheres, o quadril é obrigatório.');
+        return false;
+      }
+      gordura = 495 / (1.29579 - 0.35004 * Math.log10(cintura + quadril - pescoco) + 0.22100 * Math.log10(altura)) - 450;
+    }
+
+    var classificacao = '';
+    if (sexo === 'M') {
+      if (gordura < 6) classificacao = 'Essencial';
+      else if (gordura < 14) classificacao = 'Atleta';
+      else if (gordura < 18) classificacao = 'Fitness';
+      else if (gordura < 25) classificacao = 'Aceitável';
+      else classificacao = 'Obesidade';
+    } else {
+      if (gordura < 14) classificacao = 'Essencial';
+      else if (gordura < 21) classificacao = 'Atleta';
+      else if (gordura < 25) classificacao = 'Fitness';
+      else if (gordura < 32) classificacao = 'Aceitável';
+      else classificacao = 'Obesidade';
+    }
+
+    document.getElementById('valorResultado').textContent = gordura.toFixed(1) + '%';
+    document.getElementById('detalheResultado').textContent = 'Classificação: ' + classificacao;
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora Financeira Avançada - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Financeira Avançada</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora Financeira Avançada</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="resolver">Resolver para:</label>
+          <select id="resolver">
+            <option value="pmt">Pagamento (PMT)</option>
+            <option value="pv">Valor Presente (PV)</option>
+            <option value="fv">Valor Futuro (FV)</option>
+            <option value="rate">Taxa (Rate)</option>
+            <option value="nper">Número de Períodos (NPER)</option>
+          </select>
+        </div>
+        <div class="form-group" id="group-pv">
+          <label for="pv">Valor Presente (PV) (R$)</label>
+          <input type="number" id="pv" step="0.01" value="0">
+        </div>
+        <div class="form-group" id="group-fv">
+          <label for="fv">Valor Futuro (FV) (R$)</label>
+          <input type="number" id="fv" step="0.01" value="0">
+        </div>
+        <div class="form-group" id="group-pmt">
+          <label for="pmt">Pagamento (PMT) (R$)</label>
+          <input type="number" id="pmt" step="0.01" value="0">
+        </div>
+        <div class="form-group" id="group-rate">
+          <label for="rate">Taxa de Juros por Período (%)</label>
+          <input type="number" id="rate" step="0.01" value="0">
+        </div>
+        <div class="form-group" id="group-nper">
+          <label for="nper">Número de Períodos</label>
+          <input type="number" id="nper" step="1" value="0">
+        </div>
+        <div class="form-group">
+          <label for="tipo">Tipo (Pagamento no início?)</label>
+          <select id="tipo">
+            <option value="0">Não (fim do período)</option>
+            <option value="1">Sim (início do período)</option>
+          </select>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>&copy; 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function atualizarCampos() {
+    var resolver = document.getElementById('resolver').value;
+    var campos = ['pv', 'fv', 'pmt', 'rate', 'nper'];
+    campos.forEach(function(campo) {
+      var group = document.getElementById('group-' + campo);
+      var input = document.getElementById(campo);
+      if (campo === resolver) {
+        group.style.display = 'none';
+        input.removeAttribute('required');
+      } else {
+        group.style.display = '';
+        input.setAttribute('required', 'required');
+      }
+    });
+  }
+
+  document.getElementById('resolver').addEventListener('change', atualizarCampos);
+  atualizarCampos();
+
+  function calcular() {
+    var resolver = document.getElementById('resolver').value;
+    var pv = parseFloat(document.getElementById('pv').value) || 0;
+    var fv = parseFloat(document.getElementById('fv').value) || 0;
+    var pmt = parseFloat(document.getElementById('pmt').value) || 0;
+    var rate = parseFloat(document.getElementById('rate').value) / 100 || 0;
+    var nper = parseInt(document.getElementById('nper').value) || 0;
+    var tipo = parseInt(document.getElementById('tipo').value);
+    var resultado = 0;
+    var label = '';
+
+    if (resolver === 'pmt') {
+      label = 'Pagamento (PMT)';
+      if (rate === 0) {
+        resultado = -(pv + fv) / nper;
+      } else {
+        var fator = Math.pow(1 + rate, nper);
+        resultado = -(pv * rate * fator + fv * rate) / (fator - 1);
+        if (tipo === 1) resultado = resultado / (1 + rate);
+      }
+    } else if (resolver === 'pv') {
+      label = 'Valor Presente (PV)';
+      if (rate === 0) {
+        resultado = -(fv + pmt * nper);
+      } else {
+        var fator = Math.pow(1 + rate, nper);
+        resultado = -(fv / fator + pmt * (1 - 1 / fator) / rate);
+        if (tipo === 1) resultado = resultado * (1 + rate);
+      }
+    } else if (resolver === 'fv') {
+      label = 'Valor Futuro (FV)';
+      if (rate === 0) {
+        resultado = -(pv + pmt * nper);
+      } else {
+        var fator = Math.pow(1 + rate, nper);
+        resultado = -(pv * fator + pmt * (fator - 1) / rate);
+        if (tipo === 1) resultado = resultado * (1 + rate);
+      }
+    } else if (resolver === 'rate') {
+      label = 'Taxa por Período';
+      // Newton-Raphson approximation
+      if (pmt === 0 && fv === 0) {
+        document.getElementById('valorResultado').innerHTML = 'Não é possível calcular a taxa com PMT e FV iguais a zero.';
+        document.getElementById('detalheResultado').innerHTML = '';
+        return false;
+      }
+      var guess = 0.01;
+      for (var i = 0; i < 100; i++) {
+        var fator = Math.pow(1 + guess, nper);
+        var fvCalc = pv * fator + pmt * (fator - 1) / guess;
+        if (tipo === 1) fvCalc += pmt;
+        var diff = fvCalc + fv;
+        var fatorDeriv = nper * Math.pow(1 + guess, nper - 1) * pv +
+          pmt * (nper * Math.pow(1 + guess, nper - 1) * guess - (fator - 1)) / (guess * guess);
+        if (Math.abs(fatorDeriv) < 1e-10) break;
+        guess = guess - diff / fatorDeriv;
+        if (Math.abs(diff) < 0.001) break;
+      }
+      resultado = guess * 100;
+    } else if (resolver === 'nper') {
+      label = 'Número de Períodos';
+      if (rate === 0) {
+        resultado = -(pv + fv) / pmt;
+      } else {
+        var numerador = Math.log((-fv + pmt / rate) / (pv + pmt / rate));
+        var denominador = Math.log(1 + rate);
+        resultado = numerador / denominador;
+      }
+    }
+
+    document.getElementById('valorResultado').innerHTML =
+      label + ': ' + (resolver === 'rate' ? resultado.toFixed(4) + '%' : 'R$ ' + resultado.toFixed(2));
+    document.getElementById('detalheResultado').innerHTML =
+      'Variáveis usadas:<br>' +
+      'PV: R$ ' + pv.toFixed(2) +
+      '<br>FV: R$ ' + fv.toFixed(2) +
+      '<br>PMT: R$ ' + pmt.toFixed(2) +
+      '<br>Taxa: ' + (rate * 100).toFixed(2) + '%</br>' +
+      'NPER: ' + nper;
+
+    return false;
+  }
+  </script>
+</body>
+</html>

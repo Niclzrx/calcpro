@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de IMC - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .unit-tabs { display:flex; gap:0; margin-bottom:20px; border-radius:8px; overflow:hidden; border:1px solid var(--border); }
+    .unit-tabs button { flex:1; padding:10px; border:none; background:#f8fafc; cursor:pointer; font-weight:600; font-size:0.9rem; transition:all 0.2s; }
+    .unit-tabs button.active { background:var(--primary); color:#fff; }
+    .bmi-gauge { position:relative; height:24px; border-radius:12px; margin:24px 0 8px; overflow:visible; }
+    .bmi-gauge-bg { height:100%; border-radius:12px; background:linear-gradient(to right, #3b82f6 0%, #3b82f6 25%, #22c55e 25%, #22c55e 50%, #f59e0b 50%, #f59e0b 75%, #ef4444 75%, #ef4444 100%); position:relative; }
+    .bmi-marker { position:absolute; top:-6px; width:3px; height:36px; background:#1e293b; border-radius:2px; transition:left 0.3s; z-index:2; }
+    .bmi-marker::after { content:attr(data-bmi); position:absolute; bottom:-22px; left:50%; transform:translateX(-50%); font-size:0.78rem; font-weight:700; white-space:nowrap; }
+    .bmi-labels { display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-light); margin-top:28px; }
+    .bmi-labels span { text-align:center; }
+    .result-hero { text-align:center; padding:24px; background:#f8fafc; border-radius:12px; margin-bottom:20px; }
+    .result-hero .bmi-value { font-size:3rem; font-weight:800; }
+    .result-hero .bmi-class { font-size:1.1rem; font-weight:600; margin-top:4px; padding:4px 16px; border-radius:20px; display:inline-block; }
+    .bmi-class.under { background:#dbeafe; color:#1d4ed8; }
+    .bmi-class.normal { background:#dcfce7; color:#16a34a; }
+    .bmi-class.over { background:#fef3c7; color:#d97706; }
+    .bmi-class.obese { background:#fee2e2; color:#dc2626; }
+    .stats-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin:16px 0; }
+    .stat-card { padding:14px; background:#f8fafc; border-radius:8px; text-align:center; }
+    .stat-card .stat-label { font-size:0.8rem; color:var(--text-light); margin-bottom:4px; }
+    .stat-card .stat-value { font-size:1.15rem; font-weight:700; }
+    .info-section { margin-top:24px; }
+    .info-section h3 { font-size:1rem; font-weight:700; margin-bottom:12px; }
+    .bmi-table { width:100%; border-collapse:collapse; font-size:0.88rem; }
+    .bmi-table th { background:#f1f5f9; padding:10px; text-align:left; font-weight:600; }
+    .bmi-table td { padding:8px 10px; border-bottom:1px solid var(--border); }
+    .bmi-table tr.highlight { background:#eff6ff; font-weight:600; }
+    .risk-list { list-style:none; padding:0; }
+    .risk-list li { padding:6px 0; font-size:0.88rem; border-bottom:1px solid #f1f5f9; }
+    .risk-list li::before { content:"⚠ "; }
+    .healthy-range { padding:16px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; margin:16px 0; }
+    .healthy-range h4 { font-size:0.9rem; color:#16a34a; margin-bottom:8px; }
+    @media(max-width:600px) { .stats-grid { grid-template-columns:1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Saúde</a> / Calculadora de IMC</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de IMC</h1>
+
+      <div class="unit-tabs">
+        <button class="active" onclick="setUnit('metric',this)">Métrico (kg/cm)</button>
+        <button onclick="setUnit('us',this)">EUA (lb/polegadas)</button>
+      </div>
+
+      <form onsubmit="return calcular()">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="idade">Idade</label>
+            <input type="number" id="idade" min="2" max="120" placeholder="Ex: 30" oninput="calcularAuto()">
+          </div>
+          <div class="form-group">
+            <label for="sexo">Sexo</label>
+            <select id="sexo" onchange="calcularAuto()">
+              <option value="M">Masculino</option>
+              <option value="F">Feminino</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="altura" id="alturaLabel">Altura (cm)</label>
+            <input type="number" id="altura" step="0.1" min="50" max="300" placeholder="Ex: 175" oninput="calcularAuto()" required>
+          </div>
+          <div class="form-group">
+            <label for="peso" id="pesoLabel">Peso (kg)</label>
+            <input type="number" id="peso" step="0.1" min="1" max="500" placeholder="Ex: 70" oninput="calcularAuto()" required>
+          </div>
+        </div>
+        <div class="form-row" id="extraFields" style="display:none">
+          <div class="form-group">
+            <label for="pescoço" id="pescocoLabel">Pescoço (cm)</label>
+            <input type="number" id="pescoço" step="0.1" placeholder="Ex: 38">
+          </div>
+          <div class="form-group">
+            <label for="cintura" id="cinturaLabel">Cintura (cm)</label>
+            <input type="number" id="cintura" step="0.1" placeholder="Ex: 85">
+          </div>
+        </div>
+        <button type="submit" class="btn" style="width:100%">Calcular IMC</button>
+      </form>
+
+      <div class="result" id="resultado">
+        <div class="result-hero">
+          <div style="font-size:0.9rem;color:var(--text-light)">Seu IMC</div>
+          <div class="bmi-value" id="bmiValue">0.0</div>
+          <div class="bmi-class" id="bmiClass">-</div>
+        </div>
+
+        <div class="bmi-gauge">
+          <div class="bmi-gauge-bg"></div>
+          <div class="bmi-marker" id="bmiMarker" data-bmi="0"></div>
+        </div>
+        <div class="bmi-labels">
+          <span>Abaixo do<br>Peso</span>
+          <span>Normal</span>
+          <span>Sobrepeso</span>
+          <span>Obesidade</span>
+        </div>
+
+        <div class="stats-grid" id="statsGrid"></div>
+
+        <div class="healthy-range" id="healthyRange"></div>
+
+        <div class="info-section">
+          <h3>Tabela de Classificação IMC (OMS)</h3>
+          <table class="bmi-table" id="bmiTable">
+            <thead><tr><th>Classificação</th><th>IMC (kg/m²)</th></tr></thead>
+            <tbody>
+              <tr><td>Desnutrição Grave</td><td>&lt; 16,0</td></tr>
+              <tr><td>Desnutrição Moderada</td><td>16,0 - 16,9</td></tr>
+              <tr><td>Desnutrição Leve</td><td>17,0 - 18,4</td></tr>
+              <tr><td>Peso Normal</td><td>18,5 - 24,9</td></tr>
+              <tr><td>Sobrepeso</td><td>25,0 - 29,9</td></tr>
+              <tr><td>Obesidade Grau I</td><td>30,0 - 34,9</td></tr>
+              <tr><td>Obesidade Grau II</td><td>35,0 - 39,9</td></tr>
+              <tr><td>Obesidade Grau III</td><td>≥ 40,0</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-section" id="risksSection" style="display:none">
+          <h3>Riscos à Saúde</h3>
+          <ul class="risk-list" id="risksList"></ul>
+        </div>
+
+        <div class="info-section">
+          <h3>Sobre o IMC</h3>
+          <p style="font-size:0.88rem;color:var(--text-light);line-height:1.7">
+            O Índice de Massa Corporal (IMC) é uma medida que relaciona o peso e a altura para estimar a gordura corporal.
+            É amplamente utilizado como indicador geral de se o peso de uma pessoa está adequado para sua altura.
+            O IMC não leva em conta fatores como massa muscular, distribuição de gordura, idade, etnia ou sexo.
+            Pessoas muito musculosas podem ter IMC elevado sem ter gordura excessiva. Para uma avaliação completa,
+            consulte um profissional de saúde.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  var unit = 'metric';
+  function setUnit(u, btn) {
+    unit = u;
+    document.querySelectorAll('.unit-tabs button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (u === 'metric') {
+      document.getElementById('alturaLabel').textContent = 'Altura (cm)';
+      document.getElementById('pesoLabel').textContent = 'Peso (kg)';
+      document.getElementById('altura').placeholder = 'Ex: 175';
+      document.getElementById('peso').placeholder = 'Ex: 70';
+      document.getElementById('altura').max = 300;
+      document.getElementById('peso').max = 500;
+    } else {
+      document.getElementById('alturaLabel').textContent = 'Altura (polegadas)';
+      document.getElementById('pesoLabel').textContent = 'Peso (libras)';
+      document.getElementById('altura').placeholder = 'Ex: 69';
+      document.getElementById('peso').placeholder = 'Ex: 154';
+      document.getElementById('altura').max = 120;
+      document.getElementById('peso').max = 1100;
+    }
+    calcularAuto();
+  }
+
+  function calcularAuto() {
+    var a = parseFloat(document.getElementById('altura').value);
+    var p = parseFloat(document.getElementById('peso').value);
+    if (a > 0 && p > 0) calcular();
+  }
+
+  function calcular() {
+    var peso = parseFloat(document.getElementById('peso').value);
+    var altura = parseFloat(document.getElementById('altura').value);
+    var idade = parseInt(document.getElementById('idade').value) || 30;
+    var sexo = document.getElementById('sexo').value;
+    if (!peso || !altura || peso <= 0 || altura <= 0) return false;
+
+    var alturaM, pesoKg;
+    if (unit === 'metric') {
+      alturaM = altura / 100;
+      pesoKg = peso;
+    } else {
+      alturaM = altura * 0.0254;
+      pesoKg = peso * 0.453592;
+    }
+
+    var imc = pesoKg / (alturaM * alturaM);
+    var imcPrime = imc / 25;
+    var ponderal = pesoKg / Math.pow(alturaM, 3);
+
+    var classificacao, classCss;
+    if (imc < 18.5) { classificacao = 'Abaixo do peso'; classCss = 'under'; }
+    else if (imc < 25) { classificacao = 'Peso Normal'; classCss = 'normal'; }
+    else if (imc < 30) { classificacao = 'Sobrepeso'; classCss = 'over'; }
+    else { classificacao = 'Obesidade'; classCss = 'obese'; }
+
+    document.getElementById('bmiValue').textContent = imc.toFixed(1);
+    var classEl = document.getElementById('bmiClass');
+    classEl.textContent = classificacao;
+    classEl.className = 'bmi-class ' + classCss;
+
+    var markerPct = Math.min(100, Math.max(0, (imc - 12) / 36 * 100));
+    var marker = document.getElementById('bmiMarker');
+    marker.style.left = 'calc(' + markerPct + '% - 1.5px)';
+    marker.setAttribute('data-bmi', imc.toFixed(1));
+
+    var pesoMin = 18.5 * alturaM * alturaM;
+    var pesoMax = 24.9 * alturaM * alturaM;
+
+    document.getElementById('statsGrid').innerHTML =
+      '<div class="stat-card"><div class="stat-label">IMC Prime</div><div class="stat-value">' + imcPrime.toFixed(2) + '</div></div>' +
+      '<div class="stat-card"><div class="stat-label">Índice Ponderal</div><div class="stat-value">' + ponderal.toFixed(1) + ' kg/m³</div></div>' +
+      '<div class="stat-card"><div class="stat-label">Peso Saudável</div><div class="stat-value">' + pesoMin.toFixed(1) + ' - ' + pesoMax.toFixed(1) + ' kg</div></div>' +
+      '<div class="stat-card"><div class="stat-label">IMC Prime Classificação</div><div class="stat-value">' +
+        (imcPrime < 0.74 ? 'Abaixo do peso' : imcPrime <= 1 ? 'Normal' : imcPrime <= 1.2 ? 'Sobrepeso' : 'Obeso') + '</div></div>';
+
+    document.getElementById('healthyRange').innerHTML =
+      '<h4>Peso Saudável para sua altura</h4>' +
+      '<p style="font-size:0.9rem">Para uma altura de ' + (alturaM * 100).toFixed(0) + ' cm, um IMC saudável (18,5 - 24,9) corresponde a um peso entre <strong>' + pesoMin.toFixed(1) + ' kg</strong> e <strong>' + pesoMax.toFixed(1) + ' kg</strong>.</p>';
+
+    var rows = document.querySelectorAll('#bmiTable tbody tr');
+    rows.forEach(r => r.classList.remove('highlight'));
+    var highlightIdx = imc < 16 ? 0 : imc < 17 ? 1 : imc < 18.5 ? 2 : imc < 25 ? 3 : imc < 30 ? 4 : imc < 35 ? 5 : imc < 40 ? 6 : 7;
+    if (rows[highlightIdx]) rows[highlightIdx].classList.add('highlight');
+
+    var risks = [];
+    if (imc < 18.5) {
+      risks = ['Desnutrição e deficiências vitamínicas','Osteoporose e risco de fraturas','Diminuição da função imunológica','Complicações reprodutivas','Possíveis complicações cirúrgicas'];
+    } else if (imc >= 25 && imc < 30) {
+      risks = ['Pressão arterial elevada','Colesterol LDL alto','Risco aumentado de diabetes tipo 2','Doença cardíaca coronariana','Apneia do sono'];
+    } else if (imc >= 30) {
+      risks = ['Pressão arterial elevada','Colesterol alto e triglicerídeos','Diabetes tipo 2','Doença cardíaca e AVC','Apneia do sono grave','Certos tipos de câncer','Artrite e dores articulares','Problemas de saúde mental','Maior risco de mortalidade'];
+    }
+    var risksSection = document.getElementById('risksSection');
+    if (risks.length > 0) {
+      risksSection.style.display = 'block';
+      document.getElementById('risksList').innerHTML = risks.map(r => '<li>' + r + '</li>').join('');
+    } else {
+      risksSection.style.display = 'none';
+    }
+
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

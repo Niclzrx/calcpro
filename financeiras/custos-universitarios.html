@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custos Universitários - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Custos Universitários</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Custos Universitários</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="custoAnual">Custo Anual da Universidade (R$)</label>
+          <input type="number" id="custoAnual" step="0.01" placeholder="Ex: 12000" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="anos">Número de Anos</label>
+            <input type="number" id="anos" placeholder="Ex: 5" required>
+          </div>
+          <div class="form-group">
+            <label for="inflacao">Inflação Anual (%)</label>
+            <input type="number" id="inflacao" step="0.01" placeholder="Ex: 6" required>
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var custoAnual = val('custoAnual');
+    var anos = val('anos');
+    var inflacao = val('inflacao') / 100;
+
+    var totalComInflacao = 0;
+    var custoAtual = custoAnual;
+    var detalhes = '';
+
+    for (var i = 1; i <= anos; i++) {
+      totalComInflacao += custoAtual;
+      detalhes += 'Ano ' + i + ': ' + fmtCurrency(custoAtual) + '<br>';
+      custoAtual = custoAtual * (1 + inflacao);
+    }
+
+    var totalSemInflacao = custoAnual * anos;
+
+    document.getElementById('valorResultado').textContent = 'Custo Total: ' + fmtCurrency(totalComInflacao);
+    document.getElementById('detalheResultado').innerHTML =
+      'Custo Sem Inflação: ' + fmtCurrency(totalSemInflacao) + '<br>' +
+      'Custo Com Inflação: ' + fmtCurrency(totalComInflacao) + '<br>' +
+      'Diferença (Inflação): ' + fmtCurrency(totalComInflacao - totalSemInflacao) + '<br><br>' +
+      '<strong>Detalhamento Ano a Ano:</strong><br>' + detalhes;
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

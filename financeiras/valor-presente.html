@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Valor Presente - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Valor Presente</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Valor Presente</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valorFuturo">Valor Futuro (R$)</label>
+          <input type="number" id="valorFuturo" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="taxaJuros">Taxa de Juros Período (%)</label>
+          <input type="number" id="taxaJuros" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="periodos">Número de Períodos</label>
+          <input type="number" id="periodos" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var FV = parseFloat(document.getElementById('valorFuturo').value);
+    var r = parseFloat(document.getElementById('taxaJuros').value) / 100;
+    var n = parseInt(document.getElementById('periodos').value);
+
+    var PV = FV / Math.pow(1 + r, n);
+    var desconto = FV - PV;
+
+    document.getElementById('valorResultado').textContent = 'Valor Presente: R$ ' + PV.toFixed(2);
+    document.getElementById('detalheResultado').innerHTML =
+      'Valor Futuro: R$ ' + FV.toFixed(2) + '<br>' +
+      'Taxa: ' + (r * 100).toFixed(2) + '%<br>' +
+      'Períodos: ' + n + '<br>' +
+      'Valor Descontado: R$ ' + desconto.toFixed(2);
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

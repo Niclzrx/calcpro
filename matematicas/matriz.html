@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matriz - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Matriz</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Matriz</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="tamanho">Tamanho (2 ou 3)</label>
+          <select id="tamanho" onchange="gerarCampos()">
+            <option value="2">2×2</option>
+            <option value="3">3×3</option>
+          </select>
+        </div>
+        <h3>Matriz A</h3>
+        <div id="matrizA" class="matrix-input"></div>
+        <h3>Matriz B</h3>
+        <div id="matrizB" class="matrix-input"></div>
+        <div class="form-group">
+          <label for="operacao">Operação</label>
+          <select id="operacao">
+            <option value="soma">Soma (A + B)</option>
+            <option value="diferenca">Diferença (A - B)</option>
+            <option value="produto">Produto (A × B)</option>
+            <option value="determinante">Determinante de A</option>
+          </select>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function gerarCampos() {
+    const n = parseInt(document.getElementById('tamanho').value);
+    ['matrizA', 'matrizB'].forEach(id => {
+      const div = document.getElementById(id);
+      div.innerHTML = '';
+      for (let i = 0; i < n; i++) {
+        const row = document.createElement('div');
+        row.className = 'matrix-row';
+        for (let j = 0; j < n; j++) {
+          const input = document.createElement('input');
+          input.type = 'number';
+          input.step = 'any';
+          input.className = 'matrix-cell';
+          input.id = `${id}_${i}_${j}`;
+          input.placeholder = `${i+1},${j+1}`;
+          row.appendChild(input);
+        }
+        div.appendChild(row);
+      }
+    });
+  }
+  function lerMatriz(pref) {
+    const n = parseInt(document.getElementById('tamanho').value);
+    const m = [];
+    for (let i = 0; i < n; i++) {
+      m[i] = [];
+      for (let j = 0; j < n; j++) {
+        m[i][j] = parseFloat(document.getElementById(`${pref}_${i}_${j}`).value) || 0;
+      }
+    }
+    return m;
+  }
+  function det2(m) { return m[0][0]*m[1][1] - m[0][1]*m[1][0]; }
+  function det3(m) {
+    return m[0][0]*(m[1][1]*m[2][2]-m[1][2]*m[2][1])
+         - m[0][1]*(m[1][0]*m[2][2]-m[1][2]*m[2][0])
+         + m[0][2]*(m[1][0]*m[2][1]-m[1][1]*m[2][0]);
+  }
+  function matToStr(m) { return m.map(r => '[ ' + r.join('  ') + ' ]').join('\n'); }
+  function calcular() {
+    const n = parseInt(document.getElementById('tamanho').value);
+    const op = document.getElementById('operacao').value;
+    const A = lerMatriz('matrizA');
+    const B = lerMatriz('matrizB');
+    let R, label;
+    if (op === 'soma') {
+      R = A.map((r, i) => r.map((v, j) => v + B[i][j]));
+      label = 'A + B';
+    } else if (op === 'diferenca') {
+      R = A.map((r, i) => r.map((v, j) => v - B[i][j]));
+      label = 'A - B';
+    } else if (op === 'produto') {
+      R = Array.from({length: n}, () => Array(n).fill(0));
+      for (let i = 0; i < n; i++)
+        for (let j = 0; j < n; j++)
+          for (let k = 0; k < n; k++)
+            R[i][j] += A[i][k] * B[k][j];
+      label = 'A × B';
+    } else {
+      const d = n === 2 ? det2(A) : det3(A);
+      document.getElementById('valorResultado').textContent = d;
+      document.getElementById('detalheResultado').textContent =
+        `det(A) = ${d}\n\nMatriz A:\n${matToStr(A)}`;
+      return false;
+    }
+    document.getElementById('valorResultado').textContent = label;
+    document.getElementById('detalheResultado').textContent =
+      `${label}:\n${matToStr(R)}`;
+    return false;
+  }
+  gerarCampos();
+  </script>
+</body>
+</html>

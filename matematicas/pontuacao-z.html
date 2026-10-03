@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pontuação Z - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Pontuação Z</div>
+    </div>
+    <div class="calc-card">
+      <h1>Pontuação Z</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valor">Valor (x)</label>
+          <input type="number" id="valor" step="any" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="media">Média (μ)</label>
+            <input type="number" id="media" step="any" required>
+          </div>
+          <div class="form-group">
+            <label for="desvio">Desvio Padrão (σ)</label>
+            <input type="number" id="desvio" step="any" min="0.0001" required>
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const x = val('valor');
+    const media = val('media');
+    const desvio = val('desvio');
+    
+    if (desvio <= 0) {
+      document.getElementById('valorResultado').textContent = 'Erro';
+      document.getElementById('detalheResultado').textContent = 'Desvio padrão deve ser maior que zero';
+      document.getElementById('resultado').classList.add('show');
+      return false;
+    }
+    
+    const z = (x - media) / desvio;
+    
+    document.getElementById('valorResultado').textContent = `Z = ${fmt(z, 4)}`;
+    document.getElementById('detalheResultado').textContent = `(${x} - ${media}) / ${desvio}`;
+    document.getElementById('resultado').classList.add('show');
+    return false;
+  }
+  </script>
+</body>
+</html>

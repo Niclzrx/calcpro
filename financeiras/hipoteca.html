@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Hipoteca - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .input-group { display:flex; gap:8px; align-items:center; }
+    .input-group input { flex:1; }
+    .input-group .suffix { font-size:0.9rem; color:#64748b; white-space:nowrap; }
+    .toggle-btn { display:inline-flex; border:1px solid var(--border); border-radius:6px; overflow:hidden; margin-bottom:12px; }
+    .toggle-btn button { padding:8px 16px; border:none; background:#f1f5f9; cursor:pointer; font-size:0.88rem; transition:all 0.2s; }
+    .toggle-btn button.active { background:var(--primary); color:#fff; }
+    .section-title { font-size:0.95rem; font-weight:700; margin:20px 0 12px; padding-top:16px; border-top:1px solid var(--border); color:var(--primary); }
+    .result-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px; }
+    .result-item { padding:12px; background:#f8fafc; border-radius:8px; }
+    .result-item .label { font-size:0.82rem; color:var(--text-light); margin-bottom:4px; }
+    .result-item .value { font-size:1.1rem; font-weight:700; }
+    .result-item.full { grid-column:1/-1; }
+    .result-big { text-align:center; padding:20px; background:linear-gradient(135deg,#eff6ff,#dbeafe); border-radius:12px; margin-bottom:20px; }
+    .result-big .label { font-size:0.9rem; color:var(--text-light); }
+    .result-big .amount { font-size:2rem; font-weight:800; color:var(--primary); }
+    .result-big .sub { font-size:0.85rem; color:var(--text-light); margin-top:4px; }
+    .pie-container { display:flex; align-items:center; gap:24px; margin:20px 0; flex-wrap:wrap; }
+    .pie-chart { width:140px; height:140px; border-radius:50%; position:relative; }
+    .pie-legend { display:flex; flex-direction:column; gap:8px; }
+    .pie-legend-item { display:flex; align-items:center; gap:8px; font-size:0.85rem; }
+    .pie-legend-item .dot { width:12px; height:12px; border-radius:3px; flex-shrink:0; }
+    .amort-table { width:100%; border-collapse:collapse; margin-top:16px; font-size:0.85rem; }
+    .amort-table th { background:#f1f5f9; padding:10px 8px; text-align:right; font-weight:600; border-bottom:2px solid var(--border); }
+    .amort-table th:first-child { text-align:center; }
+    .amort-table td { padding:8px; text-align:right; border-bottom:1px solid var(--border); }
+    .amort-table td:first-child { text-align:center; }
+    .amort-table tr:hover { background:#f8fafc; }
+    .amort-table .year-row { background:#f1f5f9; font-weight:600; }
+    .chart-container { margin:20px 0; position:relative; height:200px; border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+    .chart-bar { position:absolute; bottom:0; transition:height 0.3s; }
+    .tabs { display:flex; gap:0; border-bottom:2px solid var(--border); margin-bottom:16px; }
+    .tabs button { padding:10px 20px; border:none; background:none; cursor:pointer; font-size:0.9rem; font-weight:600; color:var(--text-light); border-bottom:2px solid transparent; margin-bottom:-2px; transition:all 0.2s; }
+    .tabs button.active { color:var(--primary); border-bottom-color:var(--primary); }
+    .tab-content { display:none; }
+    .tab-content.active { display:block; }
+    .cost-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f1f5f9; font-size:0.9rem; }
+    .cost-row:last-child { border-bottom:none; }
+    .cost-row .cost-label { color:var(--text-light); }
+    .help-icon { display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; border-radius:50%; background:#e2e8f0; color:#64748b; font-size:0.7rem; cursor:help; position:relative; margin-left:4px; }
+    .help-icon:hover::after { content:attr(data-tip); position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%); background:#1e293b; color:#fff; padding:6px 10px; border-radius:6px; font-size:0.78rem; white-space:nowrap; z-index:10; }
+    @media(max-width:600px) { .result-grid { grid-template-columns:1fr; } .pie-container { flex-direction:column; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Hipoteca</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Hipoteca</h1>
+
+      <div class="toggle-btn">
+        <button class="active" onclick="setEntradaTipo('$',this)">R$</button>
+        <button onclick="setEntradaTipo('%',this)">%</button>
+      </div>
+
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valorImovel">Valor do Imóvel</label>
+          <input type="number" id="valorImovel" step="0.01" placeholder="Ex: 500.000" oninput="calcularAuto()" required>
+        </div>
+        <div class="form-group">
+          <label for="entrada">Entrada <span class="help-icon" data-tip="Valor ou percentual de entrada">?</span></label>
+          <div class="input-group">
+            <input type="number" id="entrada" step="0.01" placeholder="Ex: 100.000" oninput="calcularAuto()" required>
+            <span class="suffix" id="entradaSuffix">R$</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taxaJuros">Taxa de Juros Anual (%) <span class="help-icon" data-tip="Taxa de juros fixa do empréstimo">?</span></label>
+            <input type="number" id="taxaJuros" step="0.01" placeholder="Ex: 10" oninput="calcularAuto()" required>
+          </div>
+          <div class="form-group">
+            <label for="prazoAnos">Prazo (anos)</label>
+            <input type="number" id="prazoAnos" min="1" max="50" placeholder="Ex: 30" oninput="calcularAuto()" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="dataInicio">Data de Início</label>
+          <input type="month" id="dataInicio" oninput="calcularAuto()">
+        </div>
+
+        <div class="section-title">Impostos e Custos Anuais</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="iptu">IPTU Anual (%) <span class="help-icon" data-tip="Percentual do valor do imóvel">?</span></label>
+            <input type="number" id="iptu" step="0.01" value="1.1" oninput="calcularAuto()">
+          </div>
+          <div class="form-group">
+            <label for="seguro">Seguro (%) <span class="help-icon" data-tip="Seguro residencial anual">?</span></label>
+            <input type="number" id="seguro" step="0.01" value="0.5" oninput="calcularAuto()">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="condominio">Condomínio Mensal (R$)</label>
+            <input type="number" id="condominio" step="0.01" value="0" oninput="calcularAuto()">
+          </div>
+          <div class="form-group">
+            <label for="outrosCustos">Outros Custos Mensais (R$)</label>
+            <input type="number" id="outrosCustos" step="0.01" value="0" oninput="calcularAuto()">
+          </div>
+        </div>
+
+        <div class="section-title">Pagamentos Extras</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="extraMensal">Pagamento Extra Mensal (R$)</label>
+            <input type="number" id="extraMensal" step="0.01" value="0" oninput="calcularAuto()">
+          </div>
+          <div class="form-group">
+            <label for="extraAnual">Pagamento Extra Anual (R$)</label>
+            <input type="number" id="extraAnual" step="0.01" value="0" oninput="calcularAuto()">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="extraUnico">Pagamento Extra Único (R$)</label>
+          <input type="number" id="extraUnico" step="0.01" value="0" oninput="calcularAuto()">
+        </div>
+
+        <button type="submit" class="btn" style="width:100%">Calcular Hipoteca</button>
+      </form>
+
+      <div class="result" id="resultado">
+        <div class="result-big">
+          <div class="label">Pagamento Mensal</div>
+          <div class="amount" id="parcelaMensal">R$ 0,00</div>
+          <div class="sub" id="parcelaSub"></div>
+        </div>
+
+        <div class="tabs">
+          <button class="active" onclick="showTab('resumo',this)">Resumo</button>
+          <button onclick="showTab('amortizacao',this)">Tabela</button>
+          <button onclick="showTab('grafico',this)">Gráfico</button>
+        </div>
+
+        <div class="tab-content active" id="tab-resumo">
+          <div class="pie-container">
+            <div class="pie-chart" id="pieChart"></div>
+            <div class="pie-legend" id="pieLegend"></div>
+          </div>
+          <div class="result-grid" id="resultGrid"></div>
+          <div id="costBreakdown" style="margin-top:16px"></div>
+        </div>
+
+        <div class="tab-content" id="tab-amortizacao">
+          <div style="max-height:500px;overflow-y:auto" id="amortWrap"></div>
+        </div>
+
+        <div class="tab-content" id="tab-grafico">
+          <div id="chartArea"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  var entradaTipo = '$';
+  function setEntradaTipo(t, btn) {
+    entradaTipo = t;
+    document.querySelectorAll('.toggle-btn button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('entradaSuffix').textContent = t === '$' ? 'R$' : '%';
+    calcularAuto();
+  }
+
+  function calcularAuto() {
+    if (val('valorImovel') > 0 && val('taxaJuros') > 0 && val('prazoAnos') > 0) calcular();
+  }
+
+  function showTab(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function calcular() {
+    var imovel = val('valorImovel');
+    var entradaVal = val('entrada');
+    var entrada = entradaTipo === '%' ? imovel * entradaVal / 100 : entradaVal;
+    if (entrada > imovel) entrada = imovel;
+    var taxaAnual = val('taxaJuros') / 100;
+    var anos = val('prazoAnos');
+    var principal = imovel - entrada;
+    var meses = anos * 12;
+    var taxaMensal = taxaAnual / 12;
+    var parcela = principal > 0 ? calcAmortization(principal, taxaMensal, meses) : 0;
+    var iptuAnual = imovel * val('iptu') / 100;
+    var seguroAnual = imovel * val('seguro') / 100;
+    var condominio = val('condominio');
+    var outrosCustos = val('outrosCustos');
+    var extraMensal = val('extraMensal');
+    var extraAnual = val('extraAnual');
+    var extraUnico = val('extraUnico');
+    var iptuMensal = iptuAnual / 12;
+    var seguroMensal = seguroAnual / 12;
+    var totalMensal = parcela + iptuMensal + seguroMensal + condominio + outrosCustos + extraMensal;
+
+    document.getElementById('parcelaMensal').textContent = fmtCurrency(parcela);
+    document.getElementById('parcelaSub').textContent = 'Principal + Juros (mais ' + fmtCurrency(iptuMensal + seguroMensal + condominio + outrosCustos) + ' em custos)';
+
+    var saldo = principal;
+    var totalJuros = 0;
+    var totalPrincipal = 0;
+    var parcelas = [];
+    var dataInicio = document.getElementById('dataInicio').value;
+    var mesAtual = 0, anoAtual = 0;
+    if (dataInicio) {
+      var parts = dataInicio.split('-');
+      mesAtual = parseInt(parts[1]) - 1;
+      anoAtual = parseInt(parts[0]);
+    }
+    var extraUnicoUsado = false;
+
+    for (var i = 1; i <= meses && saldo > 0; i++) {
+      var jurosMes = saldo * taxaMensal;
+      var princParcela = parcela - jurosMes;
+      if (princParcela > saldo) princParcela = saldo;
+      saldo -= princParcela;
+      totalJuros += jurosMes;
+      totalPrincipal += princParcela;
+      var extra = extraMensal;
+      if (i % 12 === 0) extra += extraAnual;
+      if (!extraUnicoUsado && extraUnico > 0) { extra += extraUnico; extraUnicoUsado = true; }
+      if (extra > saldo) extra = saldo;
+      if (extra > 0) saldo -= extra;
+      var mesNome = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'][mesAtual];
+      parcelas.push({
+        num: i, mes: mesNome + '/' + anoAtual,
+        juros: jurosMes, principal: princParcela, extra: extra,
+        saldo: Math.max(saldo, 0)
+      });
+      mesAtual++;
+      if (mesAtual >= 12) { mesAtual = 0; anoAtual++; }
+    }
+
+    var totalPago = totalPrincipal + totalJuros;
+    var totalComCustos = totalPago + iptuAnual * anos + seguroAnual * anos + condominio * meses + outrosCustos * meses + extraMensal * meses;
+    var payoffDate = parcelas.length > 0 ? parcelas[parcelas.length - 1].mes : '-';
+
+    document.getElementById('resultGrid').innerHTML =
+      '<div class="result-item"><div class="label">Valor do Imóvel</div><div class="value">' + fmtCurrency(imovel) + '</div></div>' +
+      '<div class="result-item"><div class="label">Entrada</div><div class="value">' + fmtCurrency(entrada) + '</div></div>' +
+      '<div class="result-item"><div class="label">Valor Financiado</div><div class="value">' + fmtCurrency(principal) + '</div></div>' +
+      '<div class="result-item"><div class="label">Data Quitação</div><div class="value">' + payoffDate + '</div></div>' +
+      '<div class="result-item"><div class="label">Total de Pagamentos</div><div class="value">' + fmtCurrency(totalPago) + '</div></div>' +
+      '<div class="result-item"><div class="label">Total de Juros</div><div class="value">' + fmtCurrency(totalJuros) + '</div></div>' +
+      '<div class="result-item full"><div class="label">Total Custos Anuais</div><div class="value">IPTU: ' + fmtCurrency(iptuAnual) + ' | Seguro: ' + fmtCurrency(seguroAnual) + '</div></div>';
+
+    var colors = ['#2563eb','#f59e0b','#10b981','#ef4444','#8b5cf6'];
+    var data = [
+      {label:'Principal', value: totalPrincipal, color: colors[0]},
+      {label:'Juros', value: totalJuros, color: colors[1]},
+      {label:'IPTU', value: iptuAnual * anos, color: colors[2]},
+      {label:'Seguro', value: seguroAnual * anos, color: colors[3]},
+      {label:'Outros', value: condominio * meses + outrosCustos * meses, color: colors[4]}
+    ].filter(d => d.value > 0);
+    var totalData = data.reduce((s,d) => s + d.value, 0);
+    var gradParts = [];
+    var cumPct = 0;
+    data.forEach(d => {
+      var pct = d.value / totalData * 100;
+      gradParts.push(d.color + ' ' + cumPct + '% ' + (cumPct + pct) + '%');
+      cumPct += pct;
+    });
+    document.getElementById('pieChart').style.background = 'conic-gradient(' + gradParts.join(',') + ')';
+    document.getElementById('pieLegend').innerHTML = data.map(d =>
+      '<div class="pie-legend-item"><div class="dot" style="background:' + d.color + '"></div>' + d.label + ': ' + fmtCurrency(d.value) + ' (' + (d.value/totalData*100).toFixed(1) + '%)</div>'
+    ).join('');
+
+    var html = '<table class="amort-table"><thead><tr><th>Mês</th><th>Data</th><th>Juros</th><th>Principal</th><th>Extra</th><th>Saldo</th></tr></thead><tbody>';
+    parcelas.forEach(p => {
+      html += '<tr><td>' + p.num + '</td><td>' + p.mes + '</td><td>' + fmtCurrency(p.juros) + '</td><td>' + fmtCurrency(p.principal) + '</td><td>' + fmtCurrency(p.extra) + '</td><td>' + fmtCurrency(p.saldo) + '</td></tr>';
+    });
+    html += '</tbody></table>';
+    document.getElementById('amortWrap').innerHTML = html;
+
+    var maxSaldo = principal;
+    var chartHtml = '<div style="position:relative;height:200px;border:1px solid var(--border);border-radius:8px;overflow:hidden;display:flex;align-items:flex-end;padding:0 4px">';
+    var barWidth = Math.max(1, Math.floor(100 / parcelas.length));
+    parcelas.forEach((p, i) => {
+      var h = (p.saldo / maxSaldo) * 100;
+      var jH = (p.juros / parcela) * h;
+      chartHtml += '<div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;margin:0 0.5px">' +
+        '<div style="background:#f59e0b;height:' + jH + '%;min-height:1px"></div>' +
+        '<div style="background:#2563eb;height:' + (h - jH) + '%;min-height:1px"></div></div>';
+    });
+    chartHtml += '</div><div style="display:flex;gap:16px;margin-top:8px;font-size:0.82rem">' +
+      '<span><span style="display:inline-block;width:12px;height:12px;background:#2563eb;border-radius:2px;vertical-align:middle"></span> Principal</span>' +
+      '<span><span style="display:inline-block;width:12px;height:12px;background:#f59e0b;border-radius:2px;vertical-align:middle"></span> Juros</span></div>';
+    document.getElementById('chartArea').innerHTML = chartHtml;
+
+    document.getElementById('costBreakdown').innerHTML =
+      '<div class="section-title" style="border-top:none;padding-top:0;margin-top:0">Detalhamento Mensal</div>' +
+      '<div class="cost-row"><span class="cost-label">Principal + Juros</span><span>' + fmtCurrency(parcela) + '</span></div>' +
+      '<div class="cost-row"><span class="cost-label">IPTU</span><span>' + fmtCurrency(iptuMensal) + '</span></div>' +
+      '<div class="cost-row"><span class="cost-label">Seguro</span><span>' + fmtCurrency(seguroMensal) + '</span></div>' +
+      '<div class="cost-row"><span class="cost-label">Condomínio</span><span>' + fmtCurrency(condominio) + '</span></div>' +
+      '<div class="cost-row"><span class="cost-label">Outros</span><span>' + fmtCurrency(outrosCustos) + '</span></div>' +
+      (extraMensal > 0 ? '<div class="cost-row"><span class="cost-label">Extra Mensal</span><span>' + fmtCurrency(extraMensal) + '</span></div>' : '') +
+      '<div class="cost-row" style="font-weight:700;border-top:2px solid var(--border);padding-top:8px"><span>Total Mensal Estimado</span><span>' + fmtCurrency(totalMensal) + '</span></div>';
+
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

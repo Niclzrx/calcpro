@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Handicap de Golfe - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Calculadora de Handicap de Golfe</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Handicap de Golfe</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="rating">Course Rating (classificação do campo)</label>
+          <input type="number" id="rating" step="0.1" value="72.0" required>
+        </div>
+        <div class="form-group">
+          <label for="slope">Slope Rating (declive do campo)</label>
+          <input type="number" id="slope" step="1" value="113" required>
+        </div>
+        <div class="form-group">
+          <label for="pontuacao">Sua Pontuação (18 buracos)</label>
+          <input type="number" id="pontuacao" min="1" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const rating = val('rating');
+    const slope = val('slope');
+    const pontuacao = val('pontuacao');
+
+    const differential = ((pontuacao - rating) * 113) / slope;
+
+    document.getElementById('valorResultado').textContent = fmt(differential);
+    document.getElementById('detalheResultado').textContent =
+      'Handicap Differential = (' + pontuacao + ' - ' + rating + ') × 113 / ' + slope + ' = ' + fmt(differential, 1);
+    document.getElementById('resultado').classList.add('show');
+    return false;
+  }
+  </script>
+</body>
+</html>

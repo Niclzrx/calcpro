@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Período - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Saúde</a> / Calculadora de Período</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Período</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="dataInicio">Data de Início do Último Período</label>
+          <input type="date" id="dataInicio" required>
+        </div>
+        <div class="form-group">
+          <label for="ciclo">Duração do Ciclo (dias)</label>
+          <input type="number" id="ciclo" value="28" min="20" max="45" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const dataStr = document.getElementById('dataInicio').value;
+    const ciclo = val('ciclo');
+
+    if (!dataStr || ciclo < 20 || ciclo > 45) {
+      alert('Por favor, preencha todos os campos corretamente.');
+      return false;
+    }
+
+    const dataInicio = new Date(dataStr + 'T00:00:00');
+
+    const proximoPeriodo = new Date(dataInicio);
+    proximoPeriodo.setDate(proximoPeriodo.getDate() + ciclo);
+
+    const diaOvulacao = ciclo - 14;
+    const dataOvulacao = new Date(dataInicio);
+    dataOvulacao.setDate(dataOvulacao.getDate() + diaOvulacao);
+
+    const inicioFertil = new Date(dataInicio);
+    inicioFertil.setDate(inicioFertil.getDate() + diaOvulacao - 5);
+
+    const fimFertil = new Date(dataInicio);
+    fimFertil.setDate(fimFertil.getDate() + diaOvulacao + 1);
+
+    const formatar = (d) => d.toLocaleDateString('pt-BR');
+
+    document.getElementById('valorResultado').textContent = 'Próximo período: ' + formatar(proximoPeriodo);
+    document.getElementById('detalheResultado').innerHTML =
+      'Próximo período esperado: ' + formatar(proximoPeriodo) + '<br>' +
+      'Dia provável da ovulação: ' + formatar(dataOvulacao) + '<br>' +
+      'Janela fértil: ' + formatar(inicioFertil) + ' a ' + formatar(fimFertil);
+
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

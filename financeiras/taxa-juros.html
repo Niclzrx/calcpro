@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Taxa de Juros - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Taxa de Juros</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Taxa de Juros</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Valor Presente (R$)</label>
+            <input type="number" id="pv" step="0.01" placeholder="Ex: 10000">
+          </div>
+          <div class="form-group">
+            <label>Valor Futuro (R$)</label>
+            <input type="number" id="fv" step="0.01" placeholder="Ex: 12000">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Tempo (meses)</label>
+          <input type="number" id="tempo" step="1" placeholder="Ex: 12">
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const pv = val('pv');
+    const fv = val('fv');
+    const tempo = val('tempo');
+
+    if (pv <= 0 || fv <= 0 || tempo <= 0) {
+      alert('Preencha todos os campos corretamente.');
+      return false;
+    }
+
+    // Taxa mensal implícita
+    const taxaMensal = Math.pow(fv / pv, 1 / tempo) - 1;
+    // Taxa anualizada
+    const taxaAnual = Math.pow(1 + taxaMensal, 12) - 1;
+    // Total de juros
+    const totalJuros = fv - pv;
+
+    document.getElementById('valorResultado').textContent = `Taxa: ${fmtPercent(taxaMensal * 100)} ao mês`;
+    document.getElementById('detalheResultado').textContent = `Taxa anualizada: ${fmtPercent(taxaAnual * 100)} | Total de juros: ${fmtCurrency(totalJuros)} | Fórmula: i = (FV/PV)^(1/n) - 1`;
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

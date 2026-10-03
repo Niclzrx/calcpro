@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora da Lei de Ohm - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Calculadora da Lei de Ohm</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora da Lei de Ohm</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="calcular">Calcular</label>
+          <select id="calcular" required onchange="atualizarCampos()">
+            <option value="V">Tensao (V)</option>
+            <option value="I">Corrente (I)</option>
+            <option value="R">Resistencia (R)</option>
+            <option value="P">Potencia (P)</option>
+          </select>
+        </div>
+        <div class="form-group" id="grupoV">
+          <label for="v">Tensao (V)</label>
+          <input type="number" id="v" step="0.01" min="0" placeholder="Volts">
+        </div>
+        <div class="form-group" id="grupoI">
+          <label for="i">Corrente (A)</label>
+          <input type="number" id="i" step="0.01" min="0" placeholder="Amperes">
+        </div>
+        <div class="form-group" id="grupoR">
+          <label for="r">Resistencia (ohms)</label>
+          <input type="number" id="r" step="0.01" min="0" placeholder="Ohms">
+        </div>
+        <div class="form-group" id="grupoP">
+          <label for="p">Potencia (W)</label>
+          <input type="number" id="p" step="0.01" min="0" placeholder="Watts">
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function atualizarCampos() {
+    var calc = document.getElementById('calcular').value;
+    document.getElementById('grupoV').style.display = calc === 'V' ? 'none' : '';
+    document.getElementById('grupoI').style.display = calc === 'I' ? 'none' : '';
+    document.getElementById('grupoR').style.display = calc === 'R' ? 'none' : '';
+    document.getElementById('grupoP').style.display = calc === 'P' ? 'none' : '';
+  }
+
+  function mostrarErro() {
+    document.getElementById('valorResultado').textContent = 'Valores invalidos';
+    document.getElementById('detalheResultado').textContent = '';
+  }
+
+  function calcular() {
+    var calc = document.getElementById('calcular').value;
+    var resultado, formula;
+    if (calc === 'V') {
+      var ir = parseFloat(document.getElementById('i').value);
+      var r = parseFloat(document.getElementById('r').value);
+      if (isNaN(ir) || isNaN(r)) { mostrarErro(); return false; }
+      resultado = ir * r;
+      formula = 'V = I x R = ' + ir + ' x ' + r;
+    } else if (calc === 'I') {
+      var v = parseFloat(document.getElementById('v').value);
+      var r2 = parseFloat(document.getElementById('r').value);
+      if (isNaN(v) || isNaN(r2) || r2 === 0) { mostrarErro(); return false; }
+      resultado = v / r2;
+      formula = 'I = V / R = ' + v + ' / ' + r2;
+    } else if (calc === 'R') {
+      var v2 = parseFloat(document.getElementById('v').value);
+      var ir2 = parseFloat(document.getElementById('i').value);
+      if (isNaN(v2) || isNaN(ir2) || ir2 === 0) { mostrarErro(); return false; }
+      resultado = v2 / ir2;
+      formula = 'R = V / I = ' + v2 + ' / ' + ir2;
+    } else {
+      var v3 = parseFloat(document.getElementById('v').value);
+      var ir3 = parseFloat(document.getElementById('i').value);
+      if (isNaN(v3) || isNaN(ir3)) { mostrarErro(); return false; }
+      resultado = v3 * ir3;
+      formula = 'P = V x I = ' + v3 + ' x ' + ir3;
+    }
+    var unidades = { V: 'V', I: 'A', R: 'ohms', P: 'W' };
+    var nomes = { V: 'Tensao', I: 'Corrente', R: 'Resistencia', P: 'Potencia' };
+    document.getElementById('valorResultado').textContent = nomes[calc] + ' = ' + resultado.toFixed(4) + ' ' + unidades[calc];
+    document.getElementById('detalheResultado').textContent = formula;
+    return false;
+  }
+
+  atualizarCampos();
+  </script>
+</body>
+</html>

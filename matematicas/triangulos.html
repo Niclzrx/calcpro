@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Triângulos - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Calculadora de Triângulos</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Triângulos</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="lado1">Lado 1</label>
+          <input type="number" id="lado1" step="any" min="0" placeholder="Ex: 3" required>
+        </div>
+        <div class="form-group">
+          <label for="lado2">Lado 2</label>
+          <input type="number" id="lado2" step="any" min="0" placeholder="Ex: 4" required>
+        </div>
+        <div class="form-group">
+          <label for="lado3">Lado 3</label>
+          <input type="number" id="lado3" step="any" min="0" placeholder="Ex: 5" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const a = parseFloat(document.getElementById('lado1').value);
+    const b = parseFloat(document.getElementById('lado2').value);
+    const c = parseFloat(document.getElementById('lado3').value);
+
+    if (isNaN(a) || isNaN(b) || isNaN(c) || a <= 0 || b <= 0 || c <= 0) {
+      document.getElementById('valorResultado').textContent = 'Erro';
+      document.getElementById('detalheResultado').textContent = 'Insira valores válidos e positivos';
+      return false;
+    }
+
+    if (a + b <= c || a + c <= b || b + c <= a) {
+      document.getElementById('valorResultado').textContent = 'Não é um triângulo';
+      document.getElementById('detalheResultado').textContent = 'Os lados não satisfazem a desigualdade triangular';
+      return false;
+    }
+
+    const perimetro = a + b + c;
+    const s = perimetro / 2;
+    const area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
+
+    let tipoLados;
+    if (a === b && b === c) tipoLados = 'Equilátero';
+    else if (a === b || b === c || a === c) tipoLados = 'Isósceles';
+    else tipoLados = 'Escaleno';
+
+    const cosA = (b * b + c * c - a * a) / (2 * b * c);
+    const angA = Math.acos(Math.max(-1, Math.min(1, cosA))) * 180 / Math.PI;
+    const cosB = (a * a + c * c - b * b) / (2 * a * c);
+    const angB = Math.acos(Math.max(-1, Math.min(1, cosB))) * 180 / Math.PI;
+    const angC = 180 - angA - angB;
+
+    let tipoAngulos = 'Acutângulo';
+    if (angA >= 90 || angB >= 90 || angC >= 90) tipoAngulos = 'Obtusângulo';
+    if (Math.abs(angA - 90) < 0.001 || Math.abs(angB - 90) < 0.001 || Math.abs(angC - 90) < 0.001) tipoAngulos = 'Retângulo';
+
+    document.getElementById('valorResultado').textContent = 'Área: ' + area.toFixed(4);
+    document.getElementById('detalheResultado').innerHTML =
+      'Perímetro: <strong>' + perimetro.toFixed(4) + '</strong><br>' +
+      'Classificação (lados): <strong>' + tipoLados + '</strong><br>' +
+      'Classificação (ângulos): <strong>' + tipoAngulos + '</strong><br>' +
+      'Ângulos: A=' + angA.toFixed(2) + '°, B=' + angB.toFixed(2) + '°, C=' + angC.toFixed(2) + '°';
+    return false;
+  }
+  </script>
+</body>
+</html>

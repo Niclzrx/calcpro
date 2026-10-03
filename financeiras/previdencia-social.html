@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora da Previdência Social - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Previdência Social</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora da Previdência Social</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="salarioMedio">Salário Médio de Contribuição (R$)</label>
+          <input type="text" id="salarioMedio" required>
+        </div>
+        <div class="form-group">
+          <label for="tempoContribuicao">Tempo de Contribuição (meses)</label>
+          <input type="number" id="tempoContribuicao" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var salarioMedio = parseFloat(document.getElementById('salarioMedio').value.replace(/[^\d,]/g, '').replace(',', '.'));
+    var tempoContribuicaoMeses = parseFloat(document.getElementById('tempoContribuicao').value);
+
+    var tempoContribuicaoAnos = tempoContribuicaoMeses / 12;
+    var mesesMinimos = 180;
+
+    var fatorPrevidenciario = Math.min(tempoContribuicaoMeses / 300, 1);
+
+    var percentualBasico = Math.min(tempoContribuicaoMeses / 240, 0.75);
+    var valorBeneficio = salarioMedio * percentualBasico;
+
+    var aliquotaEfetiva = (tempoContribuicaoMeses / 480) * 100;
+
+    var status = tempoContribuicaoMeses >= mesesMinimos ? 'Elegível' : 'Inelegível (faltam ' + (mesesMinimos - tempoContribuicaoMeses) + ' meses)';
+
+    document.getElementById('valorResultado').innerHTML = 'Benefício Estimado: R$ ' + valorBeneficio.toFixed(2) + '/mês';
+    document.getElementById('detalheResultado').innerHTML =
+      'Tempo de Contribuição: ' + tempoContribuicaoMeses + ' meses (' + tempoContribuicaoAnos.toFixed(1) + ' anos)<br>' +
+      'Percentual de Rendimento: ' + (percentualBasico * 100).toFixed(1) + '%<br>' +
+      'Fator Previdenciário: ' + fatorPrevidenciario.toFixed(4) + '<br>' +
+      'Situação: ' + status;
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

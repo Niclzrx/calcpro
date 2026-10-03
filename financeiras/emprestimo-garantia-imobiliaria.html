@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Empréstimo com Garantia Imobiliária - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Empréstimo com Garantia Imobiliária</div>
+    </div>
+    <div class="calc-card">
+      <h1>Empréstimo com Garantia Imobiliária</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valorImovel">Valor do Imóvel (R$)</label>
+          <input type="number" id="valorImovel" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="valorEmprestimo">Valor do Empréstimo (R$)</label>
+          <input type="number" id="valorEmprestimo" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="taxaJuros">Taxa de Juros Anual (%)</label>
+          <input type="number" id="taxaJuros" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="prazo">Prazo (anos)</label>
+          <input type="number" id="prazo" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var valorImovel = parseFloat(document.getElementById('valorImovel').value);
+    var valorEmprestimo = parseFloat(document.getElementById('valorEmprestimo').value);
+    var taxaAnual = parseFloat(document.getElementById('taxaJuros').value) / 100;
+    var anos = parseInt(document.getElementById('prazo').value);
+
+    var taxaMensal = taxaAnual / 12;
+    var n = anos * 12;
+
+    var prestacao;
+    if (taxaMensal === 0) {
+      prestacao = valorEmprestimo / n;
+    } else {
+      prestacao = valorEmprestimo * (taxaMensal * Math.pow(1 + taxaMensal, n)) / (Math.pow(1 + taxaMensal, n) - 1);
+    }
+
+    var totalPago = prestacao * n;
+    var totalJuros = totalPago - valorEmprestimo;
+    var ltv = (valorEmprestimo / valorImovel) * 100;
+
+    document.getElementById('valorResultado').textContent = 'Prestação Mensal: R$ ' + prestacao.toFixed(2);
+    document.getElementById('detalheResultado').innerHTML =
+      'Valor Financiado: R$ ' + valorEmprestimo.toFixed(2) + '<br>' +
+      'Total de Juros: R$ ' + totalJuros.toFixed(2) + '<br>' +
+      'Total Pago: R$ ' + totalPago.toFixed(2) + '<br>' +
+      'LTV: ' + ltv.toFixed(1) + '%';
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

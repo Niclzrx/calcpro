@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intervalo de Confiança - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Intervalo de Confiança</div>
+    </div>
+    <div class="calc-card">
+      <h1>Intervalo de Confiança</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="media">Média</label>
+            <input type="number" id="media" step="any" required>
+          </div>
+          <div class="form-group">
+            <label for="desvio">Desvio Padrão</label>
+            <input type="number" id="desvio" step="any" min="0.0001" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="n">Tamanho da Amostra (n)</label>
+            <input type="number" id="n" min="1" required>
+          </div>
+          <div class="form-group">
+            <label for="confianca">Nível de Confiança (%)</label>
+            <input type="number" id="confianca" min="1" max="99.99" step="any" value="95" required>
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function zScore(confianca) {
+    // Tabela simplificada de valores z para níveis de confiança comuns
+    const tabela = {
+      80: 1.282,
+      85: 1.440,
+      90: 1.645,
+      95: 1.960,
+      98: 2.326,
+      99: 2.576,
+      99.5: 2.807,
+      99.8: 3.090,
+      99.9: 3.291
+    };
+    
+    if (tabela[confianca]) return tabela[confianca];
+    
+    // Aproximação para outros valores
+    const alpha = (100 - confianca) / 100;
+    const p = 1 - alpha / 2;
+    
+    // Aproximação usando a fórmula de Abramowitz e Stegun
+    const t = Math.sqrt(-2 * Math.log(1 - p));
+    const c0 = 2.515517;
+    const c1 = 0.802853;
+    const c2 = 0.010328;
+    const d1 = 1.432788;
+    const d2 = 0.189269;
+    const d3 = 0.001308;
+    
+    return t - (c0 + c1 * t + c2 * t * t) / (1 + d1 * t + d2 * t * t + d3 * t * t * t);
+  }
+  
+  function calcular() {
+    const media = val('media');
+    const desvio = val('desvio');
+    const n = val('n');
+    const confianca = val('confianca');
+    
+    if (desvio <= 0) {
+      document.getElementById('valorResultado').textContent = 'Erro';
+      document.getElementById('detalheResultado').textContent = 'Desvio padrão deve ser maior que zero';
+      document.getElementById('resultado').classList.add('show');
+      return false;
+    }
+    
+    if (n < 1) {
+      document.getElementById('valorResultado').textContent = 'Erro';
+      document.getElementById('detalheResultado').textContent = 'Tamanho da amostra deve ser pelo menos 1';
+      document.getElementById('resultado').classList.add('show');
+      return false;
+    }
+    
+    if (confianca <= 0 || confianca >= 100) {
+      document.getElementById('valorResultado').textContent = 'Erro';
+      document.getElementById('detalheResultado').textContent = 'Nível de confiança deve estar entre 0% e 100%';
+      document.getElementById('resultado').classList.add('show');
+      return false;
+    }
+    
+    const z = zScore(confianca);
+    const erro = z * (desvio / Math.sqrt(n));
+    const inferior = media - erro;
+    const superior = media + erro;
+    
+    document.getElementById('valorResultado').textContent = `[${fmt(inferior, 4)}, ${fmt(superior, 4)}]`;
+    document.getElementById('detalheResultado').textContent = `Margem de erro: ±${fmt(erro, 4)} (z = ${z.toFixed(3)})`;
+    document.getElementById('resultado').classList.add('show');
+    return false;
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Queda de Tensão - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Calculadora de Queda de Tensão</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Queda de Tensão</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="corrente">Corrente (A)</label>
+          <input type="number" id="corrente" min="0" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="resistencia">Resistência (Ω)</label>
+          <input type="number" id="resistencia" min="0" step="0.01" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const corrente = parseFloat(document.getElementById('corrente').value);
+    const resistencia = parseFloat(document.getElementById('resistencia').value);
+
+    const tensao = corrente * resistencia;
+    const potencia = tensao * corrente;
+
+    document.getElementById('valorResultado').textContent = tensao.toFixed(2) + ' V';
+    document.getElementById('detalheResultado').innerHTML =
+      'V = I × R = ' + corrente + ' A × ' + resistencia + ' Ω<br>' +
+      'Potência dissipada: ' + potencia.toFixed(2) + ' W';
+    return false;
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Calorias Queimadas - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Saúde</a> / Calculadora de Calorias Queimadas</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Calorias Queimadas</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="atividade">Atividade</label>
+          <select id="atividade" required>
+            <option value="1.5">Caminhada leve (1.5)</option>
+            <option value="3.8">Caminhada rápida (3.8)</option>
+            <option value="5.0">Corrida leve (5.0)</option>
+            <option value="7.0">Corrida intensa (7.0)</option>
+            <option value="6.0" selected>Corrida de rua (6.0)</option>
+            <option value="8.0">Corrida de montanha (8.0)</option>
+            <option value="2.5">Yoga (2.5)</option>
+            <option value="4.0">Pilates (4.0)</option>
+            <option value="5.0">Musculação leve (5.0)</option>
+            <option value="6.0">Musculação moderada (6.0)</option>
+            <option value="8.0">Musculação intensa (8.0)</option>
+            <option value="8.0">CrossFit (8.0)</option>
+            <option value="7.5">Ciclismo moderado (7.5)</option>
+            <option value="10.0">Ciclismo intenso (10.0)</option>
+            <option value="6.0">Natação leve (6.0)</option>
+            <option value="10.0">Natação intensa (10.0)</option>
+            <option value="3.0">Elíptico (3.0)</option>
+            <option value="8.0">Remo (8.0)</option>
+            <option value="3.5">Dança (3.5)</option>
+            <option value="4.0">Artes marciais (4.0)</option>
+            <option value="2.0">Alongamento (2.0)</option>
+            <option value="11.0">Futebol (11.0)</option>
+            <option value="8.0">Basquete (8.0)</option>
+            <option value="6.0">Tênis (6.0)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="peso">Peso (kg)</label>
+          <input type="number" id="peso" step="0.1" min="1" required placeholder="Ex: 70">
+        </div>
+        <div class="form-group">
+          <label for="duracao">Duração (minutos)</label>
+          <input type="number" id="duracao" step="1" min="1" required placeholder="Ex: 30">
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var met = parseFloat(document.getElementById('atividade').value);
+    var peso = parseFloat(document.getElementById('peso').value);
+    var duracao = parseFloat(document.getElementById('duracao').value);
+
+    var calorias = met * peso * (duracao / 60);
+
+    document.getElementById('valorResultado').innerHTML = 'Calorias Queimadas: <strong>' + calorias.toFixed(1) + ' kcal</strong>';
+    document.getElementById('detalheResultado').textContent = 'MET: ' + met + ' | Duração: ' + duracao + ' min';
+    return false;
+  }
+  </script>
+</body>
+</html>

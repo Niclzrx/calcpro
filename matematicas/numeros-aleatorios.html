@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerador de Números Aleatórios - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Gerador de Números Aleatórios</div>
+    </div>
+    <div class="calc-card">
+      <h1>Gerador de Números Aleatórios</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="minimo">Valor Mínimo</label>
+          <input type="number" id="minimo" value="1" required>
+        </div>
+        <div class="form-group">
+          <label for="maximo">Valor Máximo</label>
+          <input type="number" id="maximo" value="100" required>
+        </div>
+        <div class="form-group">
+          <label for="quantidade">Quantidade</label>
+          <input type="number" id="quantidade" value="10" min="1" max="1000" required>
+        </div>
+        <button type="submit" class="btn">Gerar</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const min = parseInt(document.getElementById('minimo').value);
+    const max = parseInt(document.getElementById('maximo').value);
+    const qtd = parseInt(document.getElementById('quantidade').value);
+
+    if (isNaN(min) || isNaN(max) || isNaN(qtd) || qtd < 1 || qtd > 1000) {
+      document.getElementById('valorResultado').textContent = 'Erro';
+      document.getElementById('detalheResultado').textContent = 'Valores inválidos';
+      return false;
+    }
+
+    if (min > max) {
+      document.getElementById('valorResultado').textContent = 'Erro';
+      document.getElementById('detalheResultado').textContent = 'Mínimo deve ser menor que máximo';
+      return false;
+    }
+
+    const numeros = [];
+    for (let i = 0; i < qtd; i++) {
+      numeros.push(Math.floor(Math.random() * (max - min + 1)) + min);
+    }
+
+    document.getElementById('valorResultado').textContent = numeros.join(', ');
+    document.getElementById('detalheResultado').innerHTML =
+      'Gerados <strong>' + qtd + '</strong> números entre <strong>' + min + '</strong> e <strong>' + max + '</strong>';
+    return false;
+  }
+  </script>
+</body>
+</html>

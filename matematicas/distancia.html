@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Distância - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Distância</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Distância</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="x1">x₁</label>
+            <input type="number" id="x1" step="any" required>
+          </div>
+          <div class="form-group">
+            <label for="y1">y₁</label>
+            <input type="number" id="y1" step="any" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="x2">x₂</label>
+            <input type="number" id="x2" step="any" required>
+          </div>
+          <div class="form-group">
+            <label for="y2">y₂</label>
+            <input type="number" id="y2" step="any" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="z1">z₁ (opcional)</label>
+            <input type="number" id="z1" step="any" value="0">
+          </div>
+          <div class="form-group">
+            <label for="z2">z₂ (opcional)</label>
+            <input type="number" id="z2" step="any" value="0">
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const x1 = val('x1');
+    const y1 = val('y1');
+    const x2 = val('x2');
+    const y2 = val('y2');
+    const z1 = val('z1');
+    const z2 = val('z2');
+    
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const dz = z2 - z1;
+    
+    let distancia;
+    let formula;
+    
+    if (z1 === 0 && z2 === 0) {
+      distancia = Math.sqrt(dx * dx + dy * dy);
+      formula = `√((${x2} - ${x1})² + (${y2} - ${y1})²)`;
+    } else {
+      distancia = Math.sqrt(dx * dx + dy * dy + dz * dz);
+      formula = `√((${x2} - ${x1})² + (${y2} - ${y1})² + (${z2} - ${z1})²)`;
+    }
+    
+    document.getElementById('valorResultado').textContent = `Distância = ${fmt(distancia, 4)}`;
+    document.getElementById('detalheResultado').textContent = formula;
+    document.getElementById('resultado').classList.add('show');
+    return false;
+  }
+  </script>
+</body>
+</html>

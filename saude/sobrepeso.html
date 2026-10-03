@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Sobrepeso - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Saúde</a> / Calculadora de Sobrepeso</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Sobrepeso</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="peso">Peso (kg)</label>
+            <input type="number" id="peso" step="0.1" min="1" required>
+          </div>
+          <div class="form-group">
+            <label for="altura">Altura (cm)</label>
+            <input type="number" id="altura" step="0.1" min="1" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="idade">Idade (anos)</label>
+          <input type="number" id="idade" min="1" max="120" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const peso = val('peso');
+    const altura = val('altura');
+    const idade = val('idade');
+
+    if (peso <= 0 || altura <= 0 || idade <= 0) {
+      alert('Por favor, preencha todos os campos com valores válidos.');
+      return false;
+    }
+
+    const imc = peso / Math.pow(altura / 100, 2);
+    const pesoIdeal = 22 * Math.pow(altura / 100, 2);
+    const sobrepeso = Math.max(0, peso - pesoIdeal);
+    const percentualSobrepeso = pesoIdeal > 0 ? ((peso - pesoIdeal) / pesoIdeal) * 100 : 0;
+
+    let classificacao;
+    if (imc < 18.5) {
+      classificacao = 'Abaixo do peso';
+    } else if (imc < 25) {
+      classificacao = 'Peso normal';
+    } else if (imc < 30) {
+      classificacao = 'Sobrepeso';
+    } else if (imc < 35) {
+      classificacao = 'Obesidade grau I';
+    } else if (imc < 40) {
+      classificacao = 'Obesidade grau II';
+    } else {
+      classificacao = 'Obesidade grau III (mórbida)';
+    }
+
+    let riscos = [];
+    if (imc >= 25) riscos.push('Doenças cardiovasculares');
+    if (imc >= 27) riscos.push('Diabetes tipo 2');
+    if (imc >= 30) riscos.push('Hipertensão arterial');
+    if (imc >= 30) riscos.push('Apneia do sono');
+    if (imc >= 35) riscos.push('Doenças articulares');
+    if (imc >= 40) riscos.push('Risco cirúrgico elevado');
+
+    document.getElementById('valorResultado').textContent = sobrepeso > 0 ? fmt(sobrepeso, 1) + ' kg acima do peso ideal' : 'Dentro do peso ideal';
+    document.getElementById('detalheResultado').innerHTML =
+      'IMC: ' + fmt(imc, 1) + ' kg/m² — ' + classificacao + '<br>' +
+      'Peso ideal: ' + fmt(pesoIdeal, 1) + ' kg<br>' +
+      (sobrepeso > 0 ? 'Excesso de peso: ' + fmt(sobrepeso, 1) + ' kg (' + fmtPercent(Math.abs(percentualSobrepeso)) + ')<br>' : '') +
+      (riscos.length > 0 ? 'Riscos associados: ' + riscos.join(', ') : 'Sem riscos associados ao peso');
+
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

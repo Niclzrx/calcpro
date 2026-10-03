@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fatores - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Fatores</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Fatores</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="numero">Número</label>
+          <input type="number" id="numero" min="1" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const n = parseInt(document.getElementById('numero').value);
+    if (isNaN(n) || n < 1) {
+      document.getElementById('valorResultado').textContent = 'Insira um número positivo';
+      document.getElementById('detalheResultado').textContent = '';
+      return false;
+    }
+    const fatores = [];
+    for (let i = 1; i <= Math.sqrt(n); i++) {
+      if (n % i === 0) {
+        fatores.push(i);
+        if (i !== n / i) fatores.push(n / i);
+      }
+    }
+    fatores.sort((a, b) => a - b);
+    const pares = fatores.filter(f => f > 1 && f < n);
+    document.getElementById('valorResultado').textContent = fatores.join(', ');
+    document.getElementById('detalheResultado').textContent =
+      `Fatores de ${n}: ${fatores.join(', ')}\nTotal: ${fatores.length} fatores\n` +
+      (n > 1 ? `Fatores próprios: ${pares.length > 0 ? pares.join(', ') : 'Nenhum'}` : '');
+    return false;
+  }
+  </script>
+</body>
+</html>

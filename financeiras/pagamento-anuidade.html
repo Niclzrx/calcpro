@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Pagamento de Anuidade - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Pagamento de Anuidade</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Pagamento de Anuidade</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valorPresente">Valor Presente da Anuidade (R$)</label>
+          <input type="text" id="valorPresente" required>
+        </div>
+        <div class="form-group">
+          <label for="taxaJuros">Taxa de Juros por Período (%)</label>
+          <input type="number" id="taxaJuros" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="numeroPagamentos">Número de Pagamentos</label>
+          <input type="number" id="numeroPagamentos" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var valorPresente = parseFloat(document.getElementById('valorPresente').value.replace(/[^\d,]/g, '').replace(',', '.'));
+    var taxaJuros = parseFloat(document.getElementById('taxaJuros').value) / 100;
+    var numeroPagamentos = parseFloat(document.getElementById('numeroPagamentos').value);
+
+    var pagamento;
+    if (taxaJuros === 0) {
+      pagamento = valorPresente / numeroPagamentos;
+    } else {
+      pagamento = valorPresente * (taxaJuros * Math.pow(1 + taxaJuros, numeroPagamentos)) / (Math.pow(1 + taxaJuros, numeroPagamentos) - 1);
+    }
+
+    var totalPago = pagamento * numeroPagamentos;
+    var totalJuros = totalPago - valorPresente;
+
+    var valorFuturo = valorPresente * Math.pow(1 + taxaJuros, numeroPagamentos);
+
+    document.getElementById('valorResultado').innerHTML = 'Pagamento Periódico: R$ ' + pagamento.toFixed(2);
+    document.getElementById('detalheResultado').innerHTML =
+      'Valor Futuro (R$ ' + valorFuturo.toFixed(2) + '<br>' +
+      'Total Pago: R$ ' + totalPago.toFixed(2) + '<br>' +
+      'Total de Juros: R$ ' + totalJuros.toFixed(2);
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Tempo - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Calculadora de Tempo</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Tempo</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="horas">Horas</label>
+          <input type="number" id="horas" min="0" value="0" required>
+        </div>
+        <div class="form-group">
+          <label for="minutos">Minutos</label>
+          <input type="number" id="minutos" min="0" max="59" value="0" required>
+        </div>
+        <div class="form-group">
+          <label for="segundos">Segundos</label>
+          <input type="number" id="segundos" min="0" max="59" value="0" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const horas = parseInt(document.getElementById('horas').value) || 0;
+    const minutos = parseInt(document.getElementById('minutos').value) || 0;
+    const segundos = parseInt(document.getElementById('segundos').value) || 0;
+
+    const totalSegundos = horas * 3600 + minutos * 60 + segundos;
+    const totalMinutos = totalSegundos / 60;
+    const totalHoras = totalSegundos / 3600;
+
+    const dias = Math.floor(totalHoras / 24);
+    const h = Math.floor(totalHoras % 24);
+    const m = Math.floor((totalSegundos % 3600) / 60);
+    const s = totalSegundos % 60;
+
+    let textoPrincipal = '';
+    if (dias > 0) textoPrincipal += dias + ' dia(s), ';
+    textoPrincipal += h + ' hora(s), ' + m + ' minuto(s) e ' + s + ' segundo(s)';
+
+    document.getElementById('valorResultado').textContent = textoPrincipal;
+    document.getElementById('detalheResultado').textContent =
+      totalSegundos + ' segundos | ' + totalMinutos.toFixed(2) + ' minutos | ' + totalHoras.toFixed(4) + ' horas';
+    return false;
+  }
+  </script>
+</body>
+</html>

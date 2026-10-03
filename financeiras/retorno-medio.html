@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Retorno Médio - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Retorno Médio</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Retorno Médio</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="retornos">Retornos dos Investimentos (%, separados por vírgula)</label>
+          <input type="text" id="retornos" placeholder="Ex: 12, -5, 8, 15, -3" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var input = document.getElementById('retornos').value;
+    if (!input.trim()) { alert('Informe os retornos.'); return false; }
+    var lista = input.split(',').map(function(s) { return parseFloat(s.trim()); }).filter(function(n) { return !isNaN(n); });
+    if (lista.length === 0) { alert('Nenhum retorno válido informado.'); return false; }
+    var soma = 0;
+    for (var i = 0; i < lista.length; i++) { soma += lista[i]; }
+    var media = soma / lista.length;
+    var maximo = Math.max.apply(null, lista);
+    var minimo = Math.min.apply(null, lista);
+    document.getElementById('valorResultado').textContent = fmtPercent(media);
+    document.getElementById('detalheResultado').innerHTML =
+      'Número de investimentos: ' + lista.length + '<br>' +
+      'Maior retorno: ' + fmtPercent(maximo) + '<br>' +
+      'Menor retorno: ' + fmtPercent(minimo) + '<br>' +
+      'Soma dos retornos: ' + fmtPercent(soma);
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

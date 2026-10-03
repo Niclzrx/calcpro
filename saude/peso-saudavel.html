@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Peso Saudável - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Saúde</a> / Calculadora de Peso Saudável</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Peso Saudável</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="altura">Altura (cm)</label>
+          <input type="number" id="altura" step="0.1" min="1" required placeholder="Ex: 175">
+        </div>
+        <div class="form-group">
+          <label for="sexo">Sexo</label>
+          <select id="sexo" required>
+            <option value="M">Masculino</option>
+            <option value="F">Feminino</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="idade">Idade (anos)</label>
+          <input type="number" id="idade" min="1" max="120" required placeholder="Ex: 30">
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var altura = parseFloat(document.getElementById('altura').value);
+    var sexo = document.getElementById('sexo').value;
+    var idade = parseInt(document.getElementById('idade').value);
+
+    var alturaM = altura / 100;
+    var pesoMin = 18.5 * alturaM * alturaM;
+    var pesoMax = 24.9 * alturaM * alturaM;
+    var pesoIdeal = (18.5 + 24.9) / 2 * alturaM * alturaM;
+
+    var imcIdeal = 21.7;
+    if (sexo === 'F') {
+      imcIdeal = 20.7;
+      if (idade >= 19 && idade <= 24) imcIdeal = 19.5;
+      else if (idade >= 25 && idade <= 34) imcIdeal = 20.0;
+      else if (idade >= 35 && idade <= 44) imcIdeal = 21.0;
+      else if (idade >= 45 && idade <= 54) imcIdeal = 22.0;
+      else if (idade >= 55) imcIdeal = 23.0;
+    } else {
+      imcIdeal = 22.0;
+      if (idade >= 19 && idade <= 24) imcIdeal = 21.5;
+      else if (idade >= 25 && idade <= 34) imcIdeal = 22.0;
+      else if (idade >= 35 && idade <= 44) imcIdeal = 23.0;
+      else if (idade >= 45 && idade <= 54) imcIdeal = 24.0;
+      else if (idade >= 55) imcIdeal = 25.0;
+    }
+    var pesoIdealAjustado = imcIdeal * alturaM * alturaM;
+
+    document.getElementById('valorResultado').innerHTML = 'Faixa de Peso Saudável: <strong>' + pesoMin.toFixed(1) + ' - ' + pesoMax.toFixed(1) + ' kg</strong>';
+    document.getElementById('detalheResultado').textContent = 'Peso ideal para sua idade/gênero: ' + pesoIdealAjustado.toFixed(1) + ' kg (IMC: ' + imcIdeal.toFixed(1) + ')';
+    return false;
+  }
+  </script>
+</body>
+</html>

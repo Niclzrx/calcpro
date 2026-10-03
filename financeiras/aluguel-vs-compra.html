@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora Aluguel vs Compra - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Aluguel vs Compra</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora Aluguel vs Compra</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valorCompra">Valor de Compra (R$)</label>
+          <input type="number" id="valorCompra" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="entrada">Entrada (R$)</label>
+          <input type="number" id="entrada" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="taxaJuros">Taxa de Juros Anual (%)</label>
+          <input type="number" id="taxaJuros" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="aluguelMensal">Aluguel Mensal Atual (R$)</label>
+          <input type="number" id="aluguelMensal" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="valorizacaoAnual">Valorização Anual do Imóvel (%)</label>
+          <input type="number" id="valorizacaoAnual" step="0.01" value="3">
+        </div>
+        <div class="form-group">
+          <label for="analisarMeses">Analisar por (meses)</label>
+          <input type="number" id="analisarMeses" value="60">
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var valorCompra = parseFloat(document.getElementById('valorCompra').value);
+    var entrada = parseFloat(document.getElementById('entrada').value);
+    var taxaAnual = parseFloat(document.getElementById('taxaJuros').value) / 100;
+    var aluguelMensal = parseFloat(document.getElementById('aluguelMensal').value);
+    var valorizacaoAnual = parseFloat(document.getElementById('valorizacaoAnual').value) / 100;
+    var meses = parseInt(document.getElementById('analisarMeses').value);
+
+    var valorEmprestimo = valorCompra - entrada;
+    var taxaMensal = taxaAnual / 12;
+    var n = 360;
+
+    var prestacao;
+    if (taxaMensal === 0) {
+      prestacao = valorEmprestimo / n;
+    } else {
+      prestacao = valorEmprestimo * (taxaMensal * Math.pow(1 + taxaMensal, n)) / (Math.pow(1 + taxaMensal, n) - 1);
+    }
+
+    var valorizacaoMensal = Math.pow(1 + valorizacaoAnual, 1 / 12) - 1;
+    var aluguelAtual = aluguelMensal;
+    var crescimentoAluguel = 0.03;
+    var crescimentoAluguelMensal = Math.pow(1 + crescimentoAluguel, 1 / 12) - 1;
+
+    var totalCompra = entrada;
+    var totalAluguel = 0;
+    var valorImovelAtual = valorCompra;
+    var saldoDevedor = valorEmprestimo;
+    var totalJuros = 0;
+
+    for (var i = 0; i < meses; i++) {
+      totalCompra += prestacao;
+
+      var jurosMes = saldoDevedor * taxaMensal;
+      totalJuros += jurosMes;
+      var amortizacao = prestacao - jurosMes;
+      saldoDevedor -= amortizacao;
+
+      totalAluguel += aluguelAtual;
+      aluguelAtual *= (1 + crescimentoAluguelMensal);
+
+      valorImovelAtual *= (1 + valorizacaoMensal);
+    }
+
+    var patrimonioCompra = valorImovelAtual - Math.max(0, saldoDevedor);
+    var custoLiquidoCompra = totalCompra - patrimonioCompra;
+    var custoLiquidoAluguel = totalAluguel;
+
+    var diferenca = custoLiquidoAluguel - custoLiquidoCompra;
+    var recomendacao = diferenca > 0 ? 'Comprar' : 'Alugar';
+
+    document.getElementById('valorResultado').textContent = 'Recomendação: ' + recomendacao;
+    document.getElementById('detalheResultado').innerHTML =
+      '<strong>Compra:</strong><br>' +
+      'Total Gasto: R$ ' + totalCompra.toFixed(2) + '<br>' +
+      'Valor do Imóvel: R$ ' + valorImovelAtual.toFixed(2) + '<br>' +
+      'Saldo Devedor: R$ ' + Math.max(0, saldoDevedor).toFixed(2) + '<br>' +
+      'Patrimônio Líquido: R$ ' + patrimonioCompra.toFixed(2) + '<br>' +
+      'Custo Líquido: R$ ' + custoLiquidoCompra.toFixed(2) + '<br><br>' +
+      '<strong>Aluguel:</strong><br>' +
+      'Total Pago: R$ ' + custoLiquidoAluguel.toFixed(2) + '<br><br>' +
+      '<strong>Diferença:</strong> R$ ' + Math.abs(diferenca).toFixed(2) + ' a favor de ' + recomendacao;
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

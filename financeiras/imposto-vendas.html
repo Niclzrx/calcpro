@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Imposto sobre Vendas - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Imposto sobre Vendas</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Imposto sobre Vendas</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Valor do Produto (R$)</label>
+            <input type="number" id="valor" step="0.01" placeholder="Ex: 100">
+          </div>
+          <div class="form-group">
+            <label>Alíquota (%)</label>
+            <input type="number" id="aliquota" step="0.01" placeholder="Ex: 17.5">
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const valor = val('valor');
+    const aliquota = val('aliquota');
+
+    if (valor <= 0 || aliquota < 0) {
+      alert('Preencha todos os campos corretamente.');
+      return false;
+    }
+
+    const imposto = valor * aliquota / 100;
+    const precoFinal = valor + imposto;
+
+    document.getElementById('valorResultado').textContent = `Preço Final: ${fmtCurrency(precoFinal)}`;
+    document.getElementById('detalheResultado').textContent = `Imposto: ${fmtCurrency(imposto)} (${fmtPercent(aliquota)}) | Preço sem imposto: ${fmtCurrency(valor)}`;
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

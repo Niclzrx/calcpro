@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saúde e Fitness - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+      <div class="search-box">
+        <input type="text" id="search" placeholder="Buscar calculadora..." oninput="filterCalc()">
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="hero">
+      <h1>Saúde e Fitness</h1>
+      <p>Calculadoras de saúde, fitness e bem-estar.</p>
+    </div>
+
+    <div class="categories" id="categories">
+      <a href="imc.html" class="category-card" data-name="imc indice massa corporal peso">
+        <span class="icon">⚖️</span>
+        <h2>IMC</h2>
+        <p>Índice de Massa Corporal</p>
+      </a>
+      <a href="calorias.html" class="category-card" data-name="calorias dieta alimentacao">
+        <span class="icon">🍎</span>
+        <h2>Calorias</h2>
+        <p>Necessidades calóricas diárias</p>
+      </a>
+      <a href="gordura-corporal.html" class="category-card" data-name="gordura corporal percentual">
+        <span class="icon">📐</span>
+        <h2>Gordura Corporal</h2>
+        <p>Percentual de gordura corporal</p>
+      </a>
+      <a href="tmb.html" class="category-card" data-name="tmb taxa metabolismo basal metabolismo">
+        <span class="icon">🔥</span>
+        <h2>TMB</h2>
+        <p>Taxa Metabólica Basal</p>
+      </a>
+      <a href="macro.html" class="category-card" data-name="macronutrientes proteina carboidrato gordura">
+        <span class="icon">🥩</span>
+        <h2>Macronutrientes</h2>
+        <p>Calculadora de macronutrientes</p>
+      </a>
+      <a href="peso-ideal.html" class="category-card" data-name="peso ideal peso saudavel">
+        <span class="icon">✅</span>
+        <h2>Peso Ideal</h2>
+        <p>Calcule seu peso ideal</p>
+      </a>
+      <a href="gravidez.html" class="category-card" data-name="gravidez gestacao беременность">
+        <span class="icon">🤰</span>
+        <h2>Gravidez</h2>
+        <p>Calculadora de gravidez</p>
+      </a>
+      <a href="ganho-peso-gravidez.html" class="category-card" data-name="ganho peso gravidez gestacao">
+        <span class="icon">📈</span>
+        <h2>Ganho de Peso na Gravidez</h2>
+        <p>Ganho de peso recomendado na gestação</p>
+      </a>
+      <a href="concepcao-gravidez.html" class="category-card" data-name="concepcao gravidez fertilizacao">
+        <span class="icon">👶</span>
+        <h2>Concepção na Gravidez</h2>
+        <p>Data provável de concepção</p>
+      </a>
+      <a href="data-vencimento.html" class="category-card" data-name="data vencimento parto nascimento">
+        <span class="icon">📅</span>
+        <h2>Data de Vencimento</h2>
+        <p>Data provável do parto</p>
+      </a>
+      <a href="ritmo.html" class="category-card" data-name="ritmo corrida corrida">
+        <span class="icon">🏃</span>
+        <h2>Ritmo</h2>
+        <p>Velocidade e ritmo de corrida</p>
+      </a>
+      <a href="gordura-corporal-exercito.html" class="category-card" data-name="gordura corporal exercito marinha">
+        <span class="icon">🎖️</span>
+        <h2>Gordura Corporal (Exército)</h2>
+        <p>Método da marinha/exército</p>
+      </a>
+      <a href="carboidratos.html" class="category-card" data-name="carboidratos carbohidratos">
+        <span class="icon">🍞</span>
+        <h2>Carboidratos</h2>
+        <p>Necessidade de carboidratos</p>
+      </a>
+      <a href="massa-corporal-magra.html" class="category-card" data-name="massa corporal magra massa magra">
+        <span class="icon">💪</span>
+        <h2>Massa Corporal Magra</h2>
+        <p>Calcule sua massa magra</p>
+      </a>
+      <a href="peso-saudavel.html" class="category-card" data-name="peso saudavel peso ideal">
+        <span class="icon">💚</span>
+        <h2>Peso Saudável</h2>
+        <p>Faixa de peso saudável</p>
+      </a>
+      <a href="calorias-queimadas.html" class="category-card" data-name="calorias queimadas exercicio treino">
+        <span class="icon">🔥</span>
+        <h2>Calorias Queimadas</h2>
+        <p>Calorias gastas em exercícios</p>
+      </a>
+      <a href="repeticao-maxima.html" class="category-card" data-name="repeticao maxima forca treino">
+        <span class="icon">🏋️</span>
+        <h2>Repetição Máxima</h2>
+        <p>1RM - Repetição máxima</p>
+      </a>
+      <a href="frequencia-cardiaca-alvo.html" class="category-card" data-name="frequencia cardiaca cardiaca alvo cardio">
+        <span class="icon">❤️</span>
+        <h2>Frequência Cardíaca Alvo</h2>
+        <p>Zona de treinamento cardíaco</p>
+      </a>
+      <a href="proteinas.html" class="category-card" data-name="proteinas proteina diaria">
+        <span class="icon">🥩</span>
+        <h2>Proteínas</h2>
+        <p>Necessidade diária de proteínas</p>
+      </a>
+      <a href="ingestao-gordura.html" class="category-card" data-name="ingestao gordura dieta">
+        <span class="icon">🧈</span>
+        <h2>Ingestão de Gordura</h2>
+        <p>Recomendação de gordura diária</p>
+      </a>
+      <a href="tdee.html" class="category-card" data-name="tdee gasto metabolico diario energia">
+        <span class="icon">⚡</span>
+        <h2>TDEE</h2>
+        <p>Gasto Energético Total Diário</p>
+      </a>
+      <a href="ovulacao.html" class="category-card" data-name="ovulacao ovulacao ciclo fertilidade">
+        <span class="icon">🌸</span>
+        <h2>Ovulação</h2>
+        <p>Calculadora de ovulação</p>
+      </a>
+      <a href="concepcao.html" class="category-card" data-name="concepcao fertilizacao concepcao">
+        <span class="icon">👶</span>
+        <h2>Concepção</h2>
+        <p>Data provável de concepção</p>
+      </a>
+      <a href="periodo.html" class="category-card" data-name="periodo menstruacao ciclo">
+        <span class="icon">🩸</span>
+        <h2>Período</h2>
+        <p>Próximo período e janela fértil</p>
+      </a>
+      <a href="tfg.html" class="category-card" data-name="tfg taxa filtracao glomerular rim">
+        <span class="icon">🫘</span>
+        <h2>TFG</h2>
+        <p>Taxa de Filtração Glomerular</p>
+      </a>
+      <a href="tipo-fisico.html" class="category-card" data-name="tipo fisico corpo ectomorfo mesomorfo endomorfo somatotipo">
+        <span class="icon">🧬</span>
+        <h2>Tipo Físico</h2>
+        <p>Ectomorfo, Mesomorfo, Endomorfo</p>
+      </a>
+      <a href="area-superficie-corporal.html" class="category-card" data-name="area superficie corporal bsa mosteller">
+        <span class="icon">📏</span>
+        <h2>Área da Superfície Corporal</h2>
+        <p>BSA - Área de superfície corporal</p>
+      </a>
+      <a href="bac.html" class="category-card" data-name="bac alcohol etilico bebida alcoolica">
+        <span class="icon">🍺</span>
+        <h2>BAC</h2>
+        <p>Teor de Álcool no Sangue</p>
+      </a>
+      <a href="imc-anorexia.html" class="category-card" data-name="imc anorexia anorexia transtorno alimentar">
+        <span class="icon">⚠️</span>
+        <h2>IMC para Anorexia</h2>
+        <p>Avaliação de risco de anorexia</p>
+      </a>
+      <a href="pontos-weight-watchers.html" class="category-card" data-name="pontos weight watchers wwatchers dieta pontos">
+        <span class="icon">📊</span>
+        <h2>Pontos Weight Watchers</h2>
+        <p>Calculadora de pontos WW</p>
+      </a>
+      <a href="sobrepeso.html" class="category-card" data-name="sobrepeso peso excesso obesidade">
+        <span class="icon">📉</span>
+        <h2>Sobrepeso</h2>
+        <p>Calculadora de sobrepeso</p>
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>© 2026 CalcPro</p>
+    </div>
+  </footer>
+
+  <script>
+    function filterCalc() {
+      const q = document.getElementById('search').value.toLowerCase();
+      document.querySelectorAll('.category-card').forEach(c => {
+        const match = c.dataset.name.includes(q) || c.textContent.toLowerCase().includes(q);
+        c.style.display = match ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>

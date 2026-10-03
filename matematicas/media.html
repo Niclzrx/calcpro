@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Média - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Média</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Média</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="numeros">Números separados por vírgula</label>
+          <input type="text" id="numeros" placeholder="Ex: 10, 20, 30, 40" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const input = document.getElementById('numeros').value;
+    const nums = input.split(',').map(n => parseFloat(n.trim())).filter(n => !isNaN(n));
+    if (nums.length === 0) {
+      document.getElementById('valorResultado').textContent = 'Insira pelo menos um número';
+      document.getElementById('detalheResultado').textContent = '';
+      return false;
+    }
+    const soma = nums.reduce((a, b) => a + b, 0);
+    const media = soma / nums.length;
+    const min = Math.min(...nums);
+    const max = Math.max(...nums);
+    const sorted = [...nums].sort((a, b) => a - b);
+    const mediana = nums.length % 2 === 0
+      ? (sorted[nums.length/2 - 1] + sorted[nums.length/2]) / 2
+      : sorted[Math.floor(nums.length/2)];
+    const variancia = nums.reduce((s, n) => s + Math.pow(n - media, 2), 0) / nums.length;
+    const desvioPadrao = Math.sqrt(variancia);
+    document.getElementById('valorResultado').textContent = media;
+    document.getElementById('detalheResultado').textContent =
+      `Soma: ${soma}\n` +
+      `Quantidade: ${nums.length}\n` +
+      `Média: ${media}\n` +
+      `Mediana: ${mediana}\n` +
+      `Mínimo: ${min}\n` +
+      `Máximo: ${max}\n` +
+      `Variância: ${variancia.toFixed(4)}\n` +
+      `Desvio padrão: ${desvioPadrao.toFixed(4)}`;
+    return false;
+  }
+  </script>
+</body>
+</html>

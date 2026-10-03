@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Ingestão de Gordura - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Saúde</a> / Calculadora de Ingestão de Gordura</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Ingestão de Gordura</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="calorias">Calorias Diárias (kcal)</label>
+          <input type="number" id="calorias" step="1" min="1" required placeholder="Ex: 2000">
+        </div>
+        <div class="form-group">
+          <label for="porcentagem">Porcentagem de Gordura (%)</label>
+          <input type="number" id="porcentagem" step="1" min="1" max="100" required placeholder="Ex: 30">
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var calorias = parseFloat(document.getElementById('calorias').value);
+    var porcentagem = parseFloat(document.getElementById('porcentagem').value);
+
+    var calGordura = calorias * porcentagem / 100;
+    var gramasGordura = calGordura / 9;
+
+    var porRefeicao = gramasGordura / 3;
+    var gorduraSat = gramasGordura * 0.33;
+    var gorduraMono = gramasGordura * 0.33;
+    var gorduraPoli = gramasGordura * 0.33;
+
+    document.getElementById('valorResultado').innerHTML = 'Gordura Recomendada: <strong>' + gramasGordura.toFixed(0) + ' g/dia</strong>';
+    document.getElementById('detalheResultado').textContent = 'Equivalente a ' + calGordura.toFixed(0) + ' kcal/dia | ~' + porRefeicao.toFixed(0) + ' g por refeição (3 refeições)';
+    return false;
+  }
+  </script>
+</body>
+</html>

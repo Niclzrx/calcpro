@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Valor p - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Valor p</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Valor p</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="tipo">Tipo de estatística</label>
+          <select id="tipo">
+            <option value="z">Z-score (Normal)</option>
+            <option value="t">t-score (Student)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="estatistica">Valor da estatística (Z ou t)</label>
+          <input type="number" id="estatistica" step="any" required>
+        </div>
+        <div class="form-group" id="glGroup">
+          <label for="gl">Graus de Liberdade (para t)</label>
+          <input type="number" id="gl" min="1" value="10">
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function normalCDF(x) {
+    const a1=0.254829592, a2=-0.284496736, a3=1.421413741, a4=-1.453152027, a5=1.061405429, p=0.3275911;
+    const sign = x < 0 ? -1 : 1;
+    x = Math.abs(x) / Math.SQRT2;
+    const t = 1.0 / (1.0 + p * x);
+    const y = 1.0 - (((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x);
+    return 0.5 * (1.0 + sign * y);
+  }
+  function tCDF(t, df) {
+    const x = df / (df + t * t);
+    const a = df / 2, b = 0.5;
+    let ib = 0;
+    const maxIter = 200;
+    const eps = 1e-10;
+    if (x === 0) return t >= 0 ? 1 : 0;
+    if (x === 1) return 0.5;
+    const bt = Math.exp(
+      lgamma(a + b) - lgamma(a) - lgamma(b) + a * Math.log(x) + b * Math.log(1 - x)
+    );
+    if (x < (a + 1) / (a + b + 2)) {
+      ib = bt * betaCF(x, a, b) / a;
+    } else {
+      ib = 1 - bt * betaCF(1 - x, b, a) / b;
+    }
+    return t >= 0 ? 0.5 + 0.5 * ib : 0.5 - 0.5 * ib;
+  }
+  function lgamma(x) {
+    const c = [76.18009172947146, -86.50532032941677, 24.01409824083091,
+      -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5];
+    let y = x, tmp = x + 5.5;
+    tmp -= (x + 0.5) * Math.log(tmp);
+    let ser = 1.000000000190015;
+    for (let j = 0; j < 6; j++) ser += c[j] / ++y;
+    return -tmp + Math.log(2.5066282746310005 * ser / x);
+  }
+  function betaCF(x, a, b) {
+    const maxIter = 200, eps = 1e-10;
+    let qab = a + b, qap = a + 1, qam = a - 1;
+    let c = 1, d = 1 - qab * x / qap;
+    if (Math.abs(d) < 1e-30) d = 1e-30;
+    d = 1 / d;
+    let h = d;
+    for (let m = 1; m <= maxIter; m++) {
+      const m2 = 2 * m;
+      let aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+      d = 1 + aa * d; if (Math.abs(d) < 1e-30) d = 1e-30;
+      c = 1 + aa / c; if (Math.abs(c) < 1e-30) c = 1e-30;
+      d = 1 / d; h *= d * c;
+      aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+      d = 1 + aa * d; if (Math.abs(d) < 1e-30) d = 1e-30;
+      c = 1 + aa / c; if (Math.abs(c) < 1e-30) c = 1e-30;
+      d = 1 / d;
+      const del = d * c; h *= del;
+      if (Math.abs(del - 1) < eps) break;
+    }
+    return h;
+  }
+  function calcular() {
+    const tipo = document.getElementById('tipo').value;
+    const est = parseFloat(document.getElementById('estatistica').value);
+    const gl = parseInt(document.getElementById('gl').value);
+    if (isNaN(est) || (tipo === 't' && (isNaN(gl) || gl < 1))) {
+      document.getElementById('valorResultado').textContent = 'Valores inválidos';
+      document.getElementById('detalheResultado').textContent = '';
+      return false;
+    }
+    let pUnilateral, pBilateral;
+    if (tipo === 'z') {
+      pUnilateral = 1 - normalCDF(est);
+      pBilateral = 2 * (1 - normalCDF(Math.abs(est)));
+    } else {
+      pUnilateral = 1 - tCDF(est, gl);
+      pBilateral = 2 * (1 - tCDF(Math.abs(est), gl));
+    }
+    document.getElementById('valorResultado').textContent = `p = ${pBilateral.toFixed(6)}`;
+    document.getElementById('detalheResultado').textContent =
+      `Tipo: ${tipo === 'z' ? 'Z-score (Normal)' : `t-score (Student, gl=${gl})`}\n` +
+      `Estatística: ${est}\n` +
+      `p (unilateral): ${pUnilateral.toFixed(6)}\n` +
+      `p (bilateral): ${pBilateral.toFixed(6)}\n` +
+      `Significativo (α=0.05): ${pBilateral < 0.05 ? 'Sim' : 'Não'}`;
+    return false;
+  }
+  document.getElementById('tipo').addEventListener('change', function() {
+    document.getElementById('glGroup').style.display = this.value === 't' ? 'block' : 'none';
+  });
+  </script>
+</body>
+</html>

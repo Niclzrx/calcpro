@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Tamanho de Amostra - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Calculadora de Tamanho de Amostra</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Tamanho de Amostra</h1>
+      <p style="color:var(--text-light);margin-bottom:20px">n = (Z² × p × q) / e²</p>
+      <form onsubmit="return calcular()">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="confianca">Nível de Confiança (%)</label>
+            <input type="number" id="confianca" step="0.1" min="0" max="100" required placeholder="Ex: 95">
+          </div>
+          <div class="form-group">
+            <label for="margem">Margem de Erro (%)</label>
+            <input type="number" id="margem" step="0.1" min="0.01" required placeholder="Ex: 5">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="proporcao">Proporção Estimada (p)</label>
+          <input type="number" id="proporcao" step="0.01" min="0" max="1" required placeholder="Ex: 0.5">
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>&copy; 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  var zValues = { 80: 1.282, 85: 1.440, 90: 1.645, 95: 1.960, 99: 2.576 };
+
+  function calcular() {
+    var conf = parseFloat(document.getElementById('confianca').value);
+    var margem = parseFloat(document.getElementById('margem').value);
+    var p = parseFloat(document.getElementById('proporcao').value);
+    if (isNaN(conf) || isNaN(margem) || isNaN(p) || conf <= 0 || conf >= 100 || margem <= 0 || p < 0 || p > 1) {
+      alert('Por favor, insira valores válidos.');
+      return false;
+    }
+    var z = zValues[conf];
+    if (!z) {
+      var alphas = { 80: 0.10, 85: 0.075, 90: 0.05, 95: 0.025, 99: 0.005 };
+      z = 1.96;
+      alert('Nível de confiança não encontrado na tabela. Usando Z = 1.96 (95%).');
+    }
+    var e = margem / 100;
+    var q = 1 - p;
+    var n = (z * z * p * q) / (e * e);
+    n = Math.ceil(n);
+    document.getElementById('valorResultado').textContent = 'n = ' + n;
+    document.getElementById('detalheResultado').textContent =
+      'Z = ' + z + ' | p = ' + p + ' | q = ' + q + ' | e = ' + e;
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

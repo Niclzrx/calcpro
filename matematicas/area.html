@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Área - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Calculadora de Área</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Área</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="forma">Forma</label>
+          <select id="forma">
+            <option value="retangulo">Retângulo</option>
+            <option value="triangulo">Triângulo</option>
+            <option value="circulo">Círculo</option>
+            <option value="trapezio">Trapézio</option>
+            <option value="losango">Losango</option>
+          </select>
+        </div>
+        <div id="campos-retangulo">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="largura">Largura</label>
+              <input type="number" id="largura" step="any" min="0" placeholder="Ex: 10">
+            </div>
+            <div class="form-group">
+              <label for="comprimento">Comprimento</label>
+              <input type="number" id="comprimento" step="any" min="0" placeholder="Ex: 5">
+            </div>
+          </div>
+        </div>
+        <div id="campos-triangulo" style="display:none">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="base">Base</label>
+              <input type="number" id="base" step="any" min="0" placeholder="Ex: 10">
+            </div>
+            <div class="form-group">
+              <label for="altura">Altura</label>
+              <input type="number" id="altura" step="any" min="0" placeholder="Ex: 6">
+            </div>
+          </div>
+        </div>
+        <div id="campos-circulo" style="display:none">
+          <div class="form-group">
+            <label for="raio">Raio</label>
+            <input type="number" id="raio" step="any" min="0" placeholder="Ex: 7">
+          </div>
+        </div>
+        <div id="campos-trapezio" style="display:none">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="baseMaior">Base Maior</label>
+              <input type="number" id="baseMaior" step="any" min="0" placeholder="Ex: 10">
+            </div>
+            <div class="form-group">
+              <label for="baseMenor">Base Menor</label>
+              <input type="number" id="baseMenor" step="any" min="0" placeholder="Ex: 6">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="alturaTrapezio">Altura</label>
+            <input type="number" id="alturaTrapezio" step="any" min="0" placeholder="Ex: 4">
+          </div>
+        </div>
+        <div id="campos-losango" style="display:none">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="diagonal1">Diagonal 1</label>
+              <input type="number" id="diagonal1" step="any" min="0" placeholder="Ex: 8">
+            </div>
+            <div class="form-group">
+              <label for="diagonal2">Diagonal 2</label>
+              <input type="number" id="diagonal2" step="any" min="0" placeholder="Ex: 6">
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>&copy; 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  var formas = ['retangulo','triangulo','circulo','trapezio','losango'];
+  document.getElementById('forma').addEventListener('change', function() {
+    formas.forEach(function(f) {
+      document.getElementById('campos-' + f).style.display = 'none';
+    });
+    document.getElementById('campos-' + this.value).style.display = '';
+  });
+
+  function calcular() {
+    var forma = document.getElementById('forma').value;
+    var area, detalhe;
+    switch (forma) {
+      case 'retangulo':
+        var l = val('largura'), c = val('comprimento');
+        if (l <= 0 || c <= 0) { alert('Insira valores válidos.'); return false; }
+        area = l * c;
+        detalhe = 'Largura: ' + fmt(l) + ' | Comprimento: ' + fmt(c);
+        break;
+      case 'triangulo':
+        var b = val('base'), h = val('altura');
+        if (b <= 0 || h <= 0) { alert('Insira valores válidos.'); return false; }
+        area = (b * h) / 2;
+        detalhe = 'Base: ' + fmt(b) + ' | Altura: ' + fmt(h);
+        break;
+      case 'circulo':
+        var r = val('raio');
+        if (r <= 0) { alert('Insira um raio válido.'); return false; }
+        area = Math.PI * r * r;
+        detalhe = 'Raio: ' + fmt(r) + ' | Perímetro: ' + fmt(2 * Math.PI * r);
+        break;
+      case 'trapezio':
+        var bm = val('baseMaior'), bn = val('baseMenor'), ht = val('alturaTrapezio');
+        if (bm <= 0 || bn <= 0 || ht <= 0) { alert('Insira valores válidos.'); return false; }
+        area = ((bm + bn) * ht) / 2;
+        detalhe = 'Base Maior: ' + fmt(bm) + ' | Base Menor: ' + fmt(bn) + ' | Altura: ' + fmt(ht);
+        break;
+      case 'losango':
+        var d1 = val('diagonal1'), d2 = val('diagonal2');
+        if (d1 <= 0 || d2 <= 0) { alert('Insira valores válidos.'); return false; }
+        area = (d1 * d2) / 2;
+        detalhe = 'Diagonal 1: ' + fmt(d1) + ' | Diagonal 2: ' + fmt(d2);
+        break;
+    }
+    document.getElementById('valorResultado').textContent = 'Área = ' + fmt(area);
+    document.getElementById('detalheResultado').textContent = detalhe;
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

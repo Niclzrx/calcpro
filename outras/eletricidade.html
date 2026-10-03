@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Eletricidade - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Calculadora de Eletricidade</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Eletricidade</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="watts">Potencia (Watts)</label>
+          <input type="number" id="watts" step="0.01" min="0.01" placeholder="Ex: 100" required>
+        </div>
+        <div class="form-group">
+          <label for="horas">Horas de Uso Diario</label>
+          <input type="number" id="horas" step="0.1" min="0.1" max="24" placeholder="Ex: 8" required>
+        </div>
+        <div class="form-group">
+          <label for="dias">Dias no Mes</label>
+          <input type="number" id="dias" min="1" max="31" value="30" required>
+        </div>
+        <div class="form-group">
+          <label for="precoKwh">Preco do kWh (R$)</label>
+          <input type="number" id="precoKwh" step="0.001" min="0.001" value="0.65" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var watts = parseFloat(document.getElementById('watts').value);
+    var horas = parseFloat(document.getElementById('horas').value);
+    var dias = parseInt(document.getElementById('dias').value);
+    var precoKwh = parseFloat(document.getElementById('precoKwh').value);
+    if (isNaN(watts) || isNaN(horas) || isNaN(dias) || isNaN(precoKwh) ||
+        watts <= 0 || horas <= 0 || dias <= 0 || precoKwh <= 0) {
+      document.getElementById('valorResultado').textContent = 'Valores invalidos';
+      document.getElementById('detalheResultado').textContent = '';
+      return false;
+    }
+    var kwhDiario = (watts * horas) / 1000;
+    var kwhMensal = kwhDiario * dias;
+    var custoMensal = kwhMensal * precoKwh;
+    var custoDiario = kwhDiario * precoKwh;
+    var consumoAnual = kwhMensal * 12;
+    var custoAnual = custoMensal * 12;
+    document.getElementById('valorResultado').textContent = 'R$ ' + custoMensal.toFixed(2) + '/mes';
+    document.getElementById('detalheResultado').innerHTML =
+      'Consumo mensal: ' + kwhMensal.toFixed(2) + ' kWh<br>' +
+      'Consumo diario: ' + kwhDiario.toFixed(4) + ' kWh<br>' +
+      'Custo diario: R$ ' + custoDiario.toFixed(2) + '<br>' +
+      'Consumo anual: ' + consumoAnual.toFixed(2) + ' kWh<br>' +
+      'Custo anual: R$ ' + custoAnual.toFixed(2);
+    return false;
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Escadas - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Calculadora de Escadas</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Escadas</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="alturaTotal">Altura Total (m)</label>
+          <input type="number" id="alturaTotal" step="0.01" min="0.1" placeholder="Ex: 3" required>
+        </div>
+        <div class="form-group">
+          <label for="peDireito">Pé-Direito / Altura do Degrau (m)</label>
+          <input type="number" id="peDireito" step="0.01" min="0.1" max="0.22" value="0.18" required>
+        </div>
+        <div class="form-group">
+          <label for="comprimentoDegrau">Comprimento do Degrau (m)</label>
+          <input type="number" id="comprimentoDegrau" step="0.01" min="0.20" max="0.40" value="0.28" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const alturaTotal = parseFloat(document.getElementById('alturaTotal').value);
+    const peDireito = parseFloat(document.getElementById('peDireito').value);
+    const comprimentoDegrau = parseFloat(document.getElementById('comprimentoDegrau').value);
+
+    if (isNaN(alturaTotal) || isNaN(peDireito) || isNaN(comprimentoDegrau) ||
+        alturaTotal <= 0 || peDireito <= 0 || comprimentoDegrau <= 0) {
+      document.getElementById('valorResultado').textContent = 'Valores inválidos';
+      document.getElementById('detalheResultado').textContent = '';
+      return false;
+    }
+
+    if (peDireito < 0.10 || peDireito > 0.22) {
+      document.getElementById('valorResultado').textContent = 'Altura do degrau inválida';
+      document.getElementById('detalheResultado').textContent = 'Deve ser entre 0,10m e 0,22m';
+      return false;
+    }
+
+    const numDegraus = Math.ceil(alturaTotal / peDireito);
+    const alturaReal = alturaTotal / numDegraus;
+    const comprimentoTotal = comprimentoDegrau * numDegraus;
+    const angulo = Math.atan(alturaReal / comprimentoDegrau) * (180 / Math.PI);
+
+    const formula = '2 × altura + comprimento = ' + (2 * alturaReal + comprimentoDegrau).toFixed(2) + 'm';
+
+    document.getElementById('valorResultado').textContent = numDegraus + ' degraus';
+    document.getElementById('detalheResultado').innerHTML =
+      'Altura de cada degrau: ' + (alturaReal * 100).toFixed(1) + ' cm<br>' +
+      'Comprimento de cada degrau: ' + (comprimentoDegrau * 100).toFixed(1) + ' cm<br>' +
+      'Comprimento total da escada: ' + comprimentoTotal.toFixed(2) + ' m<br>' +
+      'Inclinação: ' + angulo.toFixed(1) + '°<br>' +
+      'Fórmula 2a+c: ' + formula;
+    return false;
+  }
+  </script>
+</body>
+</html>

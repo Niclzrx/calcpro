@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Imposto sobre Herança - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Imposto sobre Herança</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Imposto sobre Herança (ITCMD)</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valorHeranca">Valor da Herança (R$)</label>
+          <input type="text" id="valorHeranca" required>
+        </div>
+        <div class="form-group">
+          <label for="parentesco">Parentesco</label>
+          <select id="parentesco" required>
+            <option value="conjuge">Cônjuge</option>
+            <option value="filho">Filho(a)</option>
+            <option value="outro">Outro</option>
+          </select>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var valorHeranca = parseFloat(document.getElementById('valorHeranca').value.replace(/[^\d,]/g, '').replace(',', '.'));
+    var parentesco = document.getElementById('parentesco').value;
+
+    var aliqBase = 0.04;
+
+    var isencaoConjuge = 100000;
+    var isencaoFilho = 50000;
+    var isencaoOutro = 0;
+
+    var isencao = 0;
+    if (parentesco === 'conjuge') isencao = isencaoConjuge;
+    else if (parentesco === 'filho') isencao = isencaoFilho;
+    else isencao = isencaoOutro;
+
+    var valorTributavel = Math.max(0, valorHeranca - isencao);
+    var imposto = valorTributavel * aliqBase;
+
+    var faixas = [
+      { limite: 100000, aliq: 0.02 },
+      { limite: 200000, aliq: 0.03 },
+      { limite: 300000, aliq: 0.04 },
+      { limite: 400000, aliq: 0.05 },
+      { limite: Infinity, aliq: 0.06 }
+    ];
+
+    var impostoProgressivo = 0;
+    for (var i = 0; i < faixas.length; i++) {
+      var base = Math.min(valorTributavel, faixas[i].limite);
+      impostoProgressivo += base * faixas[i].aliq;
+      valorTributavel -= base;
+      if (valorTributavel <= 0) break;
+    }
+
+    var parentescoLabel = parentesco === 'conjuge' ? 'Cônjuge' : parentesco === 'filho' ? 'Filho(a)' : 'Outro';
+    var efetiva = ((impostoProgressivo / (valorHeranca > 0 ? valorHeranca : 1)) * 100).toFixed(2);
+
+    document.getElementById('valorResultado').innerHTML = 'ITCMD Estimado: R$ ' + impostoProgressivo.toFixed(2);
+    document.getElementById('detalheResultado').innerHTML =
+      'Valor da Herança: R$ ' + valorHeranca.toFixed(2) + '<br>' +
+      'Parentesco: ' + parentescoLabel + '<br>' +
+      'Isenção aplicável: R$ ' + isencao.toFixed(2) + '<br>' +
+      'Alíquota Efetiva: ' + efetiva + '%';
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

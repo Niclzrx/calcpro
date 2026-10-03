@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Logaritmos - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Calculadora de Logaritmos</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Logaritmos</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="base">Base</label>
+            <input type="number" id="base" step="any" min="0" required placeholder="Ex: 10">
+          </div>
+          <div class="form-group">
+            <label for="numero">Número</label>
+            <input type="number" id="numero" step="any" min="0" required placeholder="Ex: 100">
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>&copy; 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var base = parseFloat(document.getElementById('base').value);
+    var num = parseFloat(document.getElementById('numero').value);
+    if (isNaN(base) || isNaN(num) || base <= 0 || base === 1 || num <= 0) {
+      alert('Por favor, insira valores válidos (base > 0, base ≠ 1, número > 0).');
+      return false;
+    }
+    var logBase = Math.log(num) / Math.log(base);
+    var ln = Math.log(num);
+    document.getElementById('valorResultado').textContent = 'log_' + base + '(' + num + ') = ' + fmt(logBase);
+    document.getElementById('detalheResultado').textContent =
+      'ln(' + num + ') = ' + fmt(ln);
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

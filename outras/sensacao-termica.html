@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Sensação Térmica - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Calculadora de Sensação Térmica</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Sensação Térmica</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="temperatura">Temperatura (°C)</label>
+          <input type="number" id="temperatura" step="0.1" required>
+        </div>
+        <div class="form-group">
+          <label for="umidade">Umidade Relativa (%)</label>
+          <input type="number" id="umidade" step="1" required>
+        </div>
+        <div class="form-group">
+          <label for="vento">Velocidade do Vento (km/h)</label>
+          <input type="number" id="vento" step="0.1" value="0">
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const temp = val('temperatura');
+    const umidade = val('umidade');
+    const vento = val('vento');
+
+    let sensacao, formula;
+
+    if (temp <= 10 && vento > 4.8) {
+      const windChill = 13.12 + 0.6215 * temp - 11.37 * Math.pow(vento * 16.4444, 0.16) + 0.3965 * temp * Math.pow(vento * 16.4444, 0.16);
+      sensacao = windChill;
+      formula = 'Wind Chill (resfriamento pelo vento)';
+    } else {
+      const tf = temp * 9/5 + 32;
+      const hi = -42.379 + 2.04901523 * tf + 10.14333127 * umidade - 0.22475541 * tf * umidade
+        - 0.00683783 * tf * tf - 0.05481717 * umidade * umidade + 0.00122874 * tf * tf * umidade
+        + 0.00085282 * tf * umidade * umidade - 0.00000199 * tf * tf * umidade * umidade;
+      sensacao = (hi - 32) * 5/9;
+      formula = 'Índice de Calor (heat index)';
+    }
+
+    document.getElementById('valorResultado').textContent = fmt(sensacao) + ' °C';
+    document.getElementById('detalheResultado').textContent =
+      formula + ' | Temperatura real: ' + temp + ' °C';
+    document.getElementById('resultado').classList.add('show');
+    return false;
+  }
+  </script>
+</body>
+</html>

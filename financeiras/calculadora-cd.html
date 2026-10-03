@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de CD - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Calculadora de CD</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de CD (Certificado de Depósito)</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valorAplicado">Valor Aplicado (R$)</label>
+          <input type="number" id="valorAplicado" step="0.01" placeholder="Ex: 10000" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taxaCD">Taxa CD Anual (% ao ano)</label>
+            <input type="number" id="taxaCD" step="0.01" placeholder="Ex: 12" required>
+          </div>
+          <div class="form-group">
+            <label for="dias">Prazo (dias)</label>
+            <input type="number" id="dias" placeholder="Ex: 365" required>
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var principal = val('valorAplicado');
+    var taxaCD = val('taxaCD') / 100;
+    var dias = val('dias');
+
+    // CD uses daily compound interest (252 business days per year)
+    var taxaDiaria = Math.pow(1 + taxaCD, 1 / 252) - 1;
+    var montante = principal * Math.pow(1 + taxaDiaria, dias);
+    var rendimento = montante - principal;
+
+    document.getElementById('valorResultado').textContent = 'Rendimento: ' + fmtCurrency(rendimento);
+    document.getElementById('detalheResultado').innerHTML =
+      'Valor Investido: ' + fmtCurrency(principal) + '<br>' +
+      'Montante Final: ' + fmtCurrency(montante) + '<br>' +
+      'Taxa CD Anual: ' + fmtPercent(val('taxaCD')) + '<br>' +
+      'Prazo: ' + dias + ' dias (' + (dias / 252).toFixed(1) + ' anos úteis)';
+
+    var ir = 0;
+    if (dias <= 180) ir = 0.225;
+    else if (dias <= 360) ir = 0.20;
+    else if (dias <= 720) ir = 0.175;
+    else ir = 0.15;
+    var imposto = rendimento * ir;
+    var rendimentoLiquido = rendimento - imposto;
+
+    document.getElementById('detalheResultado').innerHTML +=
+      '<br>Imposto de Renda: ' + fmtCurrency(imposto) + ' (' + fmtPercent(ir * 100, 0) + ')' +
+      '<br>Rendimento Líquido: ' + fmtCurrency(rendimentoLiquido);
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Velocidade - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Calculadora de Velocidade</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Velocidade</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="distancia">Distância</label>
+          <input type="number" id="distancia" step="0.01" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="tempo">Tempo (horas)</label>
+            <input type="number" id="tempo" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label for="unidadeDist">Unidade da Distância</label>
+            <select id="unidadeDist">
+              <option value="m">Metros (m)</option>
+              <option value="km" selected>Kilômetros (km)</option>
+              <option value="mi">Milhas (mi)</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const distancia = val('distancia');
+    const tempo = val('tempo');
+    const unidade = document.getElementById('unidadeDist').value;
+
+    if (tempo <= 0) {
+      document.getElementById('valorResultado').textContent = 'Tempo deve ser maior que zero';
+      document.getElementById('detalheResultado').textContent = '';
+      document.getElementById('resultado').classList.add('show');
+      return false;
+    }
+
+    const paraKm = { m: 0.001, km: 1, mi: 1.60934 };
+    const km = distancia * paraKm[unidade];
+    const kmh = km / tempo;
+    const ms = kmh / 3.6;
+    const mph = kmh / 1.60934;
+    const knots = kmh / 1.852;
+
+    document.getElementById('valorResultado').textContent = fmt(kmh) + ' km/h';
+    document.getElementById('detalheResultado').textContent =
+      fmt(ms) + ' m/s | ' + fmt(mph) + ' mph | ' + fmt(knots) + ' nós';
+    document.getElementById('resultado').classList.add('show');
+    return false;
+  }
+  </script>
+</body>
+</html>

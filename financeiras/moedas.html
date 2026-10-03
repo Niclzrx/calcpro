@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Moedas - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Moedas</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Moedas</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valor">Valor</label>
+          <input type="number" id="valor" step="0.01" placeholder="Ex: 100" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="moedaOrigem">Moeda de Origem</label>
+            <select id="moedaOrigem">
+              <option value="BRL">BRL - Real Brasileiro</option>
+              <option value="USD" selected>USD - Dólar Americano</option>
+              <option value="EUR">EUR - Euro</option>
+              <option value="GBP">GBP - Libra Esterlina</option>
+              <option value="JPY">JPY - Iene Japonês</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="moedaDestino">Moeda de Destino</label>
+            <select id="moedaDestino">
+              <option value="BRL" selected>BRL - Real Brasileiro</option>
+              <option value="USD">USD - Dólar Americano</option>
+              <option value="EUR">EUR - Euro</option>
+              <option value="GBP">GBP - Libra Esterlina</option>
+              <option value="JPY">JPY - Iene Japonês</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var valor = val('valor');
+    var origem = document.getElementById('moedaOrigem').value;
+    var destino = document.getElementById('moedaDestino').value;
+    var taxas = {
+      BRL: 1,
+      USD: 5.05,
+      EUR: 5.45,
+      GBP: 6.35,
+      JPY: 0.033
+    };
+    var valorEmBRL = valor * taxas[origem];
+    var resultado = valorEmBRL / taxas[destino];
+    var taxaConversao = taxas[origem] / taxas[destino];
+    document.getElementById('valorResultado').textContent = fmtCurrency(resultado);
+    document.getElementById('detalheResultado').innerHTML =
+      '1 ' + origem + ' = ' + fmt(taxaConversao, 4) + ' ' + destino + '<br>' +
+      '1 ' + destino + ' = ' + fmt(1 / taxaConversao, 4) + ' ' + origem;
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

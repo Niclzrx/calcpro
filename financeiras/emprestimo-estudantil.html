@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Empréstimo Estudantil - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Empréstimo Estudantil</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Empréstimo Estudantil</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valorEmprestimo">Valor do Empréstimo (R$)</label>
+          <input type="number" id="valorEmprestimo" step="0.01" placeholder="Ex: 50000" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taxaJuros">Taxa de Juros (% ao ano)</label>
+            <input type="number" id="taxaJuros" step="0.01" placeholder="Ex: 8" required>
+          </div>
+          <div class="form-group">
+            <label for="anosPagar">Anos para Pagar</label>
+            <input type="number" id="anosPagar" placeholder="Ex: 10" required>
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var principal = val('valorEmprestimo');
+    var taxaAnual = val('taxaJuros') / 100;
+    var anos = val('anosPagar');
+    var meses = anos * 12;
+    var taxaMensal = taxaAnual / 12;
+
+    var parcela = calcAmortization(principal, taxaMensal, meses);
+    var totalPago = parcela * meses;
+    var totalJuros = totalPago - principal;
+
+    document.getElementById('valorResultado').textContent = 'Parcela Mensal: ' + fmtCurrency(parcela);
+    document.getElementById('detalheResultado').innerHTML =
+      'Total Pago: ' + fmtCurrency(totalPago) + '<br>' +
+      'Total de Juros: ' + fmtCurrency(totalJuros) + '<br>' +
+      'Valor do Empréstimo: ' + fmtCurrency(principal) + '<br>' +
+      'Prazo: ' + meses + ' meses (' + anos + ' anos)';
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

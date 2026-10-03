@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Conversão - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Calculadora de Conversão</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Conversão</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="categoria">Categoria</label>
+          <select id="categoria" onchange="atualizarUnidades()">
+            <option value="temperatura">Temperatura</option>
+            <option value="comprimento">Comprimento</option>
+            <option value="peso">Peso</option>
+            <option value="volume">Volume</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="valor">Valor</label>
+          <input type="number" id="valor" step="any" required>
+        </div>
+        <div class="form-group">
+          <label for="origem">De</label>
+          <select id="origem"></select>
+        </div>
+        <div class="form-group">
+          <label for="destino">Para</label>
+          <select id="destino"></select>
+        </div>
+        <button type="submit" class="btn">Converter</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  const unidades = {
+    temperatura: [
+      { valor: 'celsius', nome: 'Celsius (°C)' },
+      { valor: 'fahrenheit', nome: 'Fahrenheit (°F)' },
+      { valor: 'kelvin', nome: 'Kelvin (K)' }
+    ],
+    comprimento: [
+      { valor: 'mm', nome: 'Milímetros (mm)' },
+      { valor: 'cm', nome: 'Centímetros (cm)' },
+      { valor: 'm', nome: 'Metros (m)' },
+      { valor: 'km', nome: 'Quilômetros (km)' },
+      { valor: 'pol', nome: 'Polegadas (in)' },
+      { valor: 'ft', nome: 'Pés (ft)' },
+      { valor: 'yd', nome: 'Jardas (yd)' },
+      { valor: 'mi', nome: 'Milhas (mi)' }
+    ],
+    peso: [
+      { valor: 'mg', nome: 'Miligramas (mg)' },
+      { valor: 'g', nome: 'Gramas (g)' },
+      { valor: 'kg', nome: 'Quilogramas (kg)' },
+      { valor: 't', nome: 'Toneladas (t)' },
+      { valor: 'oz', nome: 'Onças (oz)' },
+      { valor: 'lb', nome: 'Libras (lb)' }
+    ],
+    volume: [
+      { valor: 'ml', nome: 'Mililitros (ml)' },
+      { valor: 'l', nome: 'Litros (L)' },
+      { valor: 'm3', nome: 'Metros Cúbicos (m³)' },
+      { valor: 'gal', nome: 'Galões (gal)' },
+      { valor: 'floz', nome: 'Onças Líquidas (fl oz)' }
+    ]
+  };
+
+  const fatoresParaBase = {
+    comprimento: { mm: 0.001, cm: 0.01, m: 1, km: 1000, pol: 0.0254, ft: 0.3048, yd: 0.9144, mi: 1609.344 },
+    peso: { mg: 0.000001, g: 0.001, kg: 1, t: 1000, oz: 0.0283495, lb: 0.453592 },
+    volume: { ml: 0.001, l: 1, m3: 1000, gal: 3.78541, floz: 0.0295735 }
+  };
+
+  function atualizarUnidades() {
+    const cat = document.getElementById('categoria').value;
+    const origem = document.getElementById('origem');
+    const destino = document.getElementById('destino');
+    origem.innerHTML = '';
+    destino.innerHTML = '';
+    unidades[cat].forEach(u => {
+      origem.innerHTML += '<option value="' + u.valor + '">' + u.nome + '</option>';
+      destino.innerHTML += '<option value="' + u.valor + '">' + u.nome + '</option>';
+    });
+    if (unidades[cat].length > 1) destino.selectedIndex = 1;
+  }
+
+  function converterTemperatura(valor, de, para) {
+    let celsius;
+    if (de === 'celsius') celsius = valor;
+    else if (de === 'fahrenheit') celsius = (valor - 32) * 5 / 9;
+    else celsius = valor - 273.15;
+
+    if (para === 'celsius') return celsius;
+    if (para === 'fahrenheit') return celsius * 9 / 5 + 32;
+    return celsius + 273.15;
+  }
+
+  function calcular() {
+    const cat = document.getElementById('categoria').value;
+    const valor = parseFloat(document.getElementById('valor').value);
+    const de = document.getElementById('origem').value;
+    const para = document.getElementById('destino').value;
+
+    let resultado;
+    if (cat === 'temperatura') {
+      resultado = converterTemperatura(valor, de, para);
+    } else {
+      const emBase = valor * fatoresParaBase[cat][de];
+      resultado = emBase / fatoresParaBase[cat][para];
+    }
+
+    document.getElementById('valorResultado').textContent = valor + ' ' + de + ' = ' + resultado.toFixed(6) + ' ' + para;
+    document.getElementById('detalheResultado').textContent = 'Conversão de ' + de + ' para ' + para;
+    return false;
+  }
+
+  atualizarUnidades();
+  </script>
+</body>
+</html>

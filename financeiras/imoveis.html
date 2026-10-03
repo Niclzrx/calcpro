@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Imóveis - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Calculadora de Imóveis</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Imóveis</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valorImovel">Valor do Imóvel (R$)</label>
+          <input type="number" id="valorImovel" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="entrada">Entrada (%)</label>
+          <input type="number" id="entrada" step="0.01" value="20" required>
+        </div>
+        <div class="form-group">
+          <label for="taxaJuros">Taxa de Juros Anual (%)</label>
+          <input type="number" id="taxaJuros" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="prazoAnos">Prazo (anos)</label>
+          <input type="number" id="prazoAnos" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>&copy; 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var valorImovel = parseFloat(document.getElementById('valorImovel').value);
+    var entradaPct = parseFloat(document.getElementById('entrada').value) / 100;
+    var taxaJurosAnual = parseFloat(document.getElementById('taxaJuros').value) / 100;
+    var prazoAnos = parseInt(document.getElementById('prazoAnos').value);
+
+    var entrada = valorImovel * entradaPct;
+    var financiado = valorImovel - entrada;
+    var taxaJurosMensal = Math.pow(1 + taxaJurosAnual, 1/12) - 1;
+    var prazoMeses = prazoAnos * 12;
+
+    var parcela = financiado * (taxaJurosMensal * Math.pow(1 + taxaJurosMensal, prazoMeses)) / (Math.pow(1 + taxaJurosMensal, prazoMeses) - 1);
+    var totalPago = parcela * prazoMeses;
+    var custoTotal = totalPago + entrada;
+    var jurosTotais = custoTotal - valorImovel;
+
+    var aluguelEstimado = valorImovel * 0.005;
+    var tempoParaIgualar = totalPago / aluguelEstimado;
+
+    var html = '<strong>Parcela Mensal:</strong> R$ ' + parcela.toFixed(2) + '<br>';
+    html += '<strong>Financiamento:</strong> R$ ' + financiado.toFixed(2) + '<br>';
+    html += '<strong>Total Pago (prestações):</strong> R$ ' + totalPago.toFixed(2) + '<br>';
+    html += '<strong>Custo Total (entrada + prestações):</strong> R$ ' + custoTotal.toFixed(2) + '<br>';
+    html += '<strong>Juros Totais:</strong> R$ ' + jurosTotais.toFixed(2) + '<br><br>';
+    html += '<strong>Comparação com Aluguel:</strong><br>';
+    html += 'Aluguel estimado (0,5% do valor): R$ ' + aluguelEstimado.toFixed(2) + '/mês<br>';
+    html += 'Tempo equivalente ao aluguel: ' + tempoParaIgualar.toFixed(1) + ' meses';
+
+    document.getElementById('valorResultado').innerHTML = 'Parcela: R$ ' + parcela.toFixed(2);
+    document.getElementById('detalheResultado').innerHTML = html;
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Margem - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Margem</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Margem</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="precoVenda">Preço de Venda (R$)</label>
+            <input type="number" id="precoVenda" step="0.01" placeholder="Ex: 150" required>
+          </div>
+          <div class="form-group">
+            <label for="custo">Custo (R$)</label>
+            <input type="number" id="custo" step="0.01" placeholder="Ex: 100" required>
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var venda = val('precoVenda');
+    var custo = val('custo');
+    if (venda <= 0 || custo <= 0) { alert('Informe valores válidos.'); return false; }
+    var lucro = venda - custo;
+    var margem = (lucro / venda) * 100;
+    var markup = (venda / custo) * 100;
+    document.getElementById('valorResultado').textContent = fmtPercent(margem);
+    document.getElementById('detalheResultado').innerHTML =
+      'Lucro: ' + fmtCurrency(lucro) + '<br>' +
+      'Margem Bruta: ' + fmtPercent(margem) + '<br>' +
+      'Markup: ' + fmtPercent(markup);
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

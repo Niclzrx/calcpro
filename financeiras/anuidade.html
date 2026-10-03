@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Anuidade - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Anuidade</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Anuidade</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="pagamentoAnual">Pagamento Anual (R$)</label>
+          <input type="text" id="pagamentoAnual" required>
+        </div>
+        <div class="form-group">
+          <label for="taxaJuros">Taxa de Juros Anual (%)</label>
+          <input type="number" id="taxaJuros" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="numeroAnos">Número de Anos</label>
+          <input type="number" id="numeroAnos" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var pagamentoAnual = parseFloat(document.getElementById('pagamentoAnual').value.replace(/[^\d,]/g, '').replace(',', '.'));
+    var taxaJuros = parseFloat(document.getElementById('taxaJuros').value) / 100;
+    var numeroAnos = parseFloat(document.getElementById('numeroAnos').value);
+
+    var valorFuturo = pagamentoAnual * ((Math.pow(1 + taxaJuros, numeroAnos) - 1) / taxaJuros);
+
+    var valorPresente = pagamentoAnual * ((1 - Math.pow(1 + taxaJuros, -numeroAnos)) / taxaJuros);
+
+    var totalInvestido = pagamentoAnual * numeroAnos;
+    var jurosGanhos = valorFuturo - totalInvestido;
+
+    document.getElementById('valorResultado').innerHTML = 'Valor Futuro: R$ ' + valorFuturo.toFixed(2);
+    document.getElementById('detalheResultado').innerHTML =
+      'Valor Presente: R$ ' + valorPresente.toFixed(2) + '<br>' +
+      'Total Investido: R$ ' + totalInvestido.toFixed(2) + '<br>' +
+      'Juros Ganhos: R$ ' + jurosGanhos.toFixed(2);
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

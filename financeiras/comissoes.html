@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Comissões - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Comissões</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Comissões</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valorVenda">Valor da Venda (R$)</label>
+          <input type="number" id="valorVenda" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="taxaComissao">Taxa de Comissão (%)</label>
+          <input type="number" id="taxaComissao" step="0.01" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>&copy; 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var valorVenda = parseFloat(document.getElementById('valorVenda').value);
+    var taxaComissao = parseFloat(document.getElementById('taxaComissao').value);
+
+    var comissao = valorVenda * (taxaComissao / 100);
+    var valorLiquido = valorVenda - comissao;
+
+    document.getElementById('valorResultado').innerHTML =
+      'Valor da Comissão: R$ ' + comissao.toFixed(2);
+    document.getElementById('detalheResultado').innerHTML =
+      'Valor Líquido: R$ ' + valorLiquido.toFixed(2);
+
+    return false;
+  }
+  </script>
+</body>
+</html>

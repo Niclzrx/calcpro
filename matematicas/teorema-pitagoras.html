@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teorema de Pitágoras - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Teorema de Pitágoras</div>
+    </div>
+    <div class="calc-card">
+      <h1>Teorema de Pitágoras</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="desconhecido">Lado Desconhecido</label>
+          <select id="desconhecido" required>
+            <option value="c">c (hipotenusa)</option>
+            <option value="a">a (cateto)</option>
+            <option value="b">b (cateto)</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group" id="aGroup">
+            <label for="a">a (cateto)</label>
+            <input type="number" id="a" step="any" min="0.0001">
+          </div>
+          <div class="form-group" id="bGroup">
+            <label for="b">b (cateto)</label>
+            <input type="number" id="b" step="any" min="0.0001">
+          </div>
+        </div>
+        <div class="form-group" id="cGroup" style="display:none;">
+          <label for="c">c (hipotenusa)</label>
+          <input type="number" id="c" step="any" min="0.0001">
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  document.getElementById('desconhecido').addEventListener('change', function() {
+    const desconhecido = this.value;
+    
+    document.getElementById('aGroup').style.display = desconhecido === 'a' ? 'none' : 'block';
+    document.getElementById('bGroup').style.display = desconhecido === 'b' ? 'none' : 'block';
+    document.getElementById('cGroup').style.display = desconhecido === 'c' ? 'none' : 'block';
+  });
+  
+  function calcular() {
+    const desconhecido = document.getElementById('desconhecido').value;
+    let resultado, formula;
+    
+    if (desconhecido === 'c') {
+      const a = val('a');
+      const b = val('b');
+      if (a <= 0 || b <= 0) {
+        document.getElementById('valorResultado').textContent = 'Erro';
+        document.getElementById('detalheResultado').textContent = 'Os catetos devem ser maiores que zero';
+        document.getElementById('resultado').classList.add('show');
+        return false;
+      }
+      resultado = Math.sqrt(a * a + b * b);
+      formula = `c = √(${a}² + ${b}²) = √(${a*a} + ${b*b}) = ${fmt(resultado, 4)}`;
+    } else if (desconhecido === 'a') {
+      const b = val('b');
+      const c = val('c');
+      if (b <= 0 || c <= 0) {
+        document.getElementById('valorResultado').textContent = 'Erro';
+        document.getElementById('detalheResultado').textContent = 'Valores devem ser maiores que zero';
+        document.getElementById('resultado').classList.add('show');
+        return false;
+      }
+      if (c <= b) {
+        document.getElementById('valorResultado').textContent = 'Erro';
+        document.getElementById('detalheResultado').textContent = 'A hipotenusa deve ser maior que o cateto';
+        document.getElementById('resultado').classList.add('show');
+        return false;
+      }
+      resultado = Math.sqrt(c * c - b * b);
+      formula = `a = √(${c}² - ${b}²) = √(${c*c} - ${b*b}) = ${fmt(resultado, 4)}`;
+    } else if (desconhecido === 'b') {
+      const a = val('a');
+      const c = val('c');
+      if (a <= 0 || c <= 0) {
+        document.getElementById('valorResultado').textContent = 'Erro';
+        document.getElementById('detalheResultado').textContent = 'Valores devem ser maiores que zero';
+        document.getElementById('resultado').classList.add('show');
+        return false;
+      }
+      if (c <= a) {
+        document.getElementById('valorResultado').textContent = 'Erro';
+        document.getElementById('detalheResultado').textContent = 'A hipotenusa deve ser maior que o cateto';
+        document.getElementById('resultado').classList.add('show');
+        return false;
+      }
+      resultado = Math.sqrt(c * c - a * a);
+      formula = `b = √(${c}² - ${a}²) = √(${c*c} - ${a*a}) = ${fmt(resultado, 4)}`;
+    }
+    
+    document.getElementById('valorResultado').textContent = `${desconhecido.toUpperCase()} = ${fmt(resultado, 4)}`;
+    document.getElementById('detalheResultado').textContent = formula;
+    document.getElementById('resultado').classList.add('show');
+    return false;
+  }
+  </script>
+</body>
+</html>

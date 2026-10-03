@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Raiz - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Raiz</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Raiz</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="numero">Número</label>
+          <input type="number" id="numero" step="any" required>
+        </div>
+        <div class="form-group">
+          <label for="indice">Índice da Raiz</label>
+          <input type="number" id="indice" min="2" value="2" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const numero = parseFloat(document.getElementById('numero').value);
+    const indice = parseInt(document.getElementById('indice').value);
+    if (isNaN(numero) || isNaN(indice) || indice < 2) {
+      document.getElementById('valorResultado').textContent = 'Valores inválidos';
+      document.getElementById('detalheResultado').textContent = '';
+      return false;
+    }
+    const resultado = Math.pow(numero, 1 / indice);
+    const raizQuadrada = Math.sqrt(numero);
+    document.getElementById('valorResultado').textContent = resultado;
+    document.getElementById('detalheResultado').textContent =
+      `${indice}ª raiz de ${numero} = ${numero}^(1/${indice}) = ${resultado}` +
+      (indice === 2 ? '' : `\nRaiz quadrada: ${raizQuadrada}`);
+    return false;
+  }
+  </script>
+</body>
+</html>

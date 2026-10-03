@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora da Relação Dívida/Renda - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Relação Dívida/Renda</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora da Relação Dívida/Renda</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="dividaMensal">Pagamentos de Dívida Mensal Total (R$)</label>
+          <input type="number" id="dividaMensal" step="0.01" placeholder="Ex: 3500" required>
+        </div>
+        <div class="form-group">
+          <label for="rendaBruta">Renda Bruta Mensal (R$)</label>
+          <input type="number" id="rendaBruta" step="0.01" placeholder="Ex: 10000" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var divida = val('dividaMensal');
+    var renda = val('rendaBruta');
+    if (divida < 0) { alert('Informe um valor de dívida válido.'); return false; }
+    if (renda <= 0) { alert('Informe a renda bruta.'); return false; }
+    var dti = (divida / renda) * 100;
+    var avaliacao = '';
+    if (dti < 36) {
+      avaliacao = 'Saudável - Dentro do recomendado (abaixo de 36%)';
+    } else if (dti <= 43) {
+      avaliacao = 'Moderado - Limite aceitável (36%-43%)';
+    } else {
+      avaliacao = 'Alto Risco - Acima do recomendado (acima de 43%)';
+    }
+    document.getElementById('valorResultado').textContent = fmtPercent(dti);
+    document.getElementById('detalheResultado').innerHTML =
+      'Dívida Mensal: ' + fmtCurrency(divida) + '<br>' +
+      'Renda Bruta Mensal: ' + fmtCurrency(renda) + '<br>' +
+      'DTI: ' + fmtPercent(dti) + '<br>' +
+      'Avaliação: ' + avaliacao;
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

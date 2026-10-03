@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Datas - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Calculadora de Datas</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Datas</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="dataInicio">Data de Início</label>
+          <input type="date" id="dataInicio" required>
+        </div>
+        <div class="form-group">
+          <label for="dataFim">Data de Fim</label>
+          <input type="date" id="dataFim" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const inicio = new Date(document.getElementById('dataInicio').value);
+    const fim = new Date(document.getElementById('dataFim').value);
+
+    if (inicio > fim) {
+      document.getElementById('valorResultado').textContent = 'A data de início deve ser anterior à data de fim';
+      document.getElementById('detalheResultado').textContent = '';
+      return false;
+    }
+
+    const diffMs = fim - inicio;
+    const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    let anos = fim.getFullYear() - inicio.getFullYear();
+    let meses = fim.getMonth() - inicio.getMonth();
+    let dias = fim.getDate() - inicio.getDate();
+
+    if (dias < 0) {
+      meses--;
+      const ultimoMes = new Date(fim.getFullYear(), fim.getMonth(), 0);
+      dias += ultimoMes.getDate();
+    }
+    if (meses < 0) {
+      anos--;
+      meses += 12;
+    }
+
+    document.getElementById('valorResultado').textContent = diffDias + ' dias';
+    document.getElementById('detalheResultado').textContent = anos + ' anos, ' + meses + ' meses e ' + dias + ' dias';
+    return false;
+  }
+  </script>
+</body>
+</html>

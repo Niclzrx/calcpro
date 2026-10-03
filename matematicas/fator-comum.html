@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fator Comum - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Fator Comum</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Fator Comum</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="num1">Primeiro número</label>
+          <input type="number" id="num1" min="1" required>
+        </div>
+        <div class="form-group">
+          <label for="num2">Segundo número</label>
+          <input type="number" id="num2" min="1" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function getFactors(n) {
+    const f = [];
+    for (let i = 1; i <= Math.sqrt(n); i++) {
+      if (n % i === 0) { f.push(i); if (i !== n / i) f.push(n / i); }
+    }
+    return f.sort((a, b) => a - b);
+  }
+  function gcd(a, b) { while (b) { [a, b] = [b, a % b]; } return a; }
+  function calcular() {
+    const a = parseInt(document.getElementById('num1').value);
+    const b = parseInt(document.getElementById('num2').value);
+    if (isNaN(a) || isNaN(b) || a < 1 || b < 1) {
+      document.getElementById('valorResultado').textContent = 'Insira dois números positivos';
+      document.getElementById('detalheResultado').textContent = '';
+      return false;
+    }
+    const fA = getFactors(a);
+    const fB = getFactors(b);
+    const comuns = fA.filter(f => fB.includes(f));
+    const mdc = gcd(a, b);
+    document.getElementById('valorResultado').textContent = `Fatores comuns: ${comuns.join(', ')}`;
+    document.getElementById('detalheResultado').textContent =
+      `Fatores de ${a}: ${fA.join(', ')}\n` +
+      `Fatores de ${b}: ${fB.join(', ')}\n` +
+      `Fatores comuns: ${comuns.join(', ')}\n` +
+      `MDC (Maior Fator Comum): ${mdc}`;
+    return false;
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Aluguel - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Aluguel</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Aluguel</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valorImovel">Valor do Imóvel (R$)</label>
+          <input type="text" id="valorImovel" required>
+        </div>
+        <div class="form-group">
+          <label for="taxaRetorno">Taxa de Retorno Anual (%)</label>
+          <input type="number" id="taxaRetorno" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="despesasAnual">Despesas Anuais (%)</label>
+          <input type="number" id="despesasAnual" step="0.01" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var valorImovel = parseFloat(document.getElementById('valorImovel').value.replace(/[^\d,]/g, '').replace(',', '.'));
+    var taxaRetorno = parseFloat(document.getElementById('taxaRetorno').value) / 100;
+    var despesasAnual = parseFloat(document.getElementById('despesasAnual').value) / 100;
+
+    var rendaBruta = valorImovel * taxaRetorno;
+    var despesas = valorImovel * despesasAnual;
+    var rendaLiquida = rendaBruta - despesas;
+    var rentalYield = (rendaLiquida / valorImovel) * 100;
+    var aluguelMensal = rendaLiquida / 12;
+
+    document.getElementById('valorResultado').innerHTML = 'Rental Yield: ' + rentalYield.toFixed(2) + '%';
+    document.getElementById('detalheResultado').innerHTML =
+      'Renda Bruta Anual: R$ ' + rendaBruta.toFixed(2) + '<br>' +
+      'Despesas Anuais: R$ ' + despesas.toFixed(2) + '<br>' +
+      'Renda Líquida Anual: R$ ' + rendaLiquida.toFixed(2) + '<br>' +
+      'Aluguel Mensal Estimado: R$ ' + aluguelMensal.toFixed(2);
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

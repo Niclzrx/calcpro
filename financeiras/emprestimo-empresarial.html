@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Empréstimo Empresarial - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Empréstimo Empresarial</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Empréstimo Empresarial</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valor">Valor do Empréstimo (R$)</label>
+          <input type="number" id="valor" step="0.01" placeholder="Ex: 200000" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taxa">Taxa de Juros Anual (%)</label>
+            <input type="number" id="taxa" step="0.01" placeholder="Ex: 18" required>
+          </div>
+          <div class="form-group">
+            <label for="meses">Prazo (meses)</label>
+            <input type="number" id="meses" placeholder="Ex: 120" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="garantia">Tipo de Garantia</label>
+          <select id="garantia">
+            <option value="nenhuma">Nenhuma</option>
+            <option value="imovel">Imóvel</option>
+            <option value="equipamento">Equipamento</option>
+            <option value="veiculo">Veículo</option>
+            <option value="recebivel">Recebível</option>
+          </select>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var principal = val('valor');
+    var taxaAnual = val('taxa') / 100;
+    var meses = val('meses');
+    var garantia = document.getElementById('garantia').value;
+    if (principal <= 0) { alert('Informe um valor válido.'); return false; }
+    if (taxaAnual < 0) { alert('Taxa não pode ser negativa.'); return false; }
+    if (meses <= 0) { alert('Prazo deve ser maior que 0.'); return false; }
+    var taxaMensal = taxaAnual / 12;
+    var parcela = calcAmortization(principal, taxaMensal, meses);
+    var totalPago = parcela * meses;
+    var totalJuros = totalPago - principal;
+    var labelGarantia = {
+      'nenhuma': 'Nenhuma',
+      'imovel': 'Imóvel',
+      'equipamento': 'Equipamento',
+      'veiculo': 'Veículo',
+      'recebivel': 'Recebível'
+    }[garantia];
+    document.getElementById('valorResultado').textContent = fmtCurrency(parcela);
+    document.getElementById('detalheResultado').innerHTML =
+      'Parcela Mensal: ' + fmtCurrency(parcela) + '<br>' +
+      'Total Pago: ' + fmtCurrency(totalPago) + '<br>' +
+      'Total de Juros: ' + fmtCurrency(totalJuros) + '<br>' +
+      'Garantia: ' + labelGarantia;
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

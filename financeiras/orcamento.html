@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Orçamento - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Calculadora de Orçamento</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Orçamento</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="rendaMensal">Renda Mensal (R$)</label>
+          <input type="number" id="rendaMensal" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="moradia">Moradia (R$)</label>
+          <input type="number" id="moradia" step="0.01" value="0">
+        </div>
+        <div class="form-group">
+          <label for="alimentacao">Alimentação (R$)</label>
+          <input type="number" id="alimentacao" step="0.01" value="0">
+        </div>
+        <div class="form-group">
+          <label for="transporte">Transporte (R$)</label>
+          <input type="number" id="transporte" step="0.01" value="0">
+        </div>
+        <div class="form-group">
+          <label for="saude">Saúde (R$)</label>
+          <input type="number" id="saude" step="0.01" value="0">
+        </div>
+        <div class="form-group">
+          <label for="educacao">Educação (R$)</label>
+          <input type="number" id="educacao" step="0.01" value="0">
+        </div>
+        <div class="form-group">
+          <label for="lazer">Lazer (R$)</label>
+          <input type="number" id="lazer" step="0.01" value="0">
+        </div>
+        <div class="form-group">
+          <label for="outros">Outros Gastos (R$)</label>
+          <input type="number" id="outros" step="0.01" value="0">
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>&copy; 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var rendaMensal = parseFloat(document.getElementById('rendaMensal').value);
+    var moradia = parseFloat(document.getElementById('moradia').value) || 0;
+    var alimentacao = parseFloat(document.getElementById('alimentacao').value) || 0;
+    var transporte = parseFloat(document.getElementById('transporte').value) || 0;
+    var saude = parseFloat(document.getElementById('saude').value) || 0;
+    var educacao = parseFloat(document.getElementById('educacao').value) || 0;
+    var lazer = parseFloat(document.getElementById('lazer').value) || 0;
+    var outros = parseFloat(document.getElementById('outros').value) || 0;
+
+    var totalGastos = moradia + alimentacao + transporte + saude + educacao + lazer + outros;
+    var saldo = rendaMensal - totalGastos;
+    var pctGastos = (totalGastos / rendaMensal * 100);
+    var pctSaldo = (saldo / rendaMensal * 100);
+
+    function pct(valor) {
+      return totalGastos > 0 ? (valor / totalGastos * 100).toFixed(1) : '0.0';
+    }
+
+    var html = '<strong>Total de Gastos:</strong> R$ ' + totalGastos.toFixed(2) + ' (' + pctGastos.toFixed(1) + '% da renda)<br>';
+    html += '<strong>Saldo Disponível:</strong> R$ ' + saldo.toFixed(2) + ' (' + pctSaldo.toFixed(1) + '% da renda)<br><br>';
+    html += '<strong>Detalhamento por Categoria:</strong><br>';
+    html += 'Moradia: R$ ' + moradia.toFixed(2) + ' (' + pct(moradia) + '%)<br>';
+    html += 'Alimentação: R$ ' + alimentacao.toFixed(2) + ' (' + pct(alimentacao) + '%)<br>';
+    html += 'Transporte: R$ ' + transporte.toFixed(2) + ' (' + pct(transporte) + '%)<br>';
+    html += 'Saúde: R$ ' + saude.toFixed(2) + ' (' + pct(saude) + '%)<br>';
+    html += 'Educação: R$ ' + educacao.toFixed(2) + ' (' + pct(educacao) + '%)<br>';
+    html += 'Lazer: R$ ' + lazer.toFixed(2) + ' (' + pct(lazer) + '%)<br>';
+    html += 'Outros: R$ ' + outros.toFixed(2) + ' (' + pct(outros) + '%)';
+
+    document.getElementById('valorResultado').innerHTML = 'Saldo: R$ ' + saldo.toFixed(2);
+    document.getElementById('detalheResultado').innerHTML = html;
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

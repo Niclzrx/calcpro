@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Aluguel de Imóveis - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Calculadora de Aluguel de Imóveis</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Aluguel de Imóveis</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valorImovel">Valor do Aluguel (R$)</label>
+          <input type="number" id="valorImovel" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="iptu">IPTU Mensal (R$)</label>
+          <input type="number" id="iptu" step="0.01" value="0">
+        </div>
+        <div class="form-group">
+          <label for="condominio">Condomínio (R$)</label>
+          <input type="number" id="condominio" step="0.01" value="0">
+        </div>
+        <div class="form-group">
+          <label for="seguro">Seguro Residencial (R$)</label>
+          <input type="number" id="seguro" step="0.01" value="0">
+        </div>
+        <div class="form-group">
+          <label for="outrasTaxas">Outras Taxas (R$)</label>
+          <input type="number" id="outrasTaxas" step="0.01" value="0">
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>&copy; 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var valorAluguel = parseFloat(document.getElementById('valorImovel').value);
+    var iptu = parseFloat(document.getElementById('iptu').value) || 0;
+    var condominio = parseFloat(document.getElementById('condominio').value) || 0;
+    var seguro = parseFloat(document.getElementById('seguro').value) || 0;
+    var outrasTaxas = parseFloat(document.getElementById('outrasTaxas').value) || 0;
+
+    var totalMensal = valorAluguel + iptu + condominio + seguro + outrasTaxas;
+    var totalAnual = totalMensal * 12;
+
+    function pct(valor) {
+      return totalMensal > 0 ? (valor / totalMensal * 100).toFixed(1) : '0.0';
+    }
+
+    var html = '<strong>Custo Total Mensal:</strong> R$ ' + totalMensal.toFixed(2) + '<br>';
+    html += '<strong>Custo Total Anual:</strong> R$ ' + totalAnual.toFixed(2) + '<br><br>';
+    html += '<strong>Composição:</strong><br>';
+    html += 'Aluguel: R$ ' + valorAluguel.toFixed(2) + ' (' + pct(valorAluguel) + '%)<br>';
+    html += 'IPTU: R$ ' + iptu.toFixed(2) + ' (' + pct(iptu) + '%)<br>';
+    html += 'Condomínio: R$ ' + condominio.toFixed(2) + ' (' + pct(condominio) + '%)<br>';
+    html += 'Seguro: R$ ' + seguro.toFixed(2) + ' (' + pct(seguro) + '%)<br>';
+    html += 'Outras Taxas: R$ ' + outrasTaxas.toFixed(2) + ' (' + pct(outrasTaxas) + '%)';
+
+    document.getElementById('valorResultado').innerHTML = 'Total Mensal: R$ ' + totalMensal.toFixed(2);
+    document.getElementById('detalheResultado').innerHTML = html;
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

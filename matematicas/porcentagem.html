@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Porcentagem - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Calculadora de Porcentagem</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Porcentagem</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valorA">Valor (X)</label>
+          <input type="number" id="valorA" step="any" placeholder="Ex: 150" required>
+        </div>
+        <div class="form-group">
+          <label for="valorB">Valor (Y)</label>
+          <input type="number" id="valorB" step="any" placeholder="Ex: 200" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const x = parseFloat(document.getElementById('valorA').value);
+    const y = parseFloat(document.getElementById('valorB').value);
+
+    if (isNaN(x) || isNaN(y)) {
+      document.getElementById('valorResultado').textContent = 'Erro';
+      document.getElementById('detalheResultado').textContent = 'Insira valores válidos';
+      return false;
+    }
+
+    const xDeY = y !== 0 ? (x / y * 100) : 0;
+    const yDeX = x !== 0 ? (y / x * 100) : 0;
+    const xPercentDeY = (x / 100) * y;
+    const variacaoAbsoluta = y - x;
+    const variacaoPercentual = x !== 0 ? ((y - x) / Math.abs(x) * 100) : 0;
+
+    document.getElementById('valorResultado').textContent = xPercentDeY.toFixed(4);
+    document.getElementById('detalheResultado').innerHTML =
+      '<strong>' + x + '</strong> é <strong>' + xDeY.toFixed(2) + '%</strong> de <strong>' + y + '</strong><br>' +
+      '<strong>' + y + '</strong> é <strong>' + yDeX.toFixed(2) + '%</strong> de <strong>' + x + '</strong><br>' +
+      '<strong>' + x + '%</strong> de <strong>' + y + '</strong> = <strong>' + xPercentDeY.toFixed(4) + '</strong><br>' +
+      'Variação absoluta: <strong>' + variacaoAbsoluta.toFixed(4) + '</strong><br>' +
+      'Variação percentual: <strong>' + variacaoPercentual.toFixed(2) + '%</strong>';
+    return false;
+  }
+  </script>
+</body>
+</html>

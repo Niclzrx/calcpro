@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Salário Líquido - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .result-hero { text-align:center; padding:24px; background:#f8fafc; border-radius:12px; margin-bottom:20px; }
+    .result-hero .big-value { font-size:2rem; font-weight:800; color:var(--success); }
+    .result-hero .sub { font-size:0.9rem; color:var(--text-light); }
+    .bruto-display { font-size:1.2rem; font-weight:600; color:var(--text); margin-bottom:4px; }
+    .deducao-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f1f5f9; font-size:0.9rem; }
+    .deducao-row.total { font-weight:700; border-top:2px solid var(--border); padding-top:10px; margin-top:4px; }
+    .deducao-row .percent { color:var(--text-light); font-size:0.82rem; }
+    .bar-chart { display:flex; height:28px; border-radius:8px; overflow:hidden; margin:16px 0; }
+    .bar-chart div { transition:width 0.3s; }
+    .bar-legend { display:flex; flex-wrap:wrap; gap:12px; font-size:0.82rem; margin-bottom:16px; }
+    .bar-legend span { display:flex; align-items:center; gap:4px; }
+    .bar-legend .dot { width:10px; height:10px; border-radius:2px; }
+    .info-table { width:100%; border-collapse:collapse; font-size:0.82rem; margin-top:12px; }
+    .info-table th { background:#f1f5f9; padding:6px 8px; text-align:left; font-weight:600; }
+    .info-table td { padding:6px 8px; border-bottom:1px solid var(--border); }
+    .tabs { display:flex; gap:0; border-bottom:2px solid var(--border); margin-bottom:16px; }
+    .tabs button { padding:10px 20px; border:none; background:none; cursor:pointer; font-size:0.9rem; font-weight:600; color:var(--text-light); border-bottom:2px solid transparent; margin-bottom:-2px; transition:all 0.2s; }
+    .tabs button.active { color:var(--primary); border-bottom-color:var(--primary); }
+    .tab-content { display:none; }
+    .tab-content.active { display:block; }
+    .help-icon { display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; border-radius:50%; background:#e2e8f0; color:#64748b; font-size:0.7rem; cursor:help; position:relative; margin-left:4px; }
+    .help-icon:hover::after { content:attr(data-tip); position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%); background:#1e293b; color:#fff; padding:6px 10px; border-radius:6px; font-size:0.78rem; white-space:nowrap; z-index:10; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Salário Líquido</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Salário Líquido</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="salario">Salário Bruto (R$)</label>
+          <input type="number" id="salario" step="0.01" placeholder="Ex: 8.000" oninput="calcularAuto()" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="dependentes">Dependentes <span class="help-icon" data-tip="Cada dependente deduz R$ 189,59 do IRRF">?</span></label>
+            <input type="number" id="dependentes" min="0" value="0" oninput="calcularAuto()">
+          </div>
+          <div class="form-group">
+            <label for="outrosDescontos">Outros Descontos (R$)</label>
+            <input type="number" id="outrosDescontos" step="0.01" value="0" oninput="calcularAuto()">
+          </div>
+        </div>
+        <div class="form-group">
+          <label><input type="checkbox" id="valeTransporte" onchange="calcularAuto()" checked> Descontar Vale Transporte (6%)</label>
+        </div>
+        <div class="form-group">
+          <label><input type="checkbox" id="valeRefeicao" onchange="calcularAuto()"> Descontar Vale Refeição (20% desconto voluntário)</label>
+        </div>
+        <button type="submit" class="btn" style="width:100%">Calcular</button>
+      </form>
+
+      <div class="result" id="resultado">
+        <div class="result-hero">
+          <div class="bruto-display">Bruto: <span id="brutoDisplay">R$ 0,00</span></div>
+          <div class="big-value" id="liquidoDisplay">R$ 0,00</div>
+          <div class="sub">Salário Líquido</div>
+        </div>
+
+        <div class="bar-chart" id="barChart"></div>
+        <div class="bar-legend" id="barLegend"></div>
+
+        <div class="tabs">
+          <button class="active" onclick="showTab('descontos',this)">Descontos</button>
+          <button onclick="showTab('tabelas',this)">Tabelas</button>
+        </div>
+
+        <div class="tab-content active" id="tab-descontos">
+          <div id="deducoesList"></div>
+        </div>
+
+        <div class="tab-content" id="tab-tabelas">
+          <h3 style="font-size:0.95rem;margin-bottom:8px">Tabela INSS 2024</h3>
+          <table class="info-table">
+            <thead><tr><th>Faixa</th><th>Alíquota</th></tr></thead>
+            <tbody>
+              <tr><td>Até R$ 1.412,00</td><td>7,5%</td></tr>
+              <tr><td>R$ 1.412,01 a R$ 2.666,68</td><td>9%</td></tr>
+              <tr><td>R$ 2.666,69 a R$ 4.000,03</td><td>12%</td></tr>
+              <tr><td>R$ 4.000,04 a R$ 8.157,41</td><td>14%</td></tr>
+            </tbody>
+          </table>
+          <h3 style="font-size:0.95rem;margin:16px 0 8px">Tabela IRRF 2024</h3>
+          <table class="info-table">
+            <thead><tr><th>Base de Cálculo</th><th>Alíquota</th><th>Dedução</th></tr></thead>
+            <tbody>
+              <tr><td>Até R$ 2.259,20</td><td>Isento</td><td>R$ 0,00</td></tr>
+              <tr><td>R$ 2.259,21 a R$ 2.826,65</td><td>7,5%</td><td>R$ 169,44</td></tr>
+              <tr><td>R$ 2.826,66 a R$ 3.751,05</td><td>15%</td><td>R$ 381,44</td></tr>
+              <tr><td>R$ 3.751,06 a R$ 4.664,68</td><td>22,5%</td><td>R$ 662,77</td></tr>
+              <tr><td>Acima de R$ 4.664,68</td><td>27,5%</td><td>R$ 896,00</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  var inssFaixas = [
+    {ate: 1412.00, aliquota: 0.075},
+    {ate: 2666.68, aliquota: 0.09},
+    {ate: 4000.03, aliquota: 0.12},
+    {ate: 8157.41, aliquota: 0.14}
+  ];
+
+  var irrfFaixas = [
+    {ate: 2259.20, aliquota: 0, deducao: 0},
+    {ate: 2826.65, aliquota: 0.075, deducao: 169.44},
+    {ate: 3751.05, aliquota: 0.15, deducao: 381.44},
+    {ate: 4664.68, aliquota: 0.225, deducao: 662.77},
+    {ate: Infinity, aliquota: 0.275, deducao: 896.00}
+  ];
+
+  function calcularAuto() {
+    if (val('salario') > 0) calcular();
+  }
+
+  function showTab(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function calcular() {
+    var salarioBruto = val('salario');
+    var dependentes = parseInt(document.getElementById('dependentes').value) || 0;
+    var outrosDescontos = val('outrosDescontos');
+    var descontarVT = document.getElementById('valeTransporte').checked;
+    var descontarVR = document.getElementById('valeRefeicao').checked;
+
+    var inss = calcularINSS(salarioBruto);
+    var baseIRRF = salarioBruto - inss - (dependentes * 189.59);
+    var irrf = calcularIRRF(baseIRRF);
+    var vt = descontarVT ? salarioBruto * 0.06 : 0;
+    var vr = descontarVR ? salarioBruto * 0.20 : 0;
+
+    var totalDescontos = inss + irrf + vt + vr + outrosDescontos;
+    var salarioLiquido = salarioBruto - totalDescontos;
+
+    document.getElementById('brutoDisplay').textContent = fmtCurrency(salarioBruto);
+    document.getElementById('liquidoDisplay').textContent = fmtCurrency(salarioLiquido);
+
+    var colors = ['#2563eb','#ef4444','#f59e0b','#10b981','#8b5cf6','#64748b'];
+    var items = [
+      {label:'INSS', value: inss, color: colors[1]},
+      {label:'IRRF', value: irrf, color: colors[2]},
+      {label:'Vale Transporte', value: vt, color: colors[3]},
+      {label:'Vale Refeição', value: vr, color: colors[4]},
+      {label:'Outros', value: outrosDescontos, color: colors[5]}
+    ].filter(i => i.value > 0);
+    items.unshift({label:'Líquido', value: salarioLiquido, color: colors[0]});
+
+    var barHtml = '';
+    var legendHtml = '';
+    items.forEach(i => {
+      var pct = (i.value / salarioBruto * 100).toFixed(1);
+      barHtml += '<div style="width:' + pct + '%;background:' + i.color + '"></div>';
+      legendHtml += '<span><div class="dot" style="background:' + i.color + '"></div>' + i.label + ': ' + fmtCurrency(i.value) + ' (' + pct + '%)</span>';
+    });
+    document.getElementById('barChart').innerHTML = barHtml;
+    document.getElementById('barLegend').innerHTML = legendHtml;
+
+    var dedHtml = '';
+    var deducoes = [
+      {label: 'INSS', valor: inss, percent: (inss/salarioBruto*100).toFixed(1) + '%'},
+      {label: 'IRRF', valor: irrf, percent: (irrf/salarioBruto*100).toFixed(1) + '%'},
+      {label: 'Vale Transporte', valor: vt, percent: vt > 0 ? '6%' : '-'},
+      {label: 'Vale Refeição', valor: vr, percent: vr > 0 ? '20%' : '-'},
+      {label: 'Outros Descontos', valor: outrosDescontos, percent: outrosDescontos > 0 ? '-' : '-'}
+    ];
+    deducoes.filter(d => d.valor > 0).forEach(d => {
+      dedHtml += '<div class="deducao-row"><span>' + d.label + ' <span class="percent">' + d.percent + '</span></span><span>- ' + fmtCurrency(d.valor) + '</span></div>';
+    });
+    dedHtml += '<div class="deducao-row total"><span>Total Descontos</span><span>- ' + fmtCurrency(totalDescontos) + '</span></div>';
+    dedHtml += '<div class="deducao-row" style="font-weight:700;color:var(--success)"><span>Salário Líquido</span><span>' + fmtCurrency(salarioLiquido) + '</span></div>';
+    document.getElementById('deducoesList').innerHTML = dedHtml;
+
+    showResult('resultado');
+    return false;
+  }
+
+  function calcularINSS(salario) {
+    var total = 0;
+    var anterior = 0;
+    for (var i = 0; i < inssFaixas.length; i++) {
+      var faixa = inssFaixas[i];
+      var ate = Math.min(salario, faixa.ate);
+      var base = ate - anterior;
+      if (base > 0) total += base * faixa.aliquota;
+      anterior = faixa.ate;
+      if (salario <= faixa.ate) break;
+    }
+    return total;
+  }
+
+  function calcularIRRF(base) {
+    if (base <= 0) return 0;
+    for (var i = 0; i < irrfFaixas.length; i++) {
+      if (base <= irrfFaixas[i].ate) {
+        return base * irrfFaixas[i].aliquota - irrfFaixas[i].deducao;
+      }
+    }
+    return 0;
+  }
+  </script>
+</body>
+</html>

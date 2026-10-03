@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de TAEG - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / TAEG</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de TAEG</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valorEmprestimo">Valor do Empréstimo (R$)</label>
+          <input type="number" id="valorEmprestimo" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="prestacaoMensal">Prestação Mensal (R$)</label>
+          <input type="number" id="prestacaoMensal" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="numPrestacoes">Número de Prestações</label>
+          <input type="number" id="numPrestacoes" required>
+        </div>
+        <div class="form-group">
+          <label for="custosProcessamento">Custos de Processamento (R$)</label>
+          <input type="number" id="custosProcessamento" step="0.01" value="0">
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var P = parseFloat(document.getElementById('valorEmprestimo').value);
+    var PMT = parseFloat(document.getElementById('prestacaoMensal').value);
+    var n = parseInt(document.getElementById('numPrestacoes').value);
+    var custos = parseFloat(document.getElementById('custosProcessamento').value) || 0;
+
+    var valorRecebido = P - custos;
+
+    var taxa = 0.01;
+    for (var i = 0; i < 1000; i++) {
+      var pv = 0;
+      for (var j = 1; j <= n; j++) {
+        pv += PMT / Math.pow(1 + taxa, j);
+      }
+      var diff = pv - valorRecebido;
+      if (Math.abs(diff) < 0.0001) break;
+      taxa -= diff / (n * PMT / Math.pow(1 + taxa, 2));
+    }
+
+    var taeg = Math.pow(1 + taxa, 12) - 1;
+
+    var totalPago = PMT * n;
+    var custoTotal = totalPago - valorRecebido;
+
+    document.getElementById('valorResultado').textContent = 'TAEG: ' + (taeg * 100).toFixed(2) + '% a.a.';
+    document.getElementById('detalheResultado').innerHTML =
+      'Valor Recebido: R$ ' + valorRecebido.toFixed(2) + '<br>' +
+      'Total Pago: R$ ' + totalPago.toFixed(2) + '<br>' +
+      'Custo Total do Crédito: R$ ' + custoTotal.toFixed(2);
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Ritmo - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Saúde</a> / Calculadora de Ritmo</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Ritmo</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="distancia">Distância (km)</label>
+          <input type="number" id="distancia" step="0.01" min="0.01" required placeholder="Ex: 5.0">
+        </div>
+        <div class="form-group">
+          <label for="horas">Tempo</label>
+          <div class="input-row">
+            <input type="number" id="horas" min="0" max="23" required placeholder="h">
+            <input type="number" id="minutos" min="0" max="59" required placeholder="min">
+            <input type="number" id="segundos" min="0" max="59" required placeholder="s">
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var distancia = parseFloat(document.getElementById('distancia').value);
+    var horas = parseInt(document.getElementById('horas').value) || 0;
+    var minutos = parseInt(document.getElementById('minutos').value) || 0;
+    var segundos = parseInt(document.getElementById('segundos').value) || 0;
+
+    var tempoTotalSeg = horas * 3600 + minutos * 60 + segundos;
+    if (tempoTotalSeg === 0 || distancia === 0) {
+      document.getElementById('valorResultado').textContent = 'Valores inválidos';
+      document.getElementById('detalheResultado').textContent = 'Preencha todos os campos corretamente.';
+      return false;
+    }
+
+    var tempoHoras = tempoTotalSeg / 3600;
+    var velocidade = distancia / tempoHoras;
+    var minPorKm = tempoTotalSeg / 60 / distancia;
+
+    var paceMin = Math.floor(minPorKm);
+    var paceSec = Math.round((minPorKm - paceMin) * 60);
+
+    document.getElementById('valorResultado').innerHTML = 'Ritmo: <strong>' + paceMin + ':' + (paceSec < 10 ? '0' : '') + paceSec + ' min/km</strong>';
+    document.getElementById('detalheResultado').textContent = 'Velocidade: ' + velocidade.toFixed(2) + ' km/h';
+    return false;
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Cartão de Crédito - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .result-hero { text-align:center; padding:24px; background:#f8fafc; border-radius:12px; margin-bottom:20px; }
+    .result-hero .big-value { font-size:2rem; font-weight:800; color:var(--primary); }
+    .result-hero .sub { font-size:0.9rem; color:var(--text-light); margin-top:4px; }
+    .compare-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:12px; margin:16px 0; }
+    .compare-card { padding:16px; background:#f8fafc; border-radius:8px; text-align:center; border:2px solid transparent; transition:border-color 0.2s; }
+    .compare-card.best { border-color:var(--success); background:#f0fdf4; }
+    .compare-card .card-label { font-size:0.82rem; color:var(--text-light); margin-bottom:4px; }
+    .compare-card .card-value { font-size:1.3rem; font-weight:700; }
+    .compare-card .card-detail { font-size:0.8rem; color:var(--text-light); margin-top:4px; }
+    .result-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f1f5f9; font-size:0.9rem; }
+    .result-row:last-child { border-bottom:none; }
+    .result-row.total { font-weight:700; border-top:2px solid var(--border); padding-top:10px; margin-top:4px; }
+    .bar-chart { display:flex; height:28px; border-radius:8px; overflow:hidden; margin:16px 0; }
+    .bar-legend { display:flex; flex-wrap:wrap; gap:12px; font-size:0.82rem; margin-bottom:16px; }
+    .bar-legend span { display:flex; align-items:center; gap:4px; }
+    .bar-legend .dot { width:10px; height:10px; border-radius:2px; }
+    .payoff-table { width:100%; border-collapse:collapse; font-size:0.85rem; margin-top:12px; }
+    .payoff-table th { background:#f1f5f9; padding:8px; text-align:right; font-weight:600; }
+    .payoff-table th:first-child { text-align:center; }
+    .payoff-table td { padding:6px 8px; text-align:right; border-bottom:1px solid var(--border); }
+    .payoff-table td:first-child { text-align:center; }
+    .payoff-table tr.highlight { background:#eff6ff; font-weight:600; }
+    .tabs { display:flex; gap:0; border-bottom:2px solid var(--border); margin-bottom:16px; }
+    .tabs button { padding:10px 20px; border:none; background:none; cursor:pointer; font-size:0.9rem; font-weight:600; color:var(--text-light); border-bottom:2px solid transparent; margin-bottom:-2px; transition:all 0.2s; }
+    .tabs button.active { color:var(--primary); border-bottom-color:var(--primary); }
+    .tab-content { display:none; }
+    .tab-content.active { display:block; }
+    .tip-box { padding:14px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; font-size:0.88rem; margin-top:16px; line-height:1.6; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Cartão de Crédito</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Cartão de Crédito</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="saldo">Saldo da Dívida (R$)</label>
+          <input type="number" id="saldo" step="0.01" placeholder="Ex: 10.000" oninput="calcularAuto()" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taxa">Taxa de Juros Mensal (%)</label>
+            <input type="number" id="taxa" step="0.01" placeholder="Ex: 2.5" oninput="calcularAuto()" required>
+          </div>
+          <div class="form-group">
+            <label for="pagamento">Pagamento Mensal (R$)</label>
+            <input type="number" id="pagamento" step="0.01" placeholder="Ex: 500" oninput="calcularAuto()" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="pagamentoMinimo">Pagamento Mínimo (R$) <span style="color:var(--text-light);font-size:0.82rem">(para comparação)</span></label>
+          <input type="number" id="pagamentoMinimo" step="0.01" value="0" oninput="calcularAuto()">
+        </div>
+        <button type="submit" class="btn" style="width:100%">Calcular</button>
+      </form>
+
+      <div class="result" id="resultado">
+        <div class="result-hero">
+          <div class="sub">Tempo para Quitar</div>
+          <div class="big-value" id="mesesDisplay">0 meses</div>
+          <div class="sub" id="dataQuitacao"></div>
+        </div>
+
+        <div class="tabs">
+          <button class="active" onclick="showTab('resumo',this)">Resumo</button>
+          <button onclick="showTab('comparacao',this)">Comparação</button>
+          <button onclick="showTab('cronograma',this)">Cronograma</button>
+        </div>
+
+        <div class="tab-content active" id="tab-resumo">
+          <div class="bar-chart" id="barChart"></div>
+          <div class="bar-legend" id="barLegend"></div>
+          <div id="resumoDetalhes"></div>
+        </div>
+
+        <div class="tab-content" id="tab-comparacao">
+          <div class="compare-grid" id="compareGrid"></div>
+          <div class="tip-box" id="tipBox"></div>
+        </div>
+
+        <div class="tab-content" id="tab-cronograma">
+          <div style="max-height:400px;overflow-y:auto" id="cronogramaWrap"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcularAuto() {
+    if (val('saldo') > 0 && val('taxa') > 0 && val('pagamento') > 0) calcular();
+  }
+
+  function showTab(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function calcular() {
+    var saldo = val('saldo');
+    var taxa = val('taxa') / 100;
+    var pagamento = val('pagamento');
+    var pagamentoMinimo = val('pagamentoMinimo');
+
+    var resultado = simularPagamento(saldo, taxa, pagamento);
+    var resultadoMinimo = pagamentoMinimo > 0 ? simularPagamento(saldo, taxa, pagamentoMinimo) : null;
+    var resultado2x = simularPagamento(saldo, taxa, pagamento * 2);
+    var resultado100 = simularPagamento(saldo, taxa, saldo * taxa);
+
+    document.getElementById('mesesDisplay').textContent = resultado.meses + ' meses';
+    var dataAtual = new Date();
+    dataAtual.setMonth(dataAtual.getMonth() + resultado.meses);
+    document.getElementById('dataQuitacao').textContent = 'Quitação estimada: ' + dataAtual.toLocaleDateString('pt-BR', {month:'long', year:'numeric'});
+
+    var colors = ['#2563eb','#f59e0b'];
+    var totalPago = resultado.totalJuros + saldo;
+    var pctPrincipal = (saldo / totalPago * 100).toFixed(0);
+    document.getElementById('barChart').innerHTML =
+      '<div style="width:' + pctPrincipal + '%;background:' + colors[0] + '"></div>' +
+      '<div style="width:' + (100 - pctPrincipal) + '%;background:' + colors[1] + '"></div>';
+    document.getElementById('barLegend').innerHTML =
+      '<span><div class="dot" style="background:' + colors[0] + '"></div>Principal: ' + fmtCurrency(saldo) + '</span>' +
+      '<span><div class="dot" style="background:' + colors[1] + '"></div>Juros: ' + fmtCurrency(resultado.totalJuros) + '</span>';
+
+    document.getElementById('resumoDetalhes').innerHTML =
+      '<div class="result-row"><span>Total Pago</span><span>' + fmtCurrency(resultado.totalPago) + '</span></div>' +
+      '<div class="result-row"><span>Total de Juros</span><span>' + fmtCurrency(resultado.totalJuros) + '</span></div>' +
+      '<div class="result-row"><span>Percentual de Juros</span><span>' + (resultado.totalJuros/saldo*100).toFixed(1) + '%</span></div>' +
+      '<div class="result-row total"><span>Custo Efetivo Total</span><span>' + fmtCurrency(resultado.totalPago) + '</span></div>';
+
+    var cards = [
+      {label:'Seu Pagamento (' + fmtCurrency(pagamento) + ')', meses: resultado.meses, total: resultado.totalPago, juros: resultado.totalJuros, best: true},
+      {label:'2x o Pagamento (' + fmtCurrency(pagamento*2) + ')', meses: resultado2x.meses, total: resultado2x.totalPago, juros: resultado2x.totalJuros, best: false}
+    ];
+    if (pagamentoMinimo > 0 && resultadoMinimo) {
+      cards.push({label:'Mínimo (' + fmtCurrency(pagamentoMinimo) + ')', meses: resultadoMinimo.meses, total: resultadoMinimo.totalPago, juros: resultadoMinimo.totalJuros, best: false});
+    }
+    cards.push({label:'Só Juros (' + fmtCurrency(saldo * taxa) + ')', meses: resultado100.meses, total: resultado100.totalPago, juros: resultado100.totalJuros, best: false});
+
+    var bestIdx = cards.reduce((best, c, i) => c.total < cards[best].total ? i : best, 0);
+    document.getElementById('compareGrid').innerHTML = cards.map((c, i) =>
+      '<div class="compare-card' + (i === bestIdx ? ' best' : '') + '">' +
+      '<div class="card-label">' + c.label + '</div>' +
+      '<div class="card-value">' + c.meses + ' meses</div>' +
+      '<div class="card-detail">Total: ' + fmtCurrency(c.total) + '</div>' +
+      '<div class="card-detail">Juros: ' + fmtCurrency(c.juros) + '</div></div>'
+    ).join('');
+
+    var economia = resultado.totalPago - cards[bestIdx].total;
+    document.getElementById('tipBox').innerHTML = '<strong>Dica:</strong> Ao escolher a melhor opção de pagamento, você pode economizar <strong>' + fmtCurrency(Math.abs(economia)) + '</strong> em juros.';
+
+    var html = '<table class="payoff-table"><thead><tr><th>Mês</th><th>Pagamento</th><th>Juros</th><th>Principal</th><th>Saldo</th></tr></thead><tbody>';
+    resultado.parcelas.forEach(p => {
+      html += '<tr><td>' + p.mes + '</td><td>' + fmtCurrency(p.pagamento) + '</td><td>' + fmtCurrency(p.juros) + '</td><td>' + fmtCurrency(p.principal) + '</td><td>' + fmtCurrency(p.saldo) + '</td></tr>';
+    });
+    html += '</tbody></table>';
+    document.getElementById('cronogramaWrap').innerHTML = html;
+
+    showResult('resultado');
+    return false;
+  }
+
+  function simularPagamento(saldoInicial, taxaMensal, pagamento) {
+    var saldo = saldoInicial;
+    var totalJuros = 0;
+    var parcelas = [];
+    var mes = 0;
+
+    while (saldo > 0 && mes < 600) {
+      mes++;
+      var juros = saldo * taxaMensal;
+      var princ = pagamento - juros;
+      if (princ > saldo) princ = saldo;
+      if (princ < 0) princ = 0;
+      saldo -= princ;
+      totalJuros += juros;
+      parcelas.push({mes: mes, pagamento: Math.min(pagamento, juros + saldo + princ), juros: juros, principal: princ, saldo: Math.max(saldo, 0)});
+    }
+
+    return {meses: mes, totalJuros: totalJuros, totalPago: totalJuros + saldoInicial, parcelas: parcelas};
+  }
+  </script>
+</body>
+</html>

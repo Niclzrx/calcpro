@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lançador de Dados - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Lançador de Dados</div>
+    </div>
+    <div class="calc-card">
+      <h1>Lançador de Dados</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="quantidade">Número de Dados</label>
+          <input type="number" id="quantidade" min="1" max="20" value="1" required>
+        </div>
+        <div class="form-group">
+          <label for="faces">Número de Faces</label>
+          <select id="faces" required>
+            <option value="4">D4 (4 faces)</option>
+            <option value="6" selected>D6 (6 faces)</option>
+            <option value="8">D8 (8 faces)</option>
+            <option value="10">D10 (10 faces)</option>
+            <option value="12">D12 (12 faces)</option>
+            <option value="20">D20 (20 faces)</option>
+          </select>
+        </div>
+        <button type="submit" class="btn">Lançar Dados</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const quantidade = parseInt(document.getElementById('quantidade').value);
+    const faces = parseInt(document.getElementById('faces').value);
+
+    const resultados = [];
+    let soma = 0;
+
+    for (let i = 0; i < quantidade; i++) {
+      const valor = Math.floor(Math.random() * faces) + 1;
+      resultados.push(valor);
+      soma += valor;
+    }
+
+    const media = (soma / quantidade).toFixed(1);
+
+    document.getElementById('valorResultado').textContent = resultados.join(' + ') + ' = ' + soma;
+    document.getElementById('detalheResultado').textContent =
+      quantidade + ' dado(s) de ' + faces + ' faces | Média: ' + media;
+    return false;
+  }
+  </script>
+</body>
+</html>

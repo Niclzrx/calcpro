@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Concepção da Gravidez - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Saúde</a> / Calculadora de Concepção da Gravidez</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Concepção da Gravidez</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="dum">Data do Último Menstruação</label>
+          <input type="date" id="dum" required>
+        </div>
+        <div class="form-group">
+          <label for="ciclo">Duração do Ciclo (dias)</label>
+          <input type="number" id="ciclo" value="28" min="20" max="45" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>&copy; 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var dumStr = document.getElementById('dum').value;
+    var ciclo = parseInt(document.getElementById('ciclo').value);
+
+    if (!dumStr || isNaN(ciclo) || ciclo < 20 || ciclo > 45) {
+      alert('Por favor, insira valores válidos.');
+      return false;
+    }
+
+    var dum = new Date(dumStr + 'T00:00:00');
+
+    var ovulacao = new Date(dum);
+    ovulacao.setDate(ovulacao.getDate() + ciclo - 14);
+
+    var inicioFertil = new Date(ovulacao);
+    inicioFertil.setDate(inicioFertil.getDate() - 5);
+
+    var fimFertil = new Date(ovulacao);
+    fimFertil.setDate(fimFertil.getDate() + 1);
+
+    var concepcaoEstimada = new Date(ovulacao);
+    concepcaoEstimada.setDate(concepcaoEstimada.getDate());
+
+    var opcoes = { day: '2-digit', month: '2-digit', year: 'numeric' };
+
+    document.getElementById('valorResultado').textContent = concepcaoEstimada.toLocaleDateString('pt-BR', opcoes);
+    document.getElementById('detalheResultado').innerHTML =
+      'Ovulação provável: ' + ovulacao.toLocaleDateString('pt-BR', opcoes) + '<br>' +
+      'Período fértil: ' + inicioFertil.toLocaleDateString('pt-BR', opcoes) + ' a ' + fimFertil.toLocaleDateString('pt-BR', opcoes) + '<br>' +
+      'Ciclo de ' + ciclo + ' dias';
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

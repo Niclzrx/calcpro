@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Área de Superfície - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Área de Superfície</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Área de Superfície</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="forma">Forma</label>
+          <select id="forma" required>
+            <option value="cubo">Cubo</option>
+            <option value="esfera">Esfera</option>
+            <option value="cilindro">Cilindro</option>
+            <option value="cone">Cone</option>
+          </select>
+        </div>
+        <div class="form-group" id="ladoGroup">
+          <label for="lado">Lado (a)</label>
+          <input type="number" id="lado" step="any" min="0.0001">
+        </div>
+        <div class="form-group" id="raioGroup" style="display:none;">
+          <label for="raio">Raio (r)</label>
+          <input type="number" id="raio" step="any" min="0.0001">
+        </div>
+        <div class="form-group" id="alturaGroup" style="display:none;">
+          <label for="altura">Altura (h)</label>
+          <input type="number" id="altura" step="any" min="0.0001">
+        </div>
+        <div class="form-group" id="geratrizGroup" style="display:none;">
+          <label for="geratriz">Geratriz (g)</label>
+          <input type="number" id="geratriz" step="any" min="0.0001">
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  document.getElementById('forma').addEventListener('change', function() {
+    const forma = this.value;
+    
+    document.getElementById('ladoGroup').style.display = forma === 'cubo' ? 'block' : 'none';
+    document.getElementById('raioGroup').style.display = ['esfera', 'cilindro', 'cone'].includes(forma) ? 'block' : 'none';
+    document.getElementById('alturaGroup').style.display = ['cilindro', 'cone'].includes(forma) ? 'block' : 'none';
+    document.getElementById('geratrizGroup').style.display = forma === 'cone' ? 'block' : 'none';
+  });
+  
+  function calcular() {
+    const forma = document.getElementById('forma').value;
+    let area, formula;
+    
+    if (forma === 'cubo') {
+      const a = val('lado');
+      if (a <= 0) {
+        document.getElementById('valorResultado').textContent = 'Erro';
+        document.getElementById('detalheResultado').textContent = 'Lado deve ser maior que zero';
+        document.getElementById('resultado').classList.add('show');
+        return false;
+      }
+      area = 6 * a * a;
+      formula = `6 × ${a}² = ${fmt(area, 4)}`;
+    } else if (forma === 'esfera') {
+      const r = val('raio');
+      if (r <= 0) {
+        document.getElementById('valorResultado').textContent = 'Erro';
+        document.getElementById('detalheResultado').textContent = 'Raio deve ser maior que zero';
+        document.getElementById('resultado').classList.add('show');
+        return false;
+      }
+      area = 4 * Math.PI * r * r;
+      formula = `4π × ${r}² = ${fmt(area, 4)}`;
+    } else if (forma === 'cilindro') {
+      const r = val('raio');
+      const h = val('altura');
+      if (r <= 0 || h <= 0) {
+        document.getElementById('valorResultado').textContent = 'Erro';
+        document.getElementById('detalheResultado').textContent = 'Raio e altura devem ser maiores que zero';
+        document.getElementById('resultado').classList.add('show');
+        return false;
+      }
+      area = 2 * Math.PI * r * (r + h);
+      formula = `2π × ${r} × (${r} + ${h}) = ${fmt(area, 4)}`;
+    } else if (forma === 'cone') {
+      const r = val('raio');
+      const h = val('altura');
+      const g = val('geratriz');
+      if (r <= 0 || h <= 0 || g <= 0) {
+        document.getElementById('valorResultado').textContent = 'Erro';
+        document.getElementById('detalheResultado').textContent = 'Raio, altura e geratriz devem ser maiores que zero';
+        document.getElementById('resultado').classList.add('show');
+        return false;
+      }
+      area = Math.PI * r * (r + g);
+      formula = `π × ${r} × (${r} + ${g}) = ${fmt(area, 4)}`;
+    }
+    
+    document.getElementById('valorResultado').textContent = `Área = ${fmt(area, 4)}`;
+    document.getElementById('detalheResultado').textContent = formula;
+    document.getElementById('resultado').classList.add('show');
+    return false;
+  }
+  </script>
+</body>
+</html>

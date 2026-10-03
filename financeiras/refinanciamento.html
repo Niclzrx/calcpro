@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Refinanciamento - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Calculadora de Refinanciamento</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Refinanciamento</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="saldoDevedor">Saldo Devedor Atual (R$)</label>
+          <input type="number" id="saldoDevedor" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="novaTaxa">Nova Taxa de Juros Mensal (%)</label>
+          <input type="number" id="novaTaxa" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="novoPrazo">Novo Prazo (meses)</label>
+          <input type="number" id="novoPrazo" required>
+        </div>
+        <div class="form-group">
+          <label for="parcelaAtual">Parcela Atual (R$)</label>
+          <input type="number" id="parcelaAtual" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="mesesRestantes">Meses Restantes no Contrato Atual</label>
+          <input type="number" id="mesesRestantes" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>&copy; 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var saldoDevedor = parseFloat(document.getElementById('saldoDevedor').value);
+    var novaTaxa = parseFloat(document.getElementById('novaTaxa').value) / 100;
+    var novoPrazo = parseInt(document.getElementById('novoPrazo').value);
+    var parcelaAtual = parseFloat(document.getElementById('parcelaAtual').value);
+    var mesesRestantes = parseInt(document.getElementById('mesesRestantes').value);
+
+    var novaParcela = saldoDevedor * (novaTaxa * Math.pow(1 + novaTaxa, novoPrazo)) / (Math.pow(1 + novaTaxa, novoPrazo) - 1);
+    var totalNovo = novaParcela * novoPrazo;
+    var totalAntigo = parcelaAtual * mesesRestantes;
+    var jurosNovo = totalNovo - saldoDevedor;
+    var economia = totalAntigo - totalNovo;
+
+    var html = '<strong>Nova Parcela:</strong> R$ ' + novaParcela.toFixed(2) + '<br>';
+    html += '<strong>Total Novo:</strong> R$ ' + totalNovo.toFixed(2) + '<br>';
+    html += '<strong>Juros Novo Contrato:</strong> R$ ' + jurosNovo.toFixed(2) + '<br><br>';
+    html += '<strong>Comparação:</strong><br>';
+    html += 'Total Antigo (restante): R$ ' + totalAntigo.toFixed(2) + '<br>';
+    html += 'Parcela Atual: R$ ' + parcelaAtual.toFixed(2) + '<br>';
+    html += 'Diferença Mensal: R$ ' + (novaParcela - parcelaAtual).toFixed(2) + '<br>';
+    if (economia > 0) {
+      html += '<strong>Economia Total:</strong> R$ ' + economia.toFixed(2);
+    } else {
+      html += '<strong>Custo Adicional:</strong> R$ ' + Math.abs(economia).toFixed(2);
+    }
+
+    document.getElementById('valorResultado').innerHTML = 'Nova Parcela: R$ ' + novaParcela.toFixed(2);
+    document.getElementById('detalheResultado').innerHTML = html;
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

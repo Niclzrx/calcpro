@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Arrendamento - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Calculadora de Arrendamento</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Arrendamento</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valorBem">Valor do Bem (R$)</label>
+          <input type="number" id="valorBem" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="taxaJuros">Taxa de Juros Mensal (%)</label>
+          <input type="number" id="taxaJuros" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="meses">Número de Meses</label>
+          <input type="number" id="meses" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>&copy; 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var valorBem = parseFloat(document.getElementById('valorBem').value);
+    var taxaJuros = parseFloat(document.getElementById('taxaJuros').value) / 100;
+    var meses = parseInt(document.getElementById('meses').value);
+
+    var parcela = valorBem * (taxaJuros * Math.pow(1 + taxaJuros, meses)) / (Math.pow(1 + taxaJuros, meses) - 1);
+    var totalPago = parcela * meses;
+    var jurosTotais = totalPago - valorBem;
+
+    var html = '<strong>Parcela Mensal:</strong> R$ ' + parcela.toFixed(2) + '<br>';
+    html += '<strong>Total Pago:</strong> R$ ' + totalPago.toFixed(2) + '<br>';
+    html += '<strong>Juros Totais:</strong> R$ ' + jurosTotais.toFixed(2) + '<br>';
+    html += '<strong>Custo Efetivo:</strong> ' + ((totalPago / valorBem - 1) * 100).toFixed(2) + '%';
+
+    document.getElementById('valorResultado').innerHTML = 'Parcela: R$ ' + parcela.toFixed(2);
+    document.getElementById('detalheResultado').innerHTML = html;
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

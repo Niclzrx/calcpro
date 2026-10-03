@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora Científica - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .sci-calc { max-width:400px; margin:0 auto; }
+    .sci-display { background:#1e293b; color:#fff; border-radius:12px; padding:20px; margin-bottom:12px; text-align:right; min-height:80px; display:flex; flex-direction:column; justify-content:flex-end; }
+    .sci-display .expr { font-size:0.85rem; color:#94a3b8; min-height:20px; word-break:break-all; }
+    .sci-display .current { font-size:2rem; font-weight:700; word-break:break-all; }
+    .sci-grid { display:grid; grid-template-columns:repeat(5, 1fr); gap:6px; }
+    .sci-btn { padding:14px 4px; border:none; border-radius:8px; font-size:0.88rem; font-weight:600; cursor:pointer; transition:all 0.15s; }
+    .sci-btn:active { transform:scale(0.95); }
+    .sci-btn.fn { background:#e2e8f0; color:#475569; }
+    .sci-btn.fn:hover { background:#cbd5e1; }
+    .sci-btn.num { background:#f8fafc; color:#1e293b; border:1px solid #e2e8f0; }
+    .sci-btn.num:hover { background:#f1f5f9; }
+    .sci-btn.op { background:#2563eb; color:#fff; }
+    .sci-btn.op:hover { background:#1d4ed8; }
+    .sci-btn.eq { background:#16a34a; color:#fff; }
+    .sci-btn.eq:hover { background:#15803d; }
+    .sci-btn.clear { background:#ef4444; color:#fff; }
+    .sci-btn.clear:hover { background:#dc2626; }
+    .sci-btn.wide { grid-column: span 2; }
+    .history { margin-top:16px; max-height:200px; overflow-y:auto; }
+    .history-item { padding:6px 10px; font-size:0.85rem; border-bottom:1px solid var(--border); cursor:pointer; }
+    .history-item:hover { background:#f8fafc; }
+    .history-item .h-expr { color:var(--text-light); }
+    .history-item .h-result { font-weight:700; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Calculadora Científica</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora Científica</h1>
+      <div class="sci-calc">
+        <div class="sci-display">
+          <div class="expr" id="expr"></div>
+          <div class="current" id="display">0</div>
+        </div>
+        <div class="sci-grid">
+          <button class="sci-btn fn" onclick="fn('sin')">sin</button>
+          <button class="sci-btn fn" onclick="fn('cos')">cos</button>
+          <button class="sci-btn fn" onclick="fn('tan')">tan</button>
+          <button class="sci-btn fn" onclick="fn('log')">log</button>
+          <button class="sci-btn fn" onclick="fn('ln')">ln</button>
+
+          <button class="sci-btn fn" onclick="fn('asin')">sin⁻¹</button>
+          <button class="sci-btn fn" onclick="fn('acos')">cos⁻¹</button>
+          <button class="sci-btn fn" onclick="fn('atan')">tan⁻¹</button>
+          <button class="sci-btn fn" onclick="fn('sqrt')">√</button>
+          <button class="sci-btn fn" onclick="fn('cbrt')">∛</button>
+
+          <button class="sci-btn fn" onclick="fn('square')">x²</button>
+          <button class="sci-btn fn" onclick="fn('cube')">x³</button>
+          <button class="sci-btn fn" onclick="fn('pow')">xʸ</button>
+          <button class="sci-btn fn" onclick="fn('exp')">eˣ</button>
+          <button class="sci-btn fn" onclick="fn('tenpow')">10ˣ</button>
+
+          <button class="sci-btn fn" onclick="fn('pi')">π</button>
+          <button class="sci-btn fn" onclick="fn('e')">e</button>
+          <button class="sci-btn fn" onclick="fn('fact')">n!</button>
+          <button class="sci-btn fn" onclick="fn('abs')">|x|</button>
+          <button class="sci-btn fn" onclick="fn('inv')">1/x</button>
+
+          <button class="sci-btn fn" onclick="fn('openParen')">(</button>
+          <button class="sci-btn fn" onclick="fn('closeParen')">)</button>
+          <button class="sci-btn fn" onclick="fn('percent')">%</button>
+          <button class="sci-btn fn" onclick="fn('rad')" id="radBtn">RAD</button>
+          <button class="sci-btn clear" onclick="fn('clear')">AC</button>
+
+          <button class="sci-btn num" onclick="input('7')">7</button>
+          <button class="sci-btn num" onclick="input('8')">8</button>
+          <button class="sci-btn num" onclick="input('9')">9</button>
+          <button class="sci-btn op" onclick="input('÷')">÷</button>
+          <button class="sci-btn fn" onclick="fn('backspace')">⌫</button>
+
+          <button class="sci-btn num" onclick="input('4')">4</button>
+          <button class="sci-btn num" onclick="input('5')">5</button>
+          <button class="sci-btn num" onclick="input('6')">6</button>
+          <button class="sci-btn op" onclick="input('×')">×</button>
+          <button class="sci-btn fn" onclick="fn('negate')">±</button>
+
+          <button class="sci-btn num" onclick="input('1')">1</button>
+          <button class="sci-btn num" onclick="input('2')">2</button>
+          <button class="sci-btn num" onclick="input('3')">3</button>
+          <button class="sci-btn op" onclick="input('-')">−</button>
+          <button class="sci-btn op wide" onclick="input('+')" style="grid-row:span 2">+</button>
+
+          <button class="sci-btn num" onclick="input('0')">0</button>
+          <button class="sci-btn num" onclick="input('.')">.</button>
+          <button class="sci-btn eq" onclick="fn('equals')">=</button>
+          <button class="sci-btn op" onclick="input('+')">+</button>
+        </div>
+
+        <div class="history" id="history"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script>
+  var current = '0';
+  var expression = '';
+  var lastResult = null;
+  var history = [];
+  var useRad = true;
+  var pendingOp = null;
+  var waitingForOperand = false;
+
+  function updateDisplay() {
+    document.getElementById('display').textContent = current;
+    document.getElementById('expr').textContent = expression;
+  }
+
+  function input(val) {
+    if (waitingForOperand) {
+      current = val;
+      waitingForOperand = false;
+    } else {
+      if (current === '0' && val !== '.') current = val;
+      else current += val;
+    }
+    updateDisplay();
+  }
+
+  function fn(func) {
+    var num = parseFloat(current);
+    switch(func) {
+      case 'clear': current = '0'; expression = ''; lastResult = null; waitingForOperand = false; break;
+      case 'backspace': current = current.length > 1 ? current.slice(0, -1) : '0'; break;
+      case 'negate': current = String(-num); break;
+      case 'percent': current = String(num / 100); break;
+      case 'sin': current = String(Math.sin(useRad ? num : num * Math.PI / 180)); break;
+      case 'cos': current = String(Math.cos(useRad ? num : num * Math.PI / 180)); break;
+      case 'tan': current = String(Math.tan(useRad ? num : num * Math.PI / 180)); break;
+      case 'asin': current = String(useRad ? Math.asin(num) : Math.asin(num) * 180 / Math.PI); break;
+      case 'acos': current = String(useRad ? Math.acos(num) : Math.acos(num) * 180 / Math.PI); break;
+      case 'atan': current = String(useRad ? Math.atan(num) : Math.atan(num) * 180 / Math.PI); break;
+      case 'sqrt': current = String(Math.sqrt(num)); break;
+      case 'cbrt': current = String(Math.cbrt(num)); break;
+      case 'square': current = String(num * num); break;
+      case 'cube': current = String(num * num * num); break;
+      case 'exp': current = String(Math.exp(num)); break;
+      case 'ln': current = String(Math.log(num)); break;
+      case 'log': current = String(Math.log10(num)); break;
+      case 'tenpow': current = String(Math.pow(10, num)); break;
+      case 'pi': current = String(Math.PI); break;
+      case 'e': current = String(Math.E); break;
+      case 'abs': current = String(Math.abs(num)); break;
+      case 'inv': current = String(1 / num); break;
+      case 'fact': current = String(factorial(num)); break;
+      case 'rad':
+        useRad = !useRad;
+        document.getElementById('radBtn').textContent = useRad ? 'RAD' : 'DEG';
+        break;
+      case 'equals':
+        try {
+          var expr = expression + current;
+          expr = expr.replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-');
+          var result = Function('"use strict";return (' + expr + ')')();
+          history.unshift({expr: expression + current + ' =', result: result});
+          if (history.length > 20) history.pop();
+          updateHistory();
+          expression = '';
+          current = String(result);
+          waitingForOperand = true;
+        } catch(e) { current = 'Erro'; }
+        break;
+      case 'pow':
+        expression += current + ' ^ ';
+        waitingForOperand = true;
+        break;
+      case 'openParen': input('('); break;
+      case 'closeParen': input(')'); break;
+    }
+    if (func !== 'equals' && func !== 'pow') waitingForOperand = false;
+    updateDisplay();
+  }
+
+  function factorial(n) {
+    if (n < 0) return NaN;
+    if (n === 0 || n === 1) return 1;
+    var r = 1;
+    for (var i = 2; i <= n; i++) r *= i;
+    return r;
+  }
+
+  function updateHistory() {
+    document.getElementById('history').innerHTML = history.map(h =>
+      '<div class="history-item"><div class="h-expr">' + h.expr + '</div><div class="h-result">' + h.result + '</div></div>'
+    ).join('');
+  }
+
+  updateDisplay();
+  </script>
+</body>
+</html>

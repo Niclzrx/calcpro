@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Reembolso - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Reembolso</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Reembolso</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valorDespesa">Valor da Despesa (R$)</label>
+          <input type="number" id="valorDespesa" step="0.01" placeholder="Ex: 1500" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="moedaOrigem">Moeda de Origem</label>
+            <select id="moedaOrigem">
+              <option value="BRL">BRL - Real Brasileiro</option>
+              <option value="USD">USD - Dólar Americano</option>
+              <option value="EUR">EUR - Euro</option>
+              <option value="GBP">GBP - Libra Esterlina</option>
+              <option value="JPY">JPY - Iene Japonês</option>
+              <option value="ARS">ARS - Peso Argentino</option>
+              <option value="CLP">CLP - Peso Chileno</option>
+              <option value="COP">COP - Peso Colombiano</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="moedaDestino">Moeda de Destino</label>
+            <select id="moedaDestino">
+              <option value="BRL">BRL - Real Brasileiro</option>
+              <option value="USD" selected>USD - Dólar Americano</option>
+              <option value="EUR">EUR - Euro</option>
+              <option value="GBP">GBP - Libra Esterlina</option>
+              <option value="JPY">JPY - Iene Japonês</option>
+              <option value="ARS">ARS - Peso Argentino</option>
+              <option value="CLP">CLP - Peso Chileno</option>
+              <option value="COP">COP - Peso Colombiano</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="taxaCambio">Taxa de Câmbio (1 unidade da moeda de origem = ? da moeda de destino)</label>
+          <input type="number" id="taxaCambio" step="0.0001" placeholder="Ex: 5.2500" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var despesa = val('valorDespesa');
+    var moedaOrigem = document.getElementById('moedaOrigem').value;
+    var moedaDestino = document.getElementById('moedaDestino').value;
+    var taxaCambio = val('taxaCambio');
+
+    var valorReembolso = despesa * taxaCambio;
+
+    document.getElementById('valorResultado').textContent = fmtCurrency(valorReembolso);
+    document.getElementById('detalheResultado').innerHTML =
+      'Despesa Original: ' + despesa.toLocaleString('pt-BR') + ' ' + moedaOrigem + '<br>' +
+      'Taxa de Câmbio: 1 ' + moedaOrigem + ' = ' + taxaCambio.toLocaleString('pt-BR', {minimumFractionDigits: 4}) + ' ' + moedaDestino + '<br>' +
+      'Valor do Reembolso: ' + valorReembolso.toLocaleString('pt-BR', {minimumFractionDigits: 2}) + ' ' + moedaDestino;
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

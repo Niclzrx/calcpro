@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notação Científica - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Notação Científica</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Notação Científica</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="numero">Número</label>
+          <input type="number" id="numero" step="any" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function toSci(num) {
+    if (num === 0) return { coeff: 0, exp: 0 };
+    const exp = Math.floor(Math.log10(Math.abs(num)));
+    const coeff = num / Math.pow(10, exp);
+    return { coeff, exp };
+  }
+  function fmtSci(num) {
+    const { coeff, exp } = toSci(num);
+    return `${coeff.toFixed(6)} × 10^${exp}`;
+  }
+  function calcular() {
+    const numero = parseFloat(document.getElementById('numero').value);
+    if (isNaN(numero)) {
+      document.getElementById('valorResultado').textContent = 'Valor inválido';
+      document.getElementById('detalheResultado').textContent = '';
+      return false;
+    }
+    const { coeff, exp } = toSci(numero);
+    document.getElementById('valorResultado').textContent = fmtSci(numero);
+    document.getElementById('detalheResultado').textContent =
+      `Número: ${numero}\n` +
+      `Notação científica: ${coeff.toFixed(6)} × 10^${exp}\n` +
+      `Potência de 10: 10^${exp}\n` +
+      `Coeficiente: ${coeff.toFixed(6)}`;
+    return false;
+  }
+  </script>
+</body>
+</html>

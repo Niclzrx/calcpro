@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conversao de Tamanhos de Calcados - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Inicio</a> / <a href="index.html">Outras</a> / Conversao de Calcados</div>
+    </div>
+    <div class="calc-card">
+      <h1>Conversao de Tamanhos de Calcados</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="genero">Genero</label>
+          <select id="genero" required>
+            <option value="feminino">Feminino</option>
+            <option value="masculino">Masculino</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="tamanhoBR">Tamanho Brasil</label>
+          <input type="number" id="tamanhoBR" step="0.5" min="17" max="48" placeholder="Ex: 38" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>&copy; 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var genero = document.getElementById('genero').value;
+    var br = parseFloat(document.getElementById('tamanhoBR').value);
+    if (isNaN(br) || br < 17 || br > 48) {
+      document.getElementById('valorResultado').textContent = 'Tamanho invalido';
+      document.getElementById('detalheResultado').textContent = '';
+      return false;
+    }
+    var us, uk, eu;
+    if (genero === 'feminino') {
+      us = br - 33;
+      uk = br - 33;
+      eu = br + 1;
+    } else {
+      us = br - 33;
+      uk = br - 33.5;
+      eu = br + 1;
+    }
+    us = Math.round(us * 2) / 2;
+    uk = Math.round(uk * 2) / 2;
+    eu = Math.round(eu);
+    document.getElementById('valorResultado').textContent = 'BR ' + br;
+    document.getElementById('detalheResultado').innerHTML =
+      'EUA: US ' + us + '<br>' +
+      'Reino Unido: UK ' + uk + '<br>' +
+      'Europa: EU ' + eu;
+    return false;
+  }
+  </script>
+</body>
+</html>

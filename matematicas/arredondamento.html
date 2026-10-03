@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arredondamento - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Arredondamento</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Arredondamento</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="numero">Número</label>
+          <input type="number" id="numero" step="any" required>
+        </div>
+        <div class="form-group">
+          <label for="casas">Casas Decimais</label>
+          <input type="number" id="casas" min="0" max="10" value="2" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const numero = parseFloat(document.getElementById('numero').value);
+    const casas = parseInt(document.getElementById('casas').value);
+    if (isNaN(numero) || isNaN(casas)) {
+      document.getElementById('valorResultado').textContent = 'Valores inválidos';
+      document.getElementById('detalheResultado').textContent = '';
+      return false;
+    }
+    const fator = Math.pow(10, casas);
+    const arredondado = Math.round(numero * fator) / fator;
+    const truncado = Math.trunc(numero * fator) / fator;
+    const ceil = Math.ceil(numero * fator) / fator;
+    const piso = Math.floor(numero * fator) / fator;
+    document.getElementById('valorResultado').textContent = arredondado;
+    document.getElementById('detalheResultado').textContent =
+      `Arredondado: ${arredondado}\nTruncado: ${truncado}\nTeto: ${ceil}\nPiso: ${piso}`;
+    return false;
+  }
+  </script>
+</body>
+</html>

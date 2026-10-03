@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Entrada - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Entrada</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Entrada</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valorImovel">Valor do Imóvel (R$)</label>
+          <input type="number" id="valorImovel" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="percentualEntrada">Percentual de Entrada (%)</label>
+          <input type="number" id="percentualEntrada" step="0.01" value="20" required>
+        </div>
+        <div class="form-group">
+          <label for="mesesPoupanca">Meses para Economizar (opcional)</label>
+          <input type="number" id="mesesPoupanca" value="0">
+        </div>
+        <div class="form-group">
+          <label for="poupancaMensal">Poupança Mensal (R$) (opcional)</label>
+          <input type="number" id="poupancaMensal" step="0.01" value="0">
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var valorImovel = parseFloat(document.getElementById('valorImovel').value);
+    var percentual = parseFloat(document.getElementById('percentualEntrada').value) / 100;
+    var meses = parseInt(document.getElementById('mesesPoupanca').value) || 0;
+    var poupanca = parseFloat(document.getElementById('poupancaMensal').value) || 0;
+
+    var entrada = valorImovel * percentual;
+    var valorFinanciado = valorImovel - entrada;
+
+    var html = 'Entrada Necessária: R$ ' + entrada.toFixed(2) + '<br>' +
+      'Valor Financiado: R$ ' + valorFinanciado.toFixed(2) + '<br>' +
+      'Percentual: ' + (percentual * 100).toFixed(1) + '%';
+
+    if (meses > 0 && poupanca > 0) {
+      var economiaTotal = poupanca * meses;
+      var falta = entrada - economiaTotal;
+      if (falta > 0) {
+        var mesesNecessarios = Math.ceil(entrada / poupanca);
+        html += '<br><br><strong>Plano de Poupança:</strong><br>' +
+          'Economia em ' + meses + ' meses: R$ ' + economiaTotal.toFixed(2) + '<br>' +
+          'Falta: R$ ' + falta.toFixed(2) + '<br>' +
+          'Meses necessários: ' + mesesNecessarios;
+      } else {
+        html += '<br><br><strong>Plano de Poupança:</strong><br>' +
+          'Parabéns! Você já tem o valor suficiente para a entrada.';
+      }
+    }
+
+    document.getElementById('valorResultado').textContent = 'Entrada: R$ ' + entrada.toFixed(2);
+    document.getElementById('detalheResultado').innerHTML = html;
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

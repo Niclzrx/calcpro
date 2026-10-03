@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Permutações e Combinações - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Permutações e Combinações</div>
+    </div>
+    <div class="calc-card">
+      <h1>Permutações e Combinações</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="n">n (total de elementos)</label>
+            <input type="number" id="n" min="0" required>
+          </div>
+          <div class="form-group">
+            <label for="r">r (elementos selecionados)</label>
+            <input type="number" id="r" min="0" required>
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function fatorial(num) {
+    if (num < 0) return NaN;
+    if (num === 0 || num === 1) return 1;
+    let result = 1;
+    for (let i = 2; i <= num; i++) {
+      result *= i;
+    }
+    return result;
+  }
+  
+  function calcular() {
+    const n = val('n');
+    const r = val('r');
+    
+    if (n < 0 || r < 0) {
+      document.getElementById('valorResultado').textContent = 'Erro';
+      document.getElementById('detalheResultado').textContent = 'Valores devem ser não-negativos';
+      document.getElementById('resultado').classList.add('show');
+      return false;
+    }
+    
+    if (r > n) {
+      document.getElementById('valorResultado').textContent = 'Erro';
+      document.getElementById('detalheResultado').textContent = 'r não pode ser maior que n';
+      document.getElementById('resultado').classList.add('show');
+      return false;
+    }
+    
+    const permutacao = fatorial(n) / fatorial(n - r);
+    const combinacao = fatorial(n) / (fatorial(r) * fatorial(n - r));
+    
+    document.getElementById('valorResultado').textContent = `P(${n},${r}) = ${permutacao.toLocaleString('pt-BR')}`;
+    document.getElementById('detalheResultado').textContent = `C(${n},${r}) = ${combinacao.toLocaleString('pt-BR')}`;
+    document.getElementById('resultado').classList.add('show');
+    return false;
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Frequência Cardíaca Alvo - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Saúde</a> / Calculadora de Frequência Cardíaca Alvo</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Frequência Cardíaca Alvo</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="idade">Idade (anos)</label>
+          <input type="number" id="idade" min="1" max="120" required placeholder="Ex: 30">
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var idade = parseInt(document.getElementById('idade').value);
+
+    var fcMax = 220 - idade;
+    var fcMin = Math.round(fcMax * 0.50);
+    var fcMaxAlvo = Math.round(fcMax * 0.85);
+    var fcMedia = Math.round((fcMin + fcMaxAlvo) / 2);
+
+    document.getElementById('valorResultado').innerHTML = 'Frequência Cardíaca Alvo: <strong>' + fcMin + ' - ' + fcMaxAlvo + ' bpm</strong>';
+    document.getElementById('detalheResultado').textContent = 'FC Máxima estimada: ' + fcMax + ' bpm | Zona moderada (50%): ' + fcMin + ' bpm | Zona máxima (85%): ' + fcMaxAlvo + ' bpm';
+    return false;
+  }
+  </script>
+</body>
+</html>

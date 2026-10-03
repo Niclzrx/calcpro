@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora Básica - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+  .calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 16px; }
+  .calc-buttons button { padding: 16px; font-size: 1.2em; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; background: #f8f9fa; }
+  .calc-buttons button:hover { background: #e2e6ea; }
+  .calc-buttons button.operator { background: #007bff; color: white; }
+  .calc-buttons button.operator:hover { background: #0056b3; }
+  .calc-buttons button.clear { background: #dc3545; color: white; }
+  .calc-buttons button.clear:hover { background: #a71d2a; }
+  .calc-buttons button.equals { background: #28a745; color: white; }
+  .calc-buttons button.equals:hover { background: #1e7e34; }
+  .calc-display { font-size: 2em; text-align: right; padding: 12px; border: 1px solid #ddd; border-radius: 6px; background: #f8f9fa; min-height: 50px; word-break: break-all; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Básica</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora Básica</h1>
+      <div class="calc-display" id="display">0</div>
+      <div class="calc-buttons">
+        <button class="clear" onclick="limpar()">C</button>
+        <button onclick="apagar()">⌫</button>
+        <button class="operator" onclick="operador('%')">%</button>
+        <button class="operator" onclick="operador('/')">÷</button>
+        <button onclick="numero('7')">7</button>
+        <button onclick="numero('8')">8</button>
+        <button onclick="numero('9')">9</button>
+        <button class="operator" onclick="operador('*')">×</button>
+        <button onclick="numero('4')">4</button>
+        <button onclick="numero('5')">5</button>
+        <button onclick="numero('6')">6</button>
+        <button class="operator" onclick="operador('-')">−</button>
+        <button onclick="numero('1')">1</button>
+        <button onclick="numero('2')">2</button>
+        <button onclick="numero('3')">3</button>
+        <button class="operator" onclick="operador('+')">+</button>
+        <button onclick="numero('0')">0</button>
+        <button onclick="numero('.')">.</button>
+        <button class="equals" onclick="igual()" style="grid-column: span 2;">=</button>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  let valorAtual = '0', anterior = '', operacao = null, resetar = false;
+  function atualizarDisplay() { document.getElementById('display').textContent = valorAtual; }
+  function numero(n) {
+    if (resetar) { valorAtual = n === '.' ? '0.' : n; resetar = false; }
+    else if (n === '.' && valorAtual.includes('.')) return;
+    else { valorAtual = valorAtual === '0' && n !== '.' ? n : valorAtual + n; }
+    atualizarDisplay();
+  }
+  function operador(op) {
+    if (operacao && !resetar) igual();
+    anterior = valorAtual;
+    operacao = op;
+    resetar = true;
+  }
+  function igual() {
+    if (!operacao) return;
+    const a = parseFloat(anterior), b = parseFloat(valorAtual);
+    let r;
+    switch (operacao) {
+      case '+': r = a + b; break;
+      case '-': r = a - b; break;
+      case '*': r = a * b; break;
+      case '/': r = b !== 0 ? a / b : 'Erro'; break;
+      case '%': r = a % b; break;
+    }
+    valorAtual = String(r);
+    operacao = null;
+    anterior = '';
+    resetar = true;
+    atualizarDisplay();
+  }
+  function limpar() { valorAtual = '0'; anterior = ''; operacao = null; resetar = false; atualizarDisplay(); }
+  function apagar() {
+    if (valorAtual.length > 1) valorAtual = valorAtual.slice(0, -1);
+    else valorAtual = '0';
+    atualizarDisplay();
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora RMD - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / RMD</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora RMD (Required Minimum Distribution)</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="saldo">Saldo da Conta de Aposentadoria (R$)</label>
+          <input type="number" id="saldo" step="0.01" placeholder="Ex: 500000" required>
+        </div>
+        <div class="form-group">
+          <label for="idade">Idade do Titular</label>
+          <input type="number" id="idade" placeholder="Ex: 72" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var saldo = val('saldo');
+    var idade = val('idade');
+    if (saldo <= 0) { alert('Informe um saldo válido.'); return false; }
+    if (idade < 72) { alert('A idade mínima para RMD é 72 anos.'); return false; }
+    var tabela = {
+      72: 27.4, 73: 26.5, 74: 25.5, 75: 24.6, 76: 23.7, 77: 22.9,
+      78: 22.0, 79: 21.1, 80: 20.2, 81: 19.4, 82: 18.5, 83: 17.7,
+      84: 16.8, 85: 16.0, 86: 15.2, 87: 14.4, 88: 13.7, 89: 12.9,
+      90: 12.2, 91: 11.5, 92: 10.8, 93: 10.1, 94: 9.5, 95: 8.9
+    };
+    var fator = tabela[idade];
+    if (!fator) { alert('Idade fora da tabela IRS (72-95).'); return false; }
+    var rmd = saldo / fator;
+    document.getElementById('valorResultado').textContent = fmtCurrency(rmd);
+    document.getElementById('detalheResultado').innerHTML =
+      'Fator IRS (idade ' + idade + '): ' + fmt(fator, 1) + '<br>' +
+      'Saldo: ' + fmtCurrency(saldo) + '<br>' +
+      'Saída Mínima Requerida: ' + fmtCurrency(rmd);
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

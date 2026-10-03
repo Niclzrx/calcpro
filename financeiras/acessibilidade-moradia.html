@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Acessibilidade à Moradia - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Acessibilidade à Moradia</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Acessibilidade à Moradia</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Renda Mensal (R$)</label>
+            <input type="number" id="renda" step="0.01" placeholder="Ex: 5000">
+          </div>
+          <div class="form-group">
+            <label>Gastos com Moradia (R$)</label>
+            <input type="number" id="gastos" step="0.01" placeholder="Ex: 1500">
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const renda = val('renda');
+    const gastos = val('gastos');
+
+    if (renda <= 0) {
+      alert('Informe a renda mensal.');
+      return false;
+    }
+
+    const percentual = (gastos / renda) * 100;
+    let classificacao, cor;
+
+    if (percentual <= 30) {
+      classificacao = 'Acessível';
+      cor = '✅';
+    } else if (percentual <= 50) {
+      classificacao = 'Moderado';
+      cor = '⚠️';
+    } else {
+      classificacao = 'Inacessível';
+      cor = '❌';
+    }
+
+    const limite30 = renda * 0.30;
+    const limite50 = renda * 0.50;
+
+    document.getElementById('valorResultado').textContent = `${fmtPercent(percentual)} da renda`;
+    document.getElementById('detalheResultado').textContent = `${cor} Classificação: ${classificacao} | Limite recomendado (30%): ${fmtCurrency(limite30)} | Limite máximo (50%): ${fmtCurrency(limite50)}`;
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Pagamentos - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Pagamentos</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Pagamentos</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valorPresente">Valor Presente</label>
+          <input type="number" id="valorPresente" placeholder="Ex: 50000" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taxaJuros">Taxa de Juros por Período (%)</label>
+            <input type="number" id="taxaJuros" step="0.01" placeholder="Ex: 1" required>
+          </div>
+          <div class="form-group">
+            <label for="numPagamentos">Número de Pagamentos</label>
+            <input type="number" id="numPagamentos" placeholder="Ex: 12" required>
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var pv = val('valorPresente');
+    var r = val('taxaJuros') / 100;
+    var n = val('numPagamentos');
+    var parcela;
+    if (r === 0) {
+      parcela = pv / n;
+    } else {
+      parcela = pv * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+    }
+    var totalPago = parcela * n;
+    var totalJuros = totalPago - pv;
+    document.getElementById('valorResultado').textContent = 'Parcela por Pagamento: ' + fmtCurrency(parcela);
+    document.getElementById('detalheResultado').innerHTML =
+      'Total Pago: ' + fmtCurrency(totalPago) + '<br>' +
+      'Total de Juros: ' + fmtCurrency(totalJuros);
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

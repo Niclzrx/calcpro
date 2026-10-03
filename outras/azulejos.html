@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Azulejos - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Calculadora de Azulejos</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Azulejos</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="areaParede">Área da Parede (m²)</label>
+          <input type="number" id="areaParede" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="areaAzulejo">Área do Azulejo (m²)</label>
+          <input type="number" id="areaAzulejo" step="0.0001" value="0.04" required>
+        </div>
+        <div class="form-group">
+          <label for="sobras">Percentual de Sobras (%)</label>
+          <input type="number" id="sobras" step="1" value="10">
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const areaParede = val('areaParede');
+    const areaAzulejo = val('areaAzulejo');
+    const sobras = val('sobras');
+
+    if (areaAzulejo <= 0) {
+      document.getElementById('valorResultado').textContent = 'Área do azulejo deve ser maior que zero';
+      document.getElementById('detalheResultado').textContent = '';
+      document.getElementById('resultado').classList.add('show');
+      return false;
+    }
+
+    const qtdBase = areaParede / areaAzulejo;
+    const qtdTotal = Math.ceil(qtdBase * (1 + sobras / 100));
+
+    document.getElementById('valorResultado').textContent = qtdTotal + ' azulejos';
+    document.getElementById('detalheResultado').textContent =
+      'Base: ' + Math.ceil(qtdBase) + ' + ' + sobras + '% sobras = ' + qtdTotal + ' azulejos';
+    document.getElementById('resultado').classList.add('show');
+    return false;
+  }
+  </script>
+</body>
+</html>

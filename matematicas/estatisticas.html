@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Estatísticas - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Calculadora de Estatísticas</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Estatísticas</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="numeros">Números (separados por vírgula)</label>
+          <input type="text" id="numeros" required placeholder="Ex: 4, 8, 6, 3, 7, 2, 9">
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>&copy; 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var input = document.getElementById('numeros').value;
+    var nums = input.split(',').map(function(s) { return parseFloat(s.trim()); }).filter(function(n) { return !isNaN(n); });
+    if (nums.length === 0) {
+      alert('Por favor, insira pelo menos um número válido.');
+      return false;
+    }
+    nums.sort(function(a, b) { return a - b; });
+    var n = nums.length;
+    var soma = nums.reduce(function(a, b) { return a + b; }, 0);
+    var media = soma / n;
+    var mediana;
+    if (n % 2 === 0) {
+      mediana = (nums[n / 2 - 1] + nums[n / 2]) / 2;
+    } else {
+      mediana = nums[Math.floor(n / 2)];
+    }
+    var freq = {};
+    nums.forEach(function(x) { freq[x] = (freq[x] || 0) + 1; });
+    var maxFreq = 0;
+    var moda = [];
+    for (var k in freq) {
+      if (freq[k] > maxFreq) {
+        maxFreq = freq[k];
+        moda = [parseFloat(k)];
+      } else if (freq[k] === maxFreq) {
+        moda.push(parseFloat(k));
+      }
+    }
+    if (maxFreq === 1) moda = [];
+    var minimo = nums[0];
+    var maximo = nums[n - 1];
+    var amplitude = maximo - minimo;
+    var mediaQuadrados = nums.reduce(function(a, b) { return a + b * b; }, 0) / n;
+    var variancia = mediaQuadrados - media * media;
+    var desvioPadrao = Math.sqrt(variancia);
+    document.getElementById('valorResultado').textContent = 'Média = ' + fmt(media);
+    var detalhe = 'Mediana: ' + fmt(mediana) +
+      '\nModa: ' + (moda.length > 0 ? moda.map(fmt).join(', ') : 'Sem moda') +
+      '\nAmplitude: ' + fmt(amplitude) +
+      '\nMínimo: ' + fmt(minimo) + ' | Máximo: ' + fmt(maximo) +
+      '\nVariância: ' + fmt(variancia) +
+      '\nDesvio Padrão: ' + fmt(desvioPadrao) +
+      '\nQuantidade: ' + n;
+    document.getElementById('detalheResultado').textContent = detalhe;
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

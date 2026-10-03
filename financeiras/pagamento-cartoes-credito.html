@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Pagamento de Cartões de Crédito - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Pagamento de Cartões de Crédito</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Pagamento de Cartões de Crédito</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="saldo">Saldo Devedor (R$)</label>
+          <input type="text" id="saldo" required>
+        </div>
+        <div class="form-group">
+          <label for="taxaJuros">Taxa de Juros Mensal (%)</label>
+          <input type="number" id="taxaJuros" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="pagamentoMensal">Pagamento Mensal (R$)</label>
+          <input type="text" id="pagamentoMensal" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var saldo = parseFloat(document.getElementById('saldo').value.replace(/[^\d,]/g, '').replace(',', '.'));
+    var taxaJuros = parseFloat(document.getElementById('taxaJuros').value) / 100;
+    var pagamentoMensal = parseFloat(document.getElementById('pagamentoMensal').value.replace(/[^\d,]/g, '').replace(',', '.'));
+
+    var saldoAtual = saldo;
+    var meses = 0;
+    var totalPago = 0;
+    var totalJuros = 0;
+    var maxMeses = 600;
+
+    while (saldoAtual > 0 && meses < maxMeses) {
+      var jurosMes = saldoAtual * taxaJuros;
+      totalJuros += jurosMes;
+      saldoAtual += jurosMes;
+
+      var pagamento = Math.min(pagamentoMensal, saldoAtual);
+      saldoAtual -= pagamento;
+      totalPago += pagamento;
+      meses++;
+
+      if (pagamento < jurosMes && saldoAtual > 0) {
+        document.getElementById('valorResultado').innerHTML = 'Pagamento insuficiente!';
+        document.getElementById('detalheResultado').innerHTML = 'O pagamento mensal não cobre os juros. A dívida nunca será quitada.';
+        document.getElementById('resultado').style.display = 'block';
+        return false;
+      }
+    }
+
+    var tempoAnos = Math.floor(meses / 12);
+    var tempoMesesRestantes = meses % 12;
+    var tempoTexto = '';
+    if (tempoAnos > 0) tempoTexto += tempoAnos + ' ano(s) ';
+    if (tempoMesesRestantes > 0) tempoTexto += tempoMesesRestantes + ' mês(es)';
+    if (tempoTexto === '') tempoTexto = '0 meses';
+
+    var economia = (saldo * (1 + taxaJuros * meses)) - totalPago;
+    var jurosEfetivos = ((totalJuros / saldo) * 100).toFixed(2);
+
+    document.getElementById('valorResultado').innerHTML = 'Tempo para Quitar: ' + tempoTexto;
+    document.getElementById('detalheResultado').innerHTML =
+      'Total Pago: R$ ' + totalPago.toFixed(2) + '<br>' +
+      'Total de Juros: R$ ' + totalJuros.toFixed(2) + '<br>' +
+      'Juros Efetivos: ' + jurosEfetivos + '% do saldo original';
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

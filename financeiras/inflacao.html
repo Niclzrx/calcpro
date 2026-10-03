@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Inflação - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Inflação</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Inflação</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valor">Valor Atual</label>
+          <input type="number" id="valor" step="0.01" placeholder="Ex: 1000" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taxaInflacao">Taxa de Inflação Anual (%)</label>
+            <input type="number" id="taxaInflacao" step="0.01" placeholder="Ex: 5" required>
+          </div>
+          <div class="form-group">
+            <label for="anos">Número de Anos</label>
+            <input type="number" id="anos" placeholder="Ex: 10" required>
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var valor = val('valor');
+    var taxaInflacao = val('taxaInflacao') / 100;
+    var anos = val('anos');
+    var valorFuturo = valor * Math.pow(1 + taxaInflacao, anos);
+    var valorReal = valor / Math.pow(1 + taxaInflacao, anos);
+    var perdaPoder = valor - valorReal;
+    document.getElementById('valorResultado').textContent = 'Valor Ajustado pela Inflação: ' + fmtCurrency(valorFuturo);
+    document.getElementById('detalheResultado').innerHTML =
+      'Poder de Compra Atual (Descontando Inflação): ' + fmtCurrency(valorReal) + '<br>' +
+      'Perda de Poder de Compra: ' + fmtCurrency(perdaPoder);
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

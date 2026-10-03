@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Divisão Longa - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Divisão Longa</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Divisão Longa</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="dividendo">Dividendo</label>
+          <input type="number" id="dividendo" min="0" required>
+        </div>
+        <div class="form-group">
+          <label for="divisor">Divisor</label>
+          <input type="number" id="divisor" min="1" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const dividendo = parseInt(document.getElementById('dividendo').value);
+    const divisor = parseInt(document.getElementById('divisor').value);
+    if (isNaN(dividendo) || isNaN(divisor) || divisor === 0) {
+      document.getElementById('valorResultado').textContent = 'Valores inválidos';
+      document.getElementById('detalheResultado').textContent = '';
+      return false;
+    }
+    const quociente = Math.floor(dividendo / divisor);
+    const resto = dividendo % divisor;
+    const passos = [];
+    let atual = dividendo;
+    const digitos = String(dividendo).split('').map(Number);
+    let parcial = 0;
+    let passoNum = 0;
+    for (let i = 0; i < digitos.length; i++) {
+      parcial = parcial * 10 + digitos[i];
+      if (parcial >= divisor || passos.length > 0) {
+        const q = Math.floor(parcial / divisor);
+        const sub = q * divisor;
+        const novo = parcial - sub;
+        passoNum++;
+        passos.push(
+          `Passo ${passoNum}: Traga ${digitos[i]}, parcial = ${parcial}\n` +
+          `  ${parcial} ÷ ${divisor} = ${q} (resto ${novo})\n` +
+          `  ${q} × ${divisor} = ${sub}\n` +
+          `  ${parcial} - ${sub} = ${novo}`
+        );
+        parcial = novo;
+      }
+    }
+    if (passos.length === 0) {
+      passos.push(`${dividendo} ÷ ${divisor} = ${quociente} (resto ${resto})`);
+    }
+    document.getElementById('valorResultado').textContent = `${dividendo} ÷ ${divisor} = ${quociente} R ${resto}`;
+    document.getElementById('detalheResultado').textContent = passos.join('\n\n');
+    return false;
+  }
+  </script>
+</body>
+</html>

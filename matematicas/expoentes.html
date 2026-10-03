@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Expoentes - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Calculadora de Expoentes</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Expoentes</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="base">Base</label>
+          <input type="number" id="base" step="any" placeholder="Ex: 2" required>
+        </div>
+        <div class="form-group">
+          <label for="expoente">Expoente</label>
+          <input type="number" id="expoente" step="any" placeholder="Ex: 3" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const base = parseFloat(document.getElementById('base').value);
+    const expoente = parseFloat(document.getElementById('expoente').value);
+
+    if (isNaN(base) || isNaN(expoente)) {
+      document.getElementById('valorResultado').textContent = 'Erro';
+      document.getElementById('detalheResultado').textContent = 'Insira valores válidos';
+      return false;
+    }
+
+    if (base === 0 && expoente <= 0) {
+      document.getElementById('valorResultado').textContent = 'Indefinido';
+      document.getElementById('detalheResultado').textContent = '0^0, 0^(-n) é indefinido';
+      return false;
+    }
+
+    const resultado = Math.pow(base, expoente);
+
+    if (isNaN(resultado) || !isFinite(resultado)) {
+      document.getElementById('valorResultado').textContent = 'Indefinido';
+      document.getElementById('detalheResultado').textContent = 'Resultado não é um número real finito';
+      return false;
+    }
+
+    let explicacao = base + '^' + expoente + ' = ' + resultado;
+    if (expoente < 0) {
+      explicacao += '\nBase^expoente negativo = 1/(base^|expoente|) = 1/(' + base + '^' + Math.abs(expoente) + ') = ' + resultado;
+    }
+    if (expoente % 1 !== 0) {
+      explicacao += '\nExpoente fracionário: ' + base + '^' + expoente + ' = ' + resultado;
+    }
+
+    document.getElementById('valorResultado').textContent = resultado;
+    document.getElementById('detalheResultado').textContent = explicacao;
+    return false;
+  }
+  </script>
+</body>
+</html>

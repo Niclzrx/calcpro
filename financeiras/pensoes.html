@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Pensões - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Pensões</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Pensões</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="salarioContribuicao">Salário de Contribuição (R$)</label>
+          <input type="text" id="salarioContribuicao" required>
+        </div>
+        <div class="form-group">
+          <label for="tempoContribuicao">Tempo de Contribuição (anos)</label>
+          <input type="number" id="tempoContribuicao" required>
+        </div>
+        <div class="form-group">
+          <label for="idadeAtual">Idade Atual</label>
+          <input type="number" id="idadeAtual" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var salarioContribuicao = parseFloat(document.getElementById('salarioContribuicao').value.replace(/[^\d,]/g, '').replace(',', '.'));
+    var tempoContribuicao = parseFloat(document.getElementById('tempoContribuicao').value);
+    var idadeAtual = parseFloat(document.getElementById('idadeAtual').value);
+
+    var totalContribuicoes = salarioContribuicao * tempoContribuicao * 12;
+    var mediaSalarial = salarioContribuicao;
+
+    var mesesContribuicao = tempoContribuicao * 12;
+    var fatorAposentadoria = Math.min(mesesContribuicao / 480, 1);
+    var pontuacao = mesesContribuicao / 12;
+
+    var valorPensao = mediaSalarial * fatorAposentadoria;
+    var tempoRestanteAposentadoria = Math.max(0, 65 - idadeAtual);
+
+    var acumuladoEstimado = totalContribuicoes * 1.05;
+
+    document.getElementById('valorResultado').innerHTML = 'Pensão Estimada: R$ ' + valorPensao.toFixed(2) + '/mês';
+    document.getElementById('detalheResultado').innerHTML =
+      'Total Contribuído: R$ ' + totalContribuicoes.toFixed(2) + '<br>' +
+      'Meses de Contribuição: ' + mesesContribuicao + '<br>' +
+      'Fator Aposentadoria: ' + fatorAposentadoria.toFixed(4) + '<br>' +
+      'Tempo até Aposentadoria (65 anos): ' + tempoRestanteAposentadoria + ' anos<br>' +
+      'Acumulado Estimado (juros): R$ ' + acumuladoEstimado.toFixed(2);
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

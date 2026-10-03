@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Potência - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Calculadora de Potência</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Potência Elétrica</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="tensao">Tensão (V)</label>
+          <input type="number" id="tensao" step="0.01" min="0.01" placeholder="Ex: 220" required>
+        </div>
+        <div class="form-group">
+          <label for="corrente">Corrente (A)</label>
+          <input type="number" id="corrente" step="0.01" min="0.01" placeholder="Ex: 10" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const tensao = parseFloat(document.getElementById('tensao').value);
+    const corrente = parseFloat(document.getElementById('corrente').value);
+
+    if (isNaN(tensao) || isNaN(corrente) || tensao <= 0 || corrente <= 0) {
+      document.getElementById('valorResultado').textContent = 'Valores inválidos';
+      document.getElementById('detalheResultado').textContent = '';
+      return false;
+    }
+
+    const watts = tensao * corrente;
+    const kilowatts = watts / 1000;
+    const resistencia = tensao / corrente;
+
+    document.getElementById('valorResultado').textContent = watts.toFixed(2) + ' W';
+    document.getElementById('detalheResultado').innerHTML =
+      kilowatts.toFixed(4) + ' kW<br>' +
+      'Fórmula: P = V × I = ' + tensao + ' × ' + corrente + '<br>' +
+      'Resistência equivalente: ' + resistencia.toFixed(2) + ' Ω';
+    return false;
+  }
+  </script>
+</body>
+</html>

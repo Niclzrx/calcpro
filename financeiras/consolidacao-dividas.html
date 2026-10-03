@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consolidação de Dívidas - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Consolidação de Dívidas</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Consolidação de Dívidas</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="dividaTotal">Valor Total da Dívida (R$)</label>
+          <input type="number" id="dividaTotal" step="0.01" placeholder="Ex: 50000" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taxaAtual">Taxa de Juros Atual (% ao mês)</label>
+            <input type="number" id="taxaAtual" step="0.01" placeholder="Ex: 3.5" required>
+          </div>
+          <div class="form-group">
+            <label for="taxaNova">Nova Taxa de Juros (% ao mês)</label>
+            <input type="number" id="taxaNova" step="0.01" placeholder="Ex: 1.5" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="prazoNovo">Prazo da Consolidação (meses)</label>
+          <input type="number" id="prazoNovo" placeholder="Ex: 60" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var divida = val('dividaTotal');
+    var taxaAtual = val('taxaAtual') / 100;
+    var taxaNova = val('taxaNova') / 100;
+    var meses = val('prazoNovo');
+
+    var parcelaAtual = calcAmortization(divida, taxaAtual, meses);
+    var totalAtual = parcelaAtual * meses;
+    var jurosAtual = totalAtual - divida;
+
+    var parcelaNova = calcAmortization(divida, taxaNova, meses);
+    var totalNovo = parcelaNova * meses;
+    var jurosNovo = totalNovo - divida;
+
+    var economiaTotal = totalAtual - totalNovo;
+    var economiaParcela = parcelaAtual - parcelaNova;
+
+    document.getElementById('valorResultado').textContent = 'Economia Total: ' + fmtCurrency(economiaTotal);
+    document.getElementById('detalheResultado').innerHTML =
+      'Parcela Atual: ' + fmtCurrency(parcelaAtual) + '<br>' +
+      'Nova Parcela: ' + fmtCurrency(parcelaNova) + '<br>' +
+      'Economia Mensal: ' + fmtCurrency(economiaParcela) + '<br>' +
+      'Total Pago (Atual): ' + fmtCurrency(totalAtual) + ' (Juros: ' + fmtCurrency(jurosAtual) + ')<br>' +
+      'Total Pago (Novo): ' + fmtCurrency(totalNovo) + ' (Juros: ' + fmtCurrency(jurosNovo) + ')';
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

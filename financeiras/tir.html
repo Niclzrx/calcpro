@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de TIR - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Calculadora de TIR</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de TIR (Taxa Interna de Retorno)</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="investimentoInicial">Investimento Inicial (R$)</label>
+          <input type="number" id="investimentoInicial" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="fluxosCaixa">Fluxos de Caixa (separados por vírgula)</label>
+          <input type="text" id="fluxosCaixa" placeholder="ex: 5000, 6000, 7000, 8000" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>&copy; 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var investimento = parseFloat(document.getElementById('investimentoInicial').value);
+    var fluxosStr = document.getElementById('fluxosCaixa').value;
+    var fluxos = fluxosStr.split(',').map(function(f) { return parseFloat(f.trim()); });
+
+    // Calcular TIR usando método de Newton-Raphson
+    function calcularVPF(taxa) {
+      var vpf = -investimento;
+      for (var i = 0; i < fluxos.length; i++) {
+        vpf += fluxos[i] / Math.pow(1 + taxa, i + 1);
+      }
+      return vpf;
+    }
+
+    function calcularDerivada(taxa) {
+      var derivada = 0;
+      for (var i = 0; i < fluxos.length; i++) {
+        derivada -= (i + 1) * fluxos[i] / Math.pow(1 + taxa, i + 2);
+      }
+      return derivada;
+    }
+
+    var tir = 0.1; // chute inicial
+    for (var iter = 0; iter < 1000; iter++) {
+      var vpf = calcularVPF(tir);
+      var derivada = calcularDerivada(tir);
+      if (Math.abs(derivada) < 1e-12) break;
+      var novoTir = tir - vpf / derivada;
+      if (Math.abs(novoTir - tir) < 1e-10) break;
+      tir = novoTir;
+    }
+
+    var tirPct = tir * 100;
+    var totalRecebido = 0;
+    for (var i = 0; i < fluxos.length; i++) {
+      totalRecebido += fluxos[i];
+    }
+    var lucroTotal = totalRecebido - investimento;
+
+    var html = '<strong>TIR:</strong> ' + tirPct.toFixed(4) + '% ao período<br>';
+    html += '<strong>TIR Anualizada:</strong> ' + ((Math.pow(1 + tir, 12) - 1) * 100).toFixed(2) + '%<br>';
+    html += '<strong>Investimento Inicial:</strong> R$ ' + investimento.toFixed(2) + '<br>';
+    html += '<strong>Total Recebido:</strong> R$ ' + totalRecebido.toFixed(2) + '<br>';
+    html += '<strong>Lucro Total:</strong> R$ ' + lucroTotal.toFixed(2) + '<br>';
+    html += '<strong>Número de Períodos:</strong> ' + fluxos.length;
+
+    document.getElementById('valorResultado').innerHTML = 'TIR: ' + tirPct.toFixed(4) + '%';
+    document.getElementById('detalheResultado').innerHTML = html;
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de PIB - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Calculadora de PIB</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de PIB</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="pibNominal">PIB Nominal (R$)</label>
+          <input type="number" id="pibNominal" step="0.01" min="0" placeholder="Ex: 2000000000000" required>
+        </div>
+        <div class="form-group">
+          <label for="populacao">População</label>
+          <input type="number" id="populacao" min="1" placeholder="Ex: 214000000" required>
+        </div>
+        <div class="form-group">
+          <label for="crescimento">Crescimento Anual (%)</label>
+          <input type="number" id="crescimento" step="0.01" value="2.5" required>
+        </div>
+        <div class="form-group">
+          <label for="anos">Anos para Projeção</label>
+          <input type="number" id="anos" min="1" max="50" value="5" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function formatCurrency(val) {
+    if (val >= 1e12) return 'R$ ' + (val / 1e12).toFixed(2) + ' trilhão(ões)';
+    if (val >= 1e9) return 'R$ ' + (val / 1e9).toFixed(2) + ' bilhão(ões)';
+    if (val >= 1e6) return 'R$ ' + (val / 1e6).toFixed(2) + ' milhão(ões)';
+    return 'R$ ' + val.toFixed(2);
+  }
+
+  function formatPopulation(val) {
+    if (val >= 1e9) return (val / 1e9).toFixed(2) + ' bilhões';
+    if (val >= 1e6) return (val / 1e6).toFixed(2) + ' milhões';
+    return Math.round(val).toLocaleString('pt-BR');
+  }
+
+  function calcular() {
+    const pib = parseFloat(document.getElementById('pibNominal').value);
+    const pop = parseFloat(document.getElementById('populacao').value);
+    const taxa = parseFloat(document.getElementById('crescimento').value) / 100;
+    const anos = parseInt(document.getElementById('anos').value);
+
+    if (isNaN(pib) || isNaN(pop) || pib <= 0 || pop <= 0) {
+      document.getElementById('valorResultado').textContent = 'Valores inválidos';
+      document.getElementById('detalheResultado').textContent = '';
+      return false;
+    }
+
+    const pibPerCapita = pib / pop;
+    const pibFuturo = pib * Math.pow(1 + taxa, anos);
+    const popFutura = pop * Math.pow(1.005, anos);
+    const perCapitaFuturo = pibFuturo / popFutura;
+
+    document.getElementById('valorResultado').textContent = 'PIB per Capita: ' + formatCurrency(pibPerCapita);
+    document.getElementById('detalheResultado').innerHTML =
+      'PIB per Capita atual: ' + formatCurrency(pibPerCapita) + '<br>' +
+      'Projeção em ' + anos + ' anos:<br>' +
+      '• PIB: ' + formatCurrency(pibFuturo) + '<br>' +
+      '• População: ' + formatPopulation(popFutura) + '<br>' +
+      '• PIB per Capita: ' + formatCurrency(perCapitaFuturo);
+    return false;
+  }
+  </script>
+</body>
+</html>

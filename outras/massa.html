@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Massa - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Calculadora de Massa</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Massa</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valor">Valor</label>
+          <input type="number" id="valor" step="0.01" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="origem">Unidade de Origem</label>
+            <select id="origem">
+              <option value="kg">Quilograma (kg)</option>
+              <option value="g">Grama (g)</option>
+              <option value="mg">Miligrama (mg)</option>
+              <option value="lb">Libra (lb)</option>
+              <option value="oz">Onça (oz)</option>
+              <option value="t">Tonelada (t)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="destino">Unidade de Destino</label>
+            <select id="destino">
+              <option value="kg">Quilograma (kg)</option>
+              <option value="g" selected>Grama (g)</option>
+              <option value="mg">Miligrama (mg)</option>
+              <option value="lb">Libra (lb)</option>
+              <option value="oz">Onça (oz)</option>
+              <option value="t">Tonelada (t)</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const valor = val('valor');
+    const origem = document.getElementById('origem').value;
+    const destino = document.getElementById('destino').value;
+
+    const paraKg = { kg: 1, g: 0.001, mg: 0.000001, lb: 0.453592, oz: 0.0283495, t: 1000 };
+    const emKg = valor * paraKg[origem];
+    const resultado = emKg / paraKg[destino];
+
+    const nomes = { kg: 'Quilograma', g: 'Grama', mg: 'Miligrama', lb: 'Libra', oz: 'Onça', t: 'Tonelada' };
+
+    document.getElementById('valorResultado').textContent = fmt(resultado) + ' ' + destino;
+    document.getElementById('detalheResultado').textContent =
+      valor + ' ' + nomes[origem] + ' = ' + fmt(resultado) + ' ' + nomes[destino];
+    document.getElementById('resultado').classList.add('show');
+    return false;
+  }
+  </script>
+</body>
+</html>

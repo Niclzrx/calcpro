@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora 401K - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Calculadora 401K</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora 401K</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Contribuição Mensal (R$)</label>
+            <input type="number" id="contribuicao" step="0.01" placeholder="Ex: 500">
+          </div>
+          <div class="form-group">
+            <label>Matching do Empregador (%)</label>
+            <input type="number" id="matching" step="0.01" placeholder="Ex: 50">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Taxa de Retorno Anual (%)</label>
+            <input type="number" id="retorno" step="0.01" placeholder="Ex: 8">
+          </div>
+          <div class="form-group">
+            <label>Anos</label>
+            <input type="number" id="anos" step="1" placeholder="Ex: 30">
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const contribuicao = val('contribuicao');
+    const matching = val('matching') / 100;
+    const retornoAnual = val('retorno') / 100;
+    const anos = val('anos');
+
+    if (contribuicao <= 0 || retornoAnual <= 0 || anos <= 0) {
+      alert('Preencha todos os campos corretamente.');
+      return false;
+    }
+
+    const contribuicaoEmpregador = contribuicao * matching;
+    const contribuicaoTotal = contribuicao + contribuicaoEmpregador;
+    const taxaMensal = Math.pow(1 + retornoAnual, 1/12) - 1;
+    const meses = anos * 12;
+
+    let saldo = 0;
+    for (let m = 0; m < meses; m++) {
+      saldo = (saldo + contribuicaoTotal) * (1 + taxaMensal);
+    }
+
+    const totalContribuido = contribuicaoTotal * meses;
+    const totalRendimentos = saldo - totalContribuido;
+    const totalContribuidoFuncionario = contribuicao * meses;
+
+    document.getElementById('valorResultado').textContent = `Saldo na Aposentadoria: ${fmtCurrency(saldo)}`;
+    document.getElementById('detalheResultado').textContent = `Sua contribuição: ${fmtCurrency(totalContribuidoFuncionario)} | Matching empregador: ${fmtCurrency(totalContribuido - totalContribuidoFuncionario)} | Rendimentos: ${fmtCurrency(totalRendimentos)}`;
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

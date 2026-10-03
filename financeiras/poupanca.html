@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Poupança - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Poupança</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Poupança</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Depósito Mensal (R$)</label>
+            <input type="number" id="deposito" step="0.01" placeholder="Ex: 500">
+          </div>
+          <div class="form-group">
+            <label>Taxa Poupança Anual (%)</label>
+            <input type="number" id="taxa" step="0.01" placeholder="Ex: 6.17">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Tempo (meses)</label>
+          <input type="number" id="tempo" step="1" placeholder="Ex: 24">
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const deposito = val('deposito');
+    const taxaAnual = val('taxa') / 100;
+    const tempo = val('tempo');
+
+    if (deposito <= 0 || taxaAnual <= 0 || tempo <= 0) {
+      alert('Preencha todos os campos corretamente.');
+      return false;
+    }
+
+    // Conversão da taxa anual para mensal (poupança TR + 0.5% a.m. ou taxa fixa)
+    const taxaMensal = Math.pow(1 + taxaAnual, 1/12) - 1;
+
+    let saldo = 0;
+    let totalDepositado = 0;
+
+    for (let m = 0; m < tempo; m++) {
+      saldo = (saldo + deposito) * (1 + taxaMensal);
+      totalDepositado += deposito;
+    }
+
+    const totalJuros = saldo - totalDepositado;
+
+    document.getElementById('valorResultado').textContent = `Saldo Total: ${fmtCurrency(saldo)}`;
+    document.getElementById('detalheResultado').textContent = `Total depositado: ${fmtCurrency(totalDepositado)} | Juros ganhos: ${fmtCurrency(totalJuros)} | Rendimento: ${fmtPercent((totalJuros / totalDepositado) * 100)}`;
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

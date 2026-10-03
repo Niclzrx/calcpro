@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de IMC para Anorexia - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Saúde</a> / IMC para Anorexia</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de IMC para Anorexia</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="peso">Peso (kg)</label>
+            <input type="number" id="peso" step="0.1" min="1" required>
+          </div>
+          <div class="form-group">
+            <label for="altura">Altura (cm)</label>
+            <input type="number" id="altura" step="0.1" min="1" required>
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const peso = val('peso');
+    const altura = val('altura');
+
+    if (peso <= 0 || altura <= 0) {
+      alert('Por favor, preencha todos os campos com valores válidos.');
+      return false;
+    }
+
+    const imc = peso / Math.pow(altura / 100, 2);
+    let classificacao, risco;
+
+    if (imc < 16) {
+      classificacao = 'Magreza severa';
+      risco = 'Risco grave para a saúde. Magreza acentuada com comprometimento significativo. Procure ajuda médica imediatamente.';
+    } else if (imc < 17) {
+      classificacao = 'Magreza moderada';
+      risco = 'Risco moderado para a saúde. Magreza significativa que pode indicar restrição alimentar severa.';
+    } else if (imc < 18.5) {
+      classificacao = 'Magreza leve';
+      risco = 'Abaixo do peso. Pode indicar tendência a comportamentos alimentares restritivos.';
+    } else if (imc < 25) {
+      classificacao = 'Peso normal';
+      risco = 'Peso dentro da faixa saudável.';
+    } else if (imc < 30) {
+      classificacao = 'Sobrepeso';
+      risco = 'Acima do peso recomendado.';
+    } else {
+      classificacao = 'Obesidade';
+      risco = 'Obesidade com riscos à saúde.';
+    }
+
+    let alerta = '';
+    if (imc < 18.5) {
+      alerta = '<br><br><strong style="color: #dc2626;">⚠️ Atenção: IMC abaixo de 18,5 é considerado abaixo do peso. Se você está passando por dificuldades com alimentação, procure ajuda profissional. CVV: 188 (24h).</strong>';
+    }
+
+    document.getElementById('valorResultado').textContent = fmt(imc, 1) + ' kg/m²';
+    document.getElementById('detalheResultado').innerHTML =
+      'Classificação: ' + classificacao + '<br>' +
+      'Avaliação: ' + risco + '<br>' +
+      'Faixas de referência: <16 Magreza severa | 16-17 Magreza moderada | 17-18.5 Magreza leve | 18.5-25 Normal' +
+      alerta;
+
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

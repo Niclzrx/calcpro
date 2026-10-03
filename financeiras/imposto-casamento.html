@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Imposto de Casamento - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Imposto de Casamento</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Imposto de Casamento</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="rendaCasal">Renda Total do Casal (R$/mês)</label>
+          <input type="text" id="rendaCasal" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var rendaCasal = parseFloat(document.getElementById('rendaCasal').value.replace(/[^\d,]/g, '').replace(',', '.'));
+    var rendaAnual = rendaCasal * 12;
+
+    var faixas = [
+      { limite: 22847.76, aliquota: 0, parcela: 0 },
+      { limite: 28266.92, aliquota: 0.075, parcela: 1713.58 },
+      { limite: 37510.52, aliquota: 0.15, parcela: 3781.35 },
+      { limite: 46644.80, aliquota: 0.225, parcela: 6604.53 },
+      { limite: Infinity, aliquota: 0.275, parcela: 8948.75 }
+    ];
+
+    var impostoCasal = 0;
+    var impostoIndividual = 0;
+    var rendaIndividual = rendaCasal / 2;
+
+    for (var i = 0; i < faixas.length; i++) {
+      if (rendaAnual <= faixas[i].limite) {
+        impostoCasal = (rendaAnual * faixas[i].aliquota) - faixas[i].parcela;
+        break;
+      }
+    }
+    if (impostoCasal < 0) impostoCasal = 0;
+
+    var rendaAnualIndividual = rendaIndividual * 12;
+    for (var i = 0; i < faixas.length; i++) {
+      if (rendaAnualIndividual <= faixas[i].limite) {
+        impostoIndividual = ((rendaAnualIndividual * faixas[i].aliquota) - faixas[i].parcela) * 2;
+        break;
+      }
+    }
+    if (impostoIndividual < 0) impostoIndividual = 0;
+
+    var impacto = impostoCasal - impostoIndividual;
+    var status = impacto > 0 ? 'Aumento' : impacto < 0 ? 'Redução' : 'Sem alteração';
+
+    document.getElementById('valorResultado').innerHTML = 'Impacto do Casamento: R$ ' + Math.abs(impacto).toFixed(2);
+    document.getElementById('detalheResultado').innerHTML =
+      'Renda Anual do Casal: R$ ' + rendaAnual.toFixed(2) + '<br>' +
+      'IR Casal (Junto): R$ ' + impostoCasal.toFixed(2) + '<br>' +
+      'IR Casal (Separado): R$ ' + impostoIndividual.toFixed(2) + '<br>' +
+      'Situação: ' + status;
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

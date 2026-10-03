@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Leasing de Automóveis - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Leasing de Automóveis</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Leasing de Automóveis</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valorCarro">Valor do Veículo (R$)</label>
+          <input type="number" id="valorCarro" step="0.01" placeholder="Ex: 80000" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taxaJuros">Taxa de Juros Anual (%)</label>
+            <input type="number" id="taxaJuros" step="0.01" placeholder="Ex: 14" required>
+          </div>
+          <div class="form-group">
+            <label for="meses">Prazo (meses)</label>
+            <input type="number" id="meses" placeholder="Ex: 60" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="valorResidual">Valor Residual (R$)</label>
+          <input type="number" id="valorResidual" step="0.01" placeholder="Ex: 30000" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var valor = val('valorCarro');
+    var taxaAnual = val('taxaJuros') / 100;
+    var meses = val('meses');
+    var residual = val('valorResidual');
+    if (valor <= 0) { alert('Informe um valor válido.'); return false; }
+    if (taxaAnual < 0) { alert('Taxa não pode ser negativa.'); return false; }
+    if (meses <= 0) { alert('Prazo deve ser maior que 0.'); return false; }
+    if (residual < 0 || residual >= valor) { alert('Valor residual deve ser menor que o valor do carro.'); return false; }
+    var taxaMensal = taxaAnual / 12;
+    var parcela = calcAmortization(valor - residual, taxaMensal, meses);
+    var totalPago = parcela * meses + residual;
+    var totalJuros = totalPago - valor;
+    document.getElementById('valorResultado').textContent = fmtCurrency(parcela);
+    document.getElementById('detalheResultado').innerHTML =
+      'Parcela Mensal: ' + fmtCurrency(parcela) + '<br>' +
+      'Total Pago (parcelas + residual): ' + fmtCurrency(totalPago) + '<br>' +
+      'Total de Juros: ' + fmtCurrency(totalJuros);
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

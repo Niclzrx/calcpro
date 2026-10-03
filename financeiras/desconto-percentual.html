@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Desconto Percentual - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Desconto Percentual</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Desconto Percentual</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="precoOriginal">Preço Original (R$)</label>
+          <input type="number" id="precoOriginal" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="desconto">Desconto (%)</label>
+          <input type="number" id="desconto" step="0.01" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>&copy; 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var precoOriginal = parseFloat(document.getElementById('precoOriginal').value);
+    var desconto = parseFloat(document.getElementById('desconto').value);
+
+    var valorDesconto = precoOriginal * (desconto / 100);
+    var precoFinal = precoOriginal - valorDesconto;
+
+    document.getElementById('valorResultado').innerHTML =
+      'Preço Final: R$ ' + precoFinal.toFixed(2);
+    document.getElementById('detalheResultado').innerHTML =
+      'Economia: R$ ' + valorDesconto.toFixed(2) +
+      '<br>Desconto: ' + desconto + '%';
+
+    return false;
+  }
+  </script>
+</body>
+</html>

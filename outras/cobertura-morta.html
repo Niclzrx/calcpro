@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Cobertura Morta - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Calculadora de Cobertura Morta</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Cobertura Morta</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="area">Área (m²)</label>
+          <input type="number" id="area" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="profundidade">Profundidade (cm)</label>
+          <input type="number" id="profundidade" step="0.1" value="5" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const area = val('area');
+    const profundidade = val('profundidade');
+
+    const profundidadeM = profundidade / 100;
+    const volume = area * profundidadeM;
+
+    document.getElementById('valorResultado').textContent = fmt(volume) + ' m³';
+    document.getElementById('detalheResultado').textContent =
+      'Volume necessário: ' + fmt(volume) + ' m³ (' + fmt(volume * 1000) + ' litros)';
+    document.getElementById('resultado').classList.add('show');
+    return false;
+  }
+  </script>
+</body>
+</html>

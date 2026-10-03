@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Desvio Padrão - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Calculadora de Desvio Padrão</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Desvio Padrão</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="numeros">Números (separados por vírgula)</label>
+          <input type="text" id="numeros" placeholder="Ex: 4, 8, 6, 5, 3, 2, 8, 9, 2, 5" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const input = document.getElementById('numeros').value;
+    const nums = input.split(',').map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
+
+    if (nums.length < 2) {
+      document.getElementById('valorResultado').textContent = 'Erro';
+      document.getElementById('detalheResultado').textContent = 'Insira pelo menos 2 números válidos';
+      return false;
+    }
+
+    const n = nums.length;
+    const media = nums.reduce((a, b) => a + b, 0) / n;
+    const variancia = nums.reduce((soma, val) => soma + (val - media) ** 2, 0) / n;
+    const desvioPadrao = Math.sqrt(variancia);
+    const varianciaAmostral = nums.reduce((soma, val) => soma + (val - media) ** 2, 0) / (n - 1);
+    const desvioPadraoAmostral = Math.sqrt(varianciaAmostral);
+
+    document.getElementById('valorResultado').textContent = 'σ = ' + desvioPadrao.toFixed(4);
+    document.getElementById('detalheResultado').innerHTML =
+      'Quantidade: <strong>' + n + '</strong><br>' +
+      'Média (μ): <strong>' + media.toFixed(4) + '</strong><br>' +
+      'Variância (populacional, σ²): <strong>' + variancia.toFixed(4) + '</strong><br>' +
+      'Desvio Padrão (populacional, σ): <strong>' + desvioPadrao.toFixed(4) + '</strong><br>' +
+      'Variância (amostral, S²): <strong>' + varianciaAmostral.toFixed(4) + '</strong><br>' +
+      'Desvio Padrão (amostral, S): <strong>' + desvioPadraoAmostral.toFixed(4) + '</strong>';
+    return false;
+  }
+  </script>
+</body>
+</html>

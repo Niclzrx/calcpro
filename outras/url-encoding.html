@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Codificação/Decodificação de URL - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Codificação/Decodificação de URL</div>
+    </div>
+    <div class="calc-card">
+      <h1>Codificação/Decodificação de URL</h1>
+      <form onsubmit="return false">
+        <div class="form-group">
+          <label for="texto">Texto ou URL</label>
+          <textarea id="texto" rows="4" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:1rem;font-family:inherit;" placeholder="Digite o texto ou URL para codificar/decodificar"></textarea>
+        </div>
+        <div class="form-row">
+          <button type="button" class="btn" onclick="codificar()">Codificar</button>
+          <button type="button" class="btn" onclick="decodificar()" style="background:var(--text-light)">Decodificar</button>
+        </div>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado" style="font-size:1rem;word-break:break-all"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function codificar() {
+    const texto = document.getElementById('texto').value;
+    if (!texto) return;
+    const resultado = encodeURIComponent(texto);
+    document.getElementById('valorResultado').textContent = resultado;
+    document.getElementById('detalheResultado').textContent = 'Texto codificado para URL';
+    document.getElementById('resultado').classList.add('show');
+  }
+
+  function decodificar() {
+    const texto = document.getElementById('texto').value;
+    if (!texto) return;
+    try {
+      const resultado = decodeURIComponent(texto);
+      document.getElementById('valorResultado').textContent = resultado;
+      document.getElementById('detalheResultado').textContent = 'Texto decodificado de URL';
+    } catch (e) {
+      document.getElementById('valorResultado').textContent = 'Erro: texto inválido para URL encoding';
+      document.getElementById('detalheResultado').textContent = '';
+    }
+    document.getElementById('resultado').classList.add('show');
+  }
+  </script>
+</body>
+</html>

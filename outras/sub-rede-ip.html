@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Sub-rede IP - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Calculadora de Sub-rede IP</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Sub-rede IP</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="ip">Endereço IP</label>
+          <input type="text" id="ip" placeholder="192.168.1.0" required>
+        </div>
+        <div class="form-group">
+          <label for="cidr">Máscara CIDR</label>
+          <input type="number" id="cidr" min="0" max="32" placeholder="24" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function ipToInt(ip) {
+    const parts = ip.split('.').map(Number);
+    return (parts[0] << 24) + (parts[1] << 16) + (parts[2] << 8) + parts[3];
+  }
+
+  function intToIp(int) {
+    return [(int >>> 24) & 255, (int >>> 16) & 255, (int >>> 8) & 255, int & 255].join('.');
+  }
+
+  function cidrToMask(cidr) {
+    let mask = 0;
+    for (let i = 0; i < cidr; i++) {
+      mask = (mask << 1) | 1;
+    }
+    return mask >>> 0;
+  }
+
+  function calcular() {
+    const ip = document.getElementById('ip').value.trim();
+    const cidr = parseInt(document.getElementById('cidr').value);
+
+    if (!/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(ip)) {
+      document.getElementById('valorResultado').textContent = 'IP inválido';
+      document.getElementById('detalheResultado').textContent = '';
+      return false;
+    }
+
+    const ipInt = ipToInt(ip);
+    const mask = cidrToMask(cidr);
+    const network = (ipInt & mask) >>> 0;
+    const broadcast = (network | (~mask >>> 0)) >>> 0;
+    const hosts = Math.pow(2, 32 - cidr) - 2;
+
+    document.getElementById('valorResultado').textContent = intToIp(network) + '/' + cidr;
+    document.getElementById('detalheResultado').innerHTML =
+      'Máscara: ' + intToIp(mask) + '<br>' +
+      'Rede: ' + intToIp(network) + '<br>' +
+      'Broadcast: ' + intToIp(broadcast) + '<br>' +
+      'Hosts possíveis: ' + (hosts > 0 ? hosts : 'N/A');
+    return false;
+  }
+  </script>
+</body>
+</html>

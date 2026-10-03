@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Resistores - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Calculadora de Resistores</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Resistores</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="tipo">Tipo de Resistor</label>
+          <select id="tipo" required onchange="atualizarFaixas()">
+            <option value="4">4 Faixas</option>
+            <option value="5">5 Faixas</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="faixa1">1ª Faixa (Dígito)</label>
+          <select id="faixa1" required></select>
+        </div>
+        <div class="form-group">
+          <label for="faixa2">2ª Faixa (Dígito)</label>
+          <select id="faixa2" required></select>
+        </div>
+        <div class="form-group" id="grupoFaixa3">
+          <label for="faixa3">3ª Faixa (Multiplicador / Dígito)</label>
+          <select id="faixa3" required></select>
+        </div>
+        <div class="form-group" id="grupoFaixa4m" style="display:none;">
+          <label for="faixa4m">4ª Faixa (Multiplicador)</label>
+          <select id="faixa4m" required></select>
+        </div>
+        <div class="form-group">
+          <label for="tolerancia">Faixa de Tolerância</label>
+          <select id="tolerancia" required>
+            <option value="0.10">Prata (±10%)</option>
+            <option value="0.05">Ouro (±5%)</option>
+            <option value="0.01" selected>Marrom (±1%)</option>
+            <option value="0.005">Vermelho (±0.5%)</option>
+            <option value="0.0025">Verde (±0.25%)</option>
+            <option value="0.001">Azul (±0.1%)</option>
+          </select>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  const cores = [
+    { nome: 'Preto', valor: 0, mult: 1 },
+    { nome: 'Marrom', valor: 1, mult: 10 },
+    { nome: 'Vermelho', valor: 2, mult: 100 },
+    { nome: 'Laranja', valor: 3, mult: 1000 },
+    { nome: 'Amarelo', valor: 4, mult: 10000 },
+    { nome: 'Verde', valor: 5, mult: 100000 },
+    { nome: 'Azul', valor: 6, mult: 1000000 },
+    { nome: 'Violeta', valor: 7, mult: 10000000 },
+    { nome: 'Cinza', valor: 8, mult: 100000000 },
+    { nome: 'Branco', valor: 9, mult: 1000000000 }
+  ];
+
+  function popularSelect(selectId, options) {
+    var sel = document.getElementById(selectId);
+    sel.innerHTML = '';
+    options.forEach(function(opt, i) {
+      var o = document.createElement('option');
+      o.value = i;
+      o.textContent = opt.nome + ' (' + i + ')';
+      sel.appendChild(o);
+    });
+  }
+
+  function popularMultiplicadores(selectId) {
+    var sel = document.getElementById(selectId);
+    sel.innerHTML = '';
+    cores.forEach(function(c) {
+      var o = document.createElement('option');
+      o.value = c.mult;
+      o.textContent = c.nome + ' (×' + c.mult + ')';
+      sel.appendChild(o);
+    });
+  }
+
+  function atualizarFaixas() {
+    var tipo = document.getElementById('tipo').value;
+    popularSelect('faixa1', cores);
+    popularSelect('faixa2', cores);
+    if (tipo === '4') {
+      document.getElementById('grupoFaixa3').querySelector('label').textContent = '3ª Faixa (Multiplicador)';
+      popularMultiplicadores('faixa3');
+      document.getElementById('grupoFaixa4m').style.display = 'none';
+    } else {
+      document.getElementById('grupoFaixa3').querySelector('label').textContent = '3ª Faixa (Dígito)';
+      popularSelect('faixa3', cores);
+      document.getElementById('grupoFaixa4m').style.display = '';
+      popularMultiplicadores('faixa4m');
+    }
+  }
+
+  function calcular() {
+    var tipo = document.getElementById('tipo').value;
+    var v1 = parseInt(document.getElementById('faixa1').value);
+    var v2 = parseInt(document.getElementById('faixa2').value);
+    var tolerancia = parseFloat(document.getElementById('tolerancia').value);
+    var resistencia;
+    if (tipo === '4') {
+      var mult = parseFloat(document.getElementById('faixa3').value);
+      resistencia = (v1 * 10 + v2) * mult;
+    } else {
+      var v3 = parseInt(document.getElementById('faixa3').value);
+      var mult5 = parseFloat(document.getElementById('faixa4m').value);
+      resistencia = (v1 * 100 + v2 * 10 + v3) * mult5;
+    }
+    var display;
+    if (resistencia >= 1e9) display = (resistencia / 1e9).toFixed(2) + ' G\u03A9';
+    else if (resistencia >= 1e6) display = (resistencia / 1e6).toFixed(2) + ' M\u03A9';
+    else if (resistencia >= 1e3) display = (resistencia / 1e3).toFixed(2) + ' k\u03A9';
+    else display = resistencia.toFixed(2) + ' \u03A9';
+    var min = resistencia * (1 - tolerancia);
+    var max = resistencia * (1 + tolerancia);
+    var tolPct = (tolerancia * 100).toFixed(1);
+    document.getElementById('valorResultado').textContent = display + ' \u00B1' + tolPct + '%';
+    document.getElementById('detalheResultado').innerHTML =
+      'Valor nominal: ' + display + '<br>' +
+      'Faixa minima: ' + min.toFixed(2) + ' \u03A9<br>' +
+      'Faixa maxima: ' + max.toFixed(2) + ' \u03A9';
+    return false;
+  }
+
+  atualizarFaixas();
+  </script>
+</body>
+</html>

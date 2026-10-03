@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Média, Mediana, Moda e Amplitude - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Média, Mediana, Moda e Amplitude</div>
+    </div>
+    <div class="calc-card">
+      <h1>Média, Mediana, Moda e Amplitude</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="numeros">Números (separados por vírgula)</label>
+          <input type="text" id="numeros" placeholder="Ex: 1, 2, 3, 4, 5" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const input = document.getElementById('numeros').value;
+    const numeros = input.split(',').map(n => parseFloat(n.trim())).filter(n => !isNaN(n));
+    
+    if (numeros.length === 0) {
+      document.getElementById('valorResultado').textContent = 'Erro';
+      document.getElementById('detalheResultado').textContent = 'Insira pelo menos um número válido';
+      document.getElementById('resultado').classList.add('show');
+      return false;
+    }
+    
+    // Média
+    const media = numeros.reduce((a, b) => a + b, 0) / numeros.length;
+    
+    // Mediana
+    const sorted = [...numeros].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    const mediana = sorted.length % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+    
+    // Moda
+    const frequency = {};
+    let maxFreq = 0;
+    numeros.forEach(n => {
+      frequency[n] = (frequency[n] || 0) + 1;
+      if (frequency[n] > maxFreq) maxFreq = frequency[n];
+    });
+    const moda = Object.keys(frequency).filter(n => frequency[n] === maxFreq).map(Number);
+    
+    // Amplitude
+    const amplitude = Math.max(...numeros) - Math.min(...numeros);
+    
+    document.getElementById('valorResultado').textContent = `Média: ${fmt(media)} | Mediana: ${fmt(mediana)}`;
+    document.getElementById('detalheResultado').textContent = `Moda: ${moda.join(', ')} | Amplitude: ${fmt(amplitude)}`;
+    document.getElementById('resultado').classList.add('show');
+    return false;
+  }
+  </script>
+</body>
+</html>

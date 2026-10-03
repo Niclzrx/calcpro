@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Amortização - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Amortização</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Amortização</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="principal">Valor Principal</label>
+          <input type="number" id="principal" placeholder="Ex: 100000" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taxaJuros">Taxa de Juros Mensal (%)</label>
+            <input type="number" id="taxaJuros" step="0.01" placeholder="Ex: 1.5" required>
+          </div>
+          <div class="form-group">
+            <label for="numParcelas">Número de Parcelas</label>
+            <input type="number" id="numParcelas" placeholder="Ex: 36" required>
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var principal = val('principal');
+    var taxaMensal = val('taxaJuros') / 100;
+    var parcelas = val('numParcelas');
+    var parcela = calcAmortization(principal, taxaMensal, parcelas);
+    var totalPago = parcela * parcelas;
+    var totalJuros = totalPago - principal;
+    var amortParcela = principal / parcelas;
+    document.getElementById('valorResultado').textContent = 'Parcela Mensal: ' + fmtCurrency(parcela);
+    document.getElementById('detalheResultado').innerHTML =
+      'Amortização por Parcela (SAC): ' + fmtCurrency(amortParcela) + '<br>' +
+      'Total Pago: ' + fmtCurrency(totalPago) + '<br>' +
+      'Total de Juros: ' + fmtCurrency(totalJuros);
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

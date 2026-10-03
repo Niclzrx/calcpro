@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Macro - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Saúde</a> / Calculadora de Macro</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Macro</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="peso">Peso (kg)</label>
+          <input type="number" id="peso" step="0.1" min="1" required>
+        </div>
+        <div class="form-group">
+          <label for="altura">Altura (cm)</label>
+          <input type="number" id="altura" step="0.1" min="1" required>
+        </div>
+        <div class="form-group">
+          <label for="idade">Idade (anos)</label>
+          <input type="number" id="idade" min="1" max="120" required>
+        </div>
+        <div class="form-group">
+          <label for="sexo">Sexo</label>
+          <select id="sexo" required>
+            <option value="M">Masculino</option>
+            <option value="F">Feminino</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="objetivo">Objetivo</label>
+          <select id="objetivo" required>
+            <option value="manter">Manter peso</option>
+            <option value="perder">Perder peso</option>
+            <option value="ganhar">Ganhar peso</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="atividade">Nível de Atividade</label>
+          <select id="atividade" required>
+            <option value="1.2">Sedentário</option>
+            <option value="1.375">Levemente ativo</option>
+            <option value="1.55">Moderadamente ativo</option>
+            <option value="1.725">Muito ativo</option>
+            <option value="1.9">Extremamente ativo</option>
+          </select>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>&copy; 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var peso = parseFloat(document.getElementById('peso').value);
+    var altura = parseFloat(document.getElementById('altura').value);
+    var idade = parseInt(document.getElementById('idade').value);
+    var sexo = document.getElementById('sexo').value;
+    var objetivo = document.getElementById('objetivo').value;
+    var atividade = parseFloat(document.getElementById('atividade').value);
+
+    if (isNaN(peso) || isNaN(altura) || isNaN(idade) || peso <= 0 || altura <= 0 || idade <= 0) {
+      alert('Por favor, insira valores válidos.');
+      return false;
+    }
+
+    var tmb;
+    if (sexo === 'M') {
+      tmb = 10 * peso + 6.25 * altura - 5 * idade + 5;
+    } else {
+      tmb = 10 * peso + 6.25 * altura - 5 * idade - 161;
+    }
+
+    var tdee = tmb * atividade;
+    var calorias;
+    if (objetivo === 'perder') {
+      calorias = tdee - 500;
+    } else if (objetivo === 'ganhar') {
+      calorias = tdee + 500;
+    } else {
+      calorias = tdee;
+    }
+
+    var proteina = peso * 2;
+    var gordura = peso * 0.9;
+    var proteinaCal = proteina * 4;
+    var gorduraCal = gordura * 9;
+    var carboidratoCal = calorias - proteinaCal - gorduraCal;
+    var carboidrato = carboidratoCal / 4;
+
+    if (carboidrato < 0) carboidrato = 0;
+
+    document.getElementById('valorResultado').textContent = calorias.toFixed(0) + ' kcal/dia';
+    document.getElementById('detalheResultado').innerHTML =
+      'Proteína: ' + proteina.toFixed(0) + 'g (' + proteinaCal.toFixed(0) + ' kcal)<br>' +
+      'Carboidrato: ' + carboidrato.toFixed(0) + 'g (' + carboidratoCal.toFixed(0) + ' kcal)<br>' +
+      'Gordura: ' + gordura.toFixed(0) + 'g (' + gorduraCal.toFixed(0) + ' kcal)';
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

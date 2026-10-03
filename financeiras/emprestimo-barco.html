@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Empréstimo para Barco - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Calculadora de Empréstimo para Barco</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Empréstimo para Barco</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valorBarco">Valor do Barco (R$)</label>
+          <input type="number" id="valorBarco" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="entrada">Entrada (R$)</label>
+          <input type="number" id="entrada" step="0.01" value="0" required>
+        </div>
+        <div class="form-group">
+          <label for="taxaJuros">Taxa de Juros Mensal (%)</label>
+          <input type="number" id="taxaJuros" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="prazoMeses">Prazo (meses)</label>
+          <input type="number" id="prazoMeses" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>&copy; 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var valorBarco = parseFloat(document.getElementById('valorBarco').value);
+    var entrada = parseFloat(document.getElementById('entrada').value);
+    var taxaJuros = parseFloat(document.getElementById('taxaJuros').value) / 100;
+    var prazoMeses = parseInt(document.getElementById('prazoMeses').value);
+
+    var financiado = valorBarco - entrada;
+    var parcela = financiado * (taxaJuros * Math.pow(1 + taxaJuros, prazoMeses)) / (Math.pow(1 + taxaJuros, prazoMeses) - 1);
+    var totalPago = parcela * prazoMeses;
+    var custoTotal = totalPago + entrada;
+    var jurosTotais = custoTotal - valorBarco;
+
+    var html = '<strong>Entrada:</strong> R$ ' + entrada.toFixed(2) + '<br>';
+    html += '<strong>Valor Financiado:</strong> R$ ' + financiado.toFixed(2) + '<br>';
+    html += '<strong>Parcela Mensal:</strong> R$ ' + parcela.toFixed(2) + '<br>';
+    html += '<strong>Total Pago (prestações):</strong> R$ ' + totalPago.toFixed(2) + '<br>';
+    html += '<strong>Custo Total (entrada + prestações):</strong> R$ ' + custoTotal.toFixed(2) + '<br>';
+    html += '<strong>Juros Totais:</strong> R$ ' + jurosTotais.toFixed(2);
+
+    document.getElementById('valorResultado').innerHTML = 'Parcela: R$ ' + parcela.toFixed(2);
+    document.getElementById('detalheResultado').innerHTML = html;
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadoras Financeiras - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+      <div class="search-box">
+        <input type="text" id="search" placeholder="Buscar calculadora..." oninput="filterCalc()">
+      </div>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / Calculadoras Financeiras</div>
+    </div>
+    <h1 style="margin-bottom:24px">Calculadoras Financeiras</h1>
+    <div class="categories" id="categories">
+      <a href="hipoteca.html" class="category-card">Hipoteca</a>
+      <a href="emprestimo.html" class="category-card">Empréstimo</a>
+      <a href="financiamento-automoveis.html" class="category-card">Financiamento de Automóveis</a>
+      <a href="juros.html" class="category-card">Juros</a>
+      <a href="pagamentos.html" class="category-card">Pagamentos</a>
+      <a href="aposentadoria.html" class="category-card">Aposentadoria</a>
+      <a href="amortizacao.html" class="category-card">Amortização</a>
+      <a href="investimentos.html" class="category-card">Investimentos</a>
+      <a href="moedas.html" class="category-card">Moedas</a>
+      <a href="inflacao.html" class="category-card">Inflação</a>
+      <a href="financeira.html" class="category-card">Financeira</a>
+      <a href="quitacao-hipoteca.html" class="category-card">Quitação de Hipoteca</a>
+      <a href="imposto-renda.html" class="category-card">Imposto de Renda</a>
+      <a href="juros-compostos.html" class="category-card">Juros Compostos</a>
+      <a href="salarios.html" class="category-card">Salários</a>
+      <a href="calculadora-401k.html" class="category-card">Calculadora 401k</a>
+      <a href="taxa-juros.html" class="category-card">Taxa de Juros</a>
+      <a href="imposto-vendas.html" class="category-card">Imposto sobre Vendas</a>
+      <a href="acessibilidade-moradia.html" class="category-card">Acessibilidade Moradia</a>
+      <a href="poupanca.html" class="category-card">Poupança</a>
+      <a href="aluguel.html" class="category-card">Aluguel</a>
+      <a href="imposto-casamento.html" class="category-card">Imposto de Casamento</a>
+      <a href="imposto-heranca.html" class="category-card">Imposto de Herança</a>
+      <a href="pensoes.html" class="category-card">Pensões</a>
+      <a href="previdencia-social.html" class="category-card">Previdência Social</a>
+      <a href="anuidade.html" class="category-card">Anuidade</a>
+      <a href="pagamento-anuidade.html" class="category-card">Pagamento de Anuidade</a>
+      <a href="cartao-credito.html" class="category-card">Cartão de Crédito</a>
+      <a href="pagamento-cartoes-credito.html" class="category-card">Pagamento Cartões de Crédito</a>
+      <a href="quitacao-dividas.html" class="category-card">Quitação de Dívidas</a>
+      <a href="consolidacao-dividas.html" class="category-card">Consolidação de Dívidas</a>
+      <a href="reembolso.html" class="category-card">Reembolso</a>
+      <a href="emprestimo-estudantil.html" class="category-card">Empréstimo Estudantil</a>
+      <a href="custos-universitarios.html" class="category-card">Custos Universitários</a>
+      <a href="juros-simples.html" class="category-card">Juros Simples</a>
+      <a href="calculadora-cd.html" class="category-card">Calculadora CD</a>
+      <a href="titulos.html" class="category-card">Títulos</a>
+      <a href="fundos-mutuos.html" class="category-card">Fundos Mútuos</a>
+      <a href="roth-ira.html" class="category-card">Roth IRA</a>
+      <a href="ira.html" class="category-card">IRA</a>
+      <a href="rmd.html" class="category-card">RMD</a>
+      <a href="iva.html" class="category-card">IVA</a>
+      <a href="cashback-juros-baixos.html" class="category-card">Cashback Juros Baixos</a>
+      <a href="leasing-automoveis.html" class="category-card">Leasing Automóveis</a>
+      <a href="depreciacao.html" class="category-card">Depreciação</a>
+      <a href="retorno-medio.html" class="category-card">Retorno Médio</a>
+      <a href="margem.html" class="category-card">Margem</a>
+      <a href="descontos.html" class="category-card">Descontos</a>
+      <a href="emprestimo-empresarial.html" class="category-card">Empréstimo Empresarial</a>
+      <a href="relacao-divida-renda.html" class="category-card">Relação Dívida-Renda</a>
+      <a href="imoveis.html" class="category-card">Imóveis</a>
+      <a href="salario-liquido.html" class="category-card">Salário Líquido</a>
+      <a href="emprestimo-pessoal.html" class="category-card">Empréstimo Pessoal</a>
+      <a href="emprestimo-barco.html" class="category-card">Empréstimo Barco</a>
+      <a href="arrendamento.html" class="category-card">Arrendamento</a>
+      <a href="refinanciamento.html" class="category-card">Refinanciamento</a>
+      <a href="orcamento.html" class="category-card">Orçamento</a>
+      <a href="aluguel-imoveis.html" class="category-card">Aluguel de Imóveis</a>
+      <a href="tir.html" class="category-card">TIR</a>
+      <a href="roi.html" class="category-card">ROI</a>
+      <a href="taeg.html" class="category-card">TAEG</a>
+      <a href="emprestimo-fha.html" class="category-card">Empréstimo FHA</a>
+      <a href="hipoteca-va.html" class="category-card">Hipoteca VA</a>
+      <a href="emprestimo-garantia-imobiliaria.html" class="category-card">Empréstimo Garantia Imobiliária</a>
+      <a href="heloc.html" class="category-card">HELOC</a>
+      <a href="entrada.html" class="category-card">Entrada</a>
+      <a href="aluguel-vs-compra.html" class="category-card">Aluguel vs Compra</a>
+      <a href="periodo-retorno-investimento.html" class="category-card">Período Retorno Investimento</a>
+      <a href="valor-presente.html" class="category-card">Valor Presente</a>
+      <a href="valor-futuro.html" class="category-card">Valor Futuro</a>
+      <a href="comissoes.html" class="category-card">Comissões</a>
+      <a href="hipotecas-reino-unido.html" class="category-card">Hipotecas Reino Unido</a>
+      <a href="hipotecas-canadense.html" class="category-card">Hipotecas Canadense</a>
+      <a href="amortizacao-hipoteca.html" class="category-card">Amortização de Hipoteca</a>
+      <a href="desconto-percentual.html" class="category-card">Desconto Percentual</a>
+      <a href="financeira-avancada.html" class="category-card">Financeira Avançada</a>
+    </div>
+  </div>
+  <footer><div class="container"><p>&copy; 2026 CalcPro</p></div></footer>
+  <script>
+  function filterCalc() {
+    var input = document.getElementById('search').value.toLowerCase();
+    var cards = document.querySelectorAll('.category-card');
+    cards.forEach(function(card) {
+      var text = card.textContent.toLowerCase();
+      card.style.display = text.indexOf(input) > -1 ? '' : 'none';
+    });
+  }
+  </script>
+</body>
+</html>

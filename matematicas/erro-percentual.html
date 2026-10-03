@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Erro Percentual - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Calculadora de Erro Percentual</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Erro Percentual</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="real">Valor Real</label>
+          <input type="number" id="real" step="any" placeholder="Ex: 100" required>
+        </div>
+        <div class="form-group">
+          <label for="medido">Valor Medido</label>
+          <input type="number" id="medido" step="any" placeholder="Ex: 95" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const real = parseFloat(document.getElementById('real').value);
+    const medido = parseFloat(document.getElementById('medido').value);
+
+    if (isNaN(real) || isNaN(medido)) {
+      document.getElementById('valorResultado').textContent = 'Erro';
+      document.getElementById('detalheResultado').textContent = 'Insira valores válidos';
+      return false;
+    }
+
+    if (real === 0) {
+      document.getElementById('valorResultado').textContent = 'Erro';
+      document.getElementById('detalheResultado').textContent = 'Valor real não pode ser zero';
+      return false;
+    }
+
+    const erroAbsoluto = Math.abs(real - medido);
+    const erroPercentual = (erroAbsoluto / Math.abs(real)) * 100;
+
+    document.getElementById('valorResultado').textContent = erroPercentual.toFixed(4) + '%';
+    document.getElementById('detalheResultado').innerHTML =
+      'Fórmula: |V<sub>real</sub> - V<sub>medido</sub>| / V<sub>real</sub> × 100<br>' +
+      '|<strong>' + real + '</strong> - <strong>' + medido + '</strong>| / |<strong>' + real + '</strong>| × 100<br>' +
+      'Erro absoluto: <strong>' + erroAbsoluto.toFixed(4) + '</strong><br>' +
+      'Erro percentual: <strong>' + erroPercentual.toFixed(4) + '%</strong>';
+    return false;
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Investimentos - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Investimentos</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Investimentos</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="investimentoMensal">Investimento Mensal</label>
+          <input type="number" id="investimentoMensal" placeholder="Ex: 500" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taxaRetorno">Taxa de Retorno Anual (%)</label>
+            <input type="number" id="taxaRetorno" step="0.01" placeholder="Ex: 10" required>
+          </div>
+          <div class="form-group">
+            <label for="anos">Período (anos)</label>
+            <input type="number" id="anos" placeholder="Ex: 20" required>
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var pmt = val('investimentoMensal');
+    var taxaAnual = val('taxaRetorno') / 100;
+    var anos = val('anos');
+    var meses = anos * 12;
+    var taxaMensal = Math.pow(1 + taxaAnual, 1 / 12) - 1;
+    var valorFuturo;
+    if (taxaMensal === 0) {
+      valorFuturo = pmt * meses;
+    } else {
+      valorFuturo = pmt * (Math.pow(1 + taxaMensal, meses) - 1) / taxaMensal;
+    }
+    var totalInvestido = pmt * meses;
+    var rendimento = valorFuturo - totalInvestido;
+    document.getElementById('valorResultado').textContent = 'Valor Futuro: ' + fmtCurrency(valorFuturo);
+    document.getElementById('detalheResultado').innerHTML =
+      'Total Investido: ' + fmtCurrency(totalInvestido) + '<br>' +
+      'Rendimento: ' + fmtCurrency(rendimento) + '<br>' +
+      'Rendimento Percentual: ' + fmtPercent(totalInvestido > 0 ? (rendimento / totalInvestido * 100) : 0);
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

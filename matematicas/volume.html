@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Volume - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Calculadora de Volume</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Volume</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="forma">Forma</label>
+          <select id="forma" onchange="atualizarCampos()">
+            <option value="cubo">Cubo</option>
+            <option value="esfera">Esfera</option>
+            <option value="cilindro">Cilindro</option>
+            <option value="cone">Cone</option>
+            <option value="prisma">Prisma Retangular</option>
+          </select>
+        </div>
+        <div class="form-group" id="campoA">
+          <label for="dimA" id="labelA">Lado</label>
+          <input type="number" id="dimA" step="any" min="0" required>
+        </div>
+        <div class="form-group" id="campoB" style="display:none;">
+          <label for="dimB" id="labelB"></label>
+          <input type="number" id="dimB" step="any" min="0">
+        </div>
+        <div class="form-group" id="campoC" style="display:none;">
+          <label for="dimC" id="labelC"></label>
+          <input type="number" id="dimC" step="any" min="0">
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function atualizarCampos() {
+    const forma = document.getElementById('forma').value;
+    document.getElementById('campoB').style.display = 'none';
+    document.getElementById('campoC').style.display = 'none';
+    switch (forma) {
+      case 'cubo':
+        document.getElementById('labelA').textContent = 'Lado';
+        break;
+      case 'esfera':
+        document.getElementById('labelA').textContent = 'Raio';
+        break;
+      case 'cilindro':
+        document.getElementById('labelA').textContent = 'Raio';
+        document.getElementById('campoB').style.display = '';
+        document.getElementById('labelB').textContent = 'Altura';
+        break;
+      case 'cone':
+        document.getElementById('labelA').textContent = 'Raio';
+        document.getElementById('campoB').style.display = '';
+        document.getElementById('labelB').textContent = 'Altura';
+        break;
+      case 'prisma':
+        document.getElementById('labelA').textContent = 'Comprimento';
+        document.getElementById('campoB').style.display = '';
+        document.getElementById('labelB').textContent = 'Largura';
+        document.getElementById('campoC').style.display = '';
+        document.getElementById('labelC').textContent = 'Altura';
+        break;
+    }
+  }
+
+  function calcular() {
+    const forma = document.getElementById('forma').value;
+    const a = parseFloat(document.getElementById('dimA').value);
+    const b = parseFloat(document.getElementById('dimB').value);
+    const c = parseFloat(document.getElementById('dimC').value);
+    let volume, formula;
+
+    switch (forma) {
+      case 'cubo':
+        volume = a ** 3;
+        formula = 'V = ' + a + '³ = ' + volume.toFixed(4);
+        break;
+      case 'esfera':
+        volume = (4 / 3) * Math.PI * a ** 3;
+        formula = 'V = (4/3)π(' + a + ')³ = ' + volume.toFixed(4);
+        break;
+      case 'cilindro':
+        if (isNaN(b)) { alert('Preencha a altura'); return false; }
+        volume = Math.PI * a ** 2 * b;
+        formula = 'V = π(' + a + ')²(' + b + ') = ' + volume.toFixed(4);
+        break;
+      case 'cone':
+        if (isNaN(b)) { alert('Preencha a altura'); return false; }
+        volume = (1 / 3) * Math.PI * a ** 2 * b;
+        formula = 'V = (1/3)π(' + a + ')²(' + b + ') = ' + volume.toFixed(4);
+        break;
+      case 'prisma':
+        if (isNaN(b) || isNaN(c)) { alert('Preencha todas as dimensões'); return false; }
+        volume = a * b * c;
+        formula = 'V = ' + a + ' × ' + b + ' × ' + c + ' = ' + volume.toFixed(4);
+        break;
+    }
+
+    document.getElementById('valorResultado').textContent = volume.toFixed(4);
+    document.getElementById('detalheResultado').textContent = formula;
+    return false;
+  }
+
+  atualizarCampos();
+  </script>
+</body>
+</html>

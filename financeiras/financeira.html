@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora Financeira - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Calculadora Financeira</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora Financeira</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label>O que deseja calcular?</label>
+          <select id="campo">
+            <option value="valorPresente">Valor Presente (PV)</option>
+            <option value="valorFuturo">Valor Futuro (FV)</option>
+            <option value="taxa">Taxa de Juros (i)</option>
+            <option value="tempo">Tempo (n)</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group" id="groupPV">
+            <label>Valor Presente (R$)</label>
+            <input type="number" id="pv" step="0.01" placeholder="Ex: 10000">
+          </div>
+          <div class="form-group" id="groupFV">
+            <label>Valor Futuro (R$)</label>
+            <input type="number" id="fv" step="0.01" placeholder="Ex: 12000">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group" id="groupTaxa">
+            <label>Taxa de Juros (% ao mês)</label>
+            <input type="number" id="taxa" step="0.01" placeholder="Ex: 1.5">
+          </div>
+          <div class="form-group" id="groupTempo">
+            <label>Tempo (meses)</label>
+            <input type="number" id="tempo" step="1" placeholder="Ex: 12">
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const campo = document.getElementById('campo').value;
+    const pv = val('pv');
+    const fv = val('fv');
+    const taxa = val('taxa') / 100;
+    const tempo = val('tempo');
+    let resultado, detalhe;
+
+    if (campo === 'valorPresente') {
+      if (taxa === 0 || tempo === 0) { alert('Preencha taxa e tempo.'); return false; }
+      resultado = pv !== 0 ? pv : fv / Math.pow(1 + taxa, tempo);
+      detalhe = `PV = FV / (1 + i)ⁿ = ${fmtCurrency(fv)} / (1 + ${fmtPercent(taxa*100)})^${tempo}`;
+    } else if (campo === 'valorFuturo') {
+      if (pv === 0) { alert('Preencha o valor presente.'); return false; }
+      if (taxa === 0 || tempo === 0) { alert('Preencha taxa e tempo.'); return false; }
+      resultado = pv * Math.pow(1 + taxa, tempo);
+      detalhe = `FV = PV × (1 + i)ⁿ = ${fmtCurrency(pv)} × (1 + ${fmtPercent(taxa*100)})^${tempo}`;
+    } else if (campo === 'taxa') {
+      if (pv === 0 || fv === 0 || tempo === 0) { alert('Preencha PV, FV e tempo.'); return false; }
+      resultado = (Math.pow(fv / pv, 1 / tempo) - 1) * 100;
+      detalhe = `i = (FV/PV)^(1/n) - 1 = (${fmtCurrency(fv)}/${fmtCurrency(pv)})^(1/${tempo}) - 1`;
+    } else if (campo === 'tempo') {
+      if (pv === 0 || fv === 0 || taxa === 0) { alert('Preencha PV, FV e taxa.'); return false; }
+      resultado = Math.log(fv / pv) / Math.log(1 + taxa);
+      detalhe = `n = ln(FV/PV) / ln(1+i) = ln(${fmtCurrency(fv)}/${fmtCurrency(pv)}) / ln(1 + ${fmtPercent(taxa*100)})`;
+    }
+
+    document.getElementById('valorResultado').textContent = campo === 'taxa' ? fmtPercent(resultado) : campo === 'tempo' ? fmt(resultado, 1) + ' meses' : fmtCurrency(resultado);
+    document.getElementById('detalheResultado').textContent = detalhe;
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

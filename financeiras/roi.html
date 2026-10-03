@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de ROI - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Calculadora de ROI</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de ROI</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="lucroLiquido">Lucro Líquido (R$)</label>
+          <input type="number" id="lucroLiquido" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="custoInvestimento">Custo do Investimento (R$)</label>
+          <input type="number" id="custoInvestimento" step="0.01" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>&copy; 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var lucroLiquido = parseFloat(document.getElementById('lucroLiquido').value);
+    var custoInvestimento = parseFloat(document.getElementById('custoInvestimento').value);
+
+    if (custoInvestimento === 0) {
+      alert('O custo do investimento não pode ser zero.');
+      return false;
+    }
+
+    var roi = (lucroLiquido / custoInvestimento) * 100;
+    var retorno = lucroLiquido + custoInvestimento;
+
+    var html = '<strong>ROI:</strong> ' + roi.toFixed(2) + '%<br>';
+    html += '<strong>Lucro Líquido:</strong> R$ ' + lucroLiquido.toFixed(2) + '<br>';
+    html += '<strong>Custo do Investimento:</strong> R$ ' + custoInvestimento.toFixed(2) + '<br>';
+    html += '<strong>Retorno Total:</strong> R$ ' + retorno.toFixed(2) + '<br><br>';
+
+    if (roi > 0) {
+      html += '<strong>Investimento Lucrativo</strong>';
+    } else if (roi === 0) {
+      html += '<strong>Investimento Neutro</strong>';
+    } else {
+      html += '<strong>Investimento com Prejuízo</strong>';
+    }
+
+    document.getElementById('valorResultado').innerHTML = 'ROI: ' + roi.toFixed(2) + '%';
+    document.getElementById('detalheResultado').innerHTML = html;
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora do Amor - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Calculadora do Amor</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora do Amor</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="nome1">Primeiro Nome</label>
+          <input type="text" id="nome1" placeholder="Nome da pessoa 1" required>
+        </div>
+        <div class="form-group">
+          <label for="nome2">Segundo Nome</label>
+          <input type="text" id="nome2" placeholder="Nome da pessoa 2" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const nome1 = document.getElementById('nome1').value.trim().toLowerCase();
+    const nome2 = document.getElementById('nome2').value.trim().toLowerCase();
+
+    if (!nome1 || !nome2) {
+      document.getElementById('valorResultado').textContent = 'Digite ambos os nomes';
+      document.getElementById('detalheResultado').textContent = '';
+      return false;
+    }
+
+    const combinado = nome1 + nome2;
+    let soma = 0;
+    for (let i = 0; i < combinado.length; i++) {
+      soma += combinado.charCodeAt(i);
+    }
+
+    let hash = 0;
+    for (let i = 0; i < combinado.length; i++) {
+      hash = ((hash << 5) - hash) + combinado.charCodeAt(i);
+      hash |= 0;
+    }
+    const percentual = Math.abs(hash % 101);
+
+    let frase;
+    if (percentual >= 90) frase = 'Amor eterno! Vocês foram feitos um para o outro!';
+    else if (percentual >= 70) frase = 'Grande compatibilidade! Uma relação muito promissora.';
+    else if (percentual >= 50) frase = 'Boa compatibilidade! Há potencial real.';
+    else if (percentual >= 30) frase = 'Compatibilidade moderada. Podem precisar de esforço.';
+    else frase = 'Hmm... talvez sejam apenas amigos.';
+
+    document.getElementById('valorResultado').textContent = percentual + '% de amor';
+    document.getElementById('detalheResultado').textContent = frase;
+    return false;
+  }
+  </script>
+</body>
+</html>

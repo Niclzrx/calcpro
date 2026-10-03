@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Quitação de Hipoteca - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Quitação de Hipoteca</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Quitação de Hipoteca</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Saldo Devedor (R$)</label>
+            <input type="number" id="saldo" step="0.01" placeholder="Ex: 250000">
+          </div>
+          <div class="form-group">
+            <label>Taxa de Juros Mensal (%)</label>
+            <input type="number" id="taxa" step="0.01" placeholder="Ex: 0.8">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Parcelas Restantes (meses)</label>
+            <input type="number" id="parcelas" step="1" placeholder="Ex: 300">
+          </div>
+          <div class="form-group">
+            <label>Pagamento Extra Mensal (R$)</label>
+            <input type="number" id="extra" step="0.01" placeholder="Ex: 500">
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const saldo = val('saldo');
+    const taxaMensal = val('taxa') / 100;
+    const parcelasRestantes = val('parcelas');
+    const extra = val('extra');
+
+    if (saldo <= 0 || taxaMensal <= 0 || parcelasRestantes <= 0) {
+      alert('Preencha todos os campos corretamente.');
+      return false;
+    }
+
+    const parcelaNormal = calcAmortization(saldo, taxaMensal, parcelasRestantes);
+    const totalSemExtra = parcelaNormal * parcelasRestantes;
+    const totalJurosSemExtra = totalSemExtra - saldo;
+
+    let saldoAtual = saldo;
+    let mesesComExtra = 0;
+    let totalPagoComExtra = 0;
+    const pagamentoMensal = parcelaNormal + extra;
+
+    while (saldoAtual > 0 && mesesComExtra < parcelasRestantes + 120) {
+      const juros = saldoAtual * taxaMensal;
+      let principal = pagamentoMensal - juros;
+      if (principal > saldoAtual) principal = saldoAtual;
+      saldoAtual -= principal;
+      totalPagoComExtra += Math.min(pagamentoMensal, saldoAtual + principal + juros);
+      mesesComExtra++;
+    }
+
+    const economiaMeses = parcelasRestantes - mesesComExtra;
+    const economiaValor = totalSemExtra - totalPagoComExtra;
+
+    document.getElementById('valorResultado').textContent = `Novo prazo: ${mesesComExtra} meses`;
+    document.getElementById('detalheResultado').textContent = `Economia de ${economiaMeses} meses e ${fmtCurrency(Math.max(0, economiaValor))}. Parcela atual: ${fmtCurrency(parcelaNormal)} | Com extra: ${fmtCurrency(pagamentoMensal)}`;
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

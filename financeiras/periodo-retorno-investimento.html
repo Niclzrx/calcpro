@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Período de Retorno - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Período de Retorno</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora do Período de Retorno do Investimento</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="investimento">Investimento Inicial (R$)</label>
+          <input type="number" id="investimento" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="retornoAnual">Retorno Anual Esperado (R$)</label>
+          <input type="number" id="retornoAnual" step="0.01" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var investimento = parseFloat(document.getElementById('investimento').value);
+    var retornoAnual = parseFloat(document.getElementById('retornoAnual').value);
+
+    if (retornoAnual <= 0) {
+      document.getElementById('valorResultado').textContent = 'Erro!';
+      document.getElementById('detalheResultado').textContent = 'O retorno anual deve ser maior que zero.';
+      document.getElementById('resultado').style.display = 'block';
+      return false;
+    }
+
+    var anos = investimento / retornoAnual;
+    var meses = Math.ceil(anos * 12);
+    var anosExato = Math.floor(anos);
+    var mesesRestantes = Math.ceil((anos - anosExato) * 12);
+
+    var retornoMensal = retornoAnual / 12;
+    var mesesPayoff = Math.ceil(investimento / retornoMensal);
+    var valorAcumuladoAno = retornoAnual;
+
+    document.getElementById('valorResultado').textContent = 'Payback: ' + mesesPayoff + ' meses';
+    document.getElementById('detalheResultado').innerHTML =
+      'Anos: ' + anosExato + ' ano(s) e ' + mesesRestantes + ' mês(es)<br>' +
+      'Meses Total: ' + mesesPayoff + ' meses<br>' +
+      'Retorno Mensal: R$ ' + retornoMensal.toFixed(2) + '<br>' +
+      'ROI Anual: ' + ((retornoAnual / investimento) * 100).toFixed(1) + '%';
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

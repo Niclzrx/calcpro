@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Cashback ou Juros Baixos - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Cashback ou Juros Baixos</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Cashback ou Juros Baixos</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valorCompra">Valor da Compra (R$)</label>
+          <input type="number" id="valorCompra" step="0.01" placeholder="Ex: 2000" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taxaCashback">Taxa de Cashback (%)</label>
+            <input type="number" id="taxaCashback" step="0.01" placeholder="Ex: 5" required>
+          </div>
+          <div class="form-group">
+            <label for="taxaJuros">Taxa de Juros Alternativa (%)</label>
+            <input type="number" id="taxaJuros" step="0.01" placeholder="Ex: 2" required>
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var compra = val('valorCompra');
+    var cashback = val('taxaCashback');
+    var juros = val('taxaJuros');
+    if (compra <= 0) { alert('Informe um valor válido.'); return false; }
+    if (cashback < 0 || juros < 0) { alert('Taxas não podem ser negativas.'); return false; }
+    var valorCashback = compra * (cashback / 100);
+    var custoCashback = compra - valorCashback;
+    var custoJuros = compra * (1 + juros / 100);
+    var melhorOpcao = custoCashback <= custoJuros ? 'Cashback' : 'Juros Baixos';
+    var economia = Math.abs(custoJuros - custoCashback);
+    document.getElementById('valorResultado').textContent = melhorOpcao + ' é melhor!';
+    document.getElementById('detalheResultado').innerHTML =
+      'Com Cashback: ' + fmtCurrency(custoCashback) + ' (desconto de ' + fmtCurrency(valorCashback) + ')<br>' +
+      'Com Juros Baixos: ' + fmtCurrency(custoJuros) + '<br>' +
+      'Economia: ' + fmtCurrency(economia);
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

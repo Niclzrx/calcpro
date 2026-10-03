@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Aposentadoria - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Aposentadoria</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Aposentadoria</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="idadeAtual">Idade Atual</label>
+            <input type="number" id="idadeAtual" placeholder="Ex: 30" required>
+          </div>
+          <div class="form-group">
+            <label for="idadeAposentadoria">Idade de Aposentadoria</label>
+            <input type="number" id="idadeAposentadoria" placeholder="Ex: 65" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="gastosMensais">Gastos Mensais na Aposentadoria</label>
+          <input type="number" id="gastosMensais" placeholder="Ex: 5000" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="economiaAtual">Economia Atual</label>
+            <input type="number" id="economiaAtual" placeholder="Ex: 100000" required>
+          </div>
+          <div class="form-group">
+            <label for="retornoInvestimento">Retorno Anual do Investimento (%)</label>
+            <input type="number" id="retornoInvestimento" step="0.01" placeholder="Ex: 8" required>
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var idadeAtual = val('idadeAtual');
+    var idadeApos = val('idadeAposentadoria');
+    var gastosMensais = val('gastosMensais');
+    var economiaAtual = val('economiaAtual');
+    var retornoAnual = val('retornoInvestimento') / 100;
+    var retornoMensal = Math.pow(1 + retornoAnual, 1 / 12) - 1;
+    var anosAteApos = idadeApos - idadeAtual;
+    var mesesAteApos = anosAteApos * 12;
+    var mesesDeVida = (90 - idadeApos) * 12;
+    var fatorDesconto = Math.pow(1 + retornoMensal, mesesDeVida);
+    var totalNecessario = gastosMensais * (1 - 1 / fatorDesconto) / retornoMensal;
+    var valorAtualFuturo = economiaAtual * Math.pow(1 + retornoMensal, mesesAteApos);
+    var valorFaltante = totalNecessario - valorAtualFuturo;
+    var economiaMensal;
+    if (valorFaltante <= 0) {
+      economiaMensal = 0;
+    } else {
+      economiaMensal = valorFaltante * retornoMensal / (Math.pow(1 + retornoMensal, mesesAteApos) - 1);
+    }
+    document.getElementById('valorResultado').textContent = 'Economia Mensal Necessária: ' + fmtCurrency(economiaMensal);
+    document.getElementById('detalheResultado').innerHTML =
+      'Total Necessário para Aposentadoria: ' + fmtCurrency(totalNecessario) + '<br>' +
+      'Valor Acumulado com Economia Atual: ' + fmtCurrency(valorAtualFuturo) + '<br>' +
+      'Falta Acumular: ' + fmtCurrency(Math.max(0, valorFaltante));
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

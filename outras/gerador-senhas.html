@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerador de Senhas - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Gerador de Senhas</div>
+    </div>
+    <div class="calc-card">
+      <h1>Gerador de Senhas</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="tamanho">Tamanho da Senha</label>
+          <input type="number" id="tamanho" min="4" max="128" value="16" required>
+        </div>
+        <div class="form-group">
+          <label><input type="checkbox" id="maiusculas" checked> Letras Maiúsculas (A-Z)</label>
+        </div>
+        <div class="form-group">
+          <label><input type="checkbox" id="minusculas" checked> Letras Minúsculas (a-z)</label>
+        </div>
+        <div class="form-group">
+          <label><input type="checkbox" id="numeros" checked> Números (0-9)</label>
+        </div>
+        <div class="form-group">
+          <label><input type="checkbox" id="simbolos" checked> Símbolos (!@#$%...)</label>
+        </div>
+        <button type="submit" class="btn">Gerar Senha</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const tamanho = parseInt(document.getElementById('tamanho').value);
+    const maiusculas = document.getElementById('maiusculas').checked;
+    const minusculas = document.getElementById('minusculas').checked;
+    const numeros = document.getElementById('numeros').checked;
+    const simbolos = document.getElementById('simbolos').checked;
+
+    let chars = '';
+    if (maiusculas) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    if (minusculas) chars += 'abcdefghijklmnopqrstuvwxyz';
+    if (numeros) chars += '0123456789';
+    if (simbolos) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+    if (chars === '') {
+      document.getElementById('valorResultado').textContent = 'Selecione pelo menos uma opção';
+      document.getElementById('detalheResultado').textContent = '';
+      return false;
+    }
+
+    let senha = '';
+    const array = new Uint32Array(tamanho);
+    crypto.getRandomValues(array);
+    for (let i = 0; i < tamanho; i++) {
+      senha += chars[array[i] % chars.length];
+    }
+
+    document.getElementById('valorResultado').textContent = senha;
+    document.getElementById('detalheResultado').textContent = senha.length + ' caracteres gerados com sucesso';
+    return false;
+  }
+  </script>
+</body>
+</html>

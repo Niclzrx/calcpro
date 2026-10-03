@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Carboidratos - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Saúde</a> / Calculadora de Carboidratos</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Carboidratos</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="peso">Peso (kg)</label>
+          <input type="number" id="peso" step="0.1" min="1" required placeholder="Ex: 70">
+        </div>
+        <div class="form-group">
+          <label for="atividade">Nível de Atividade</label>
+          <select id="atividade" required>
+            <option value="sedentario">Sedentário (2-3 g/kg)</option>
+            <option value="leve">Atividade Leve (3-5 g/kg)</option>
+            <option value="moderado" selected>Atividade Moderada (5-7 g/kg)</option>
+            <option value="intenso">Atividade Intensa (7-10 g/kg)</option>
+          </select>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var peso = parseFloat(document.getElementById('peso').value);
+    var atividade = document.getElementById('atividade').value;
+
+    var faixaMin, faixaMax;
+    switch (atividade) {
+      case 'sedentario': faixaMin = 2; faixaMax = 3; break;
+      case 'leve': faixaMin = 3; faixaMax = 5; break;
+      case 'moderado': faixaMin = 5; faixaMax = 7; break;
+      case 'intenso': faixaMin = 7; faixaMax = 10; break;
+    }
+
+    var minGramas = peso * faixaMin;
+    var maxGramas = peso * faixaMax;
+    var medio = (minGramas + maxGramas) / 2;
+    var minCal = minGramas * 4;
+    var maxCal = maxGramas * 4;
+
+    document.getElementById('valorResultado').innerHTML = '<strong>' + minGramas.toFixed(0) + ' - ' + maxGramas.toFixed(0) + ' g/dia</strong>';
+    document.getElementById('detalheResultado').textContent = 'Média recomendada: ' + medio.toFixed(0) + ' g/dia (' + minCal.toFixed(0) + ' - ' + maxCal.toFixed(0) + ' kcal de carboidratos)';
+    return false;
+  }
+  </script>
+</body>
+</html>

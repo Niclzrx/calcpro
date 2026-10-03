@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Cartão de Ponto - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Calculadora de Cartão de Ponto</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Cartão de Ponto</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="entrada">Horário de Entrada</label>
+          <input type="time" id="entrada" required>
+        </div>
+        <div class="form-group">
+          <label for="saidaAlmoco">Saída para Almoço</label>
+          <input type="time" id="saidaAlmoco" required>
+        </div>
+        <div class="form-group">
+          <label for="voltaAlmoco">Volta do Almoço</label>
+          <input type="time" id="voltaAlmoco" required>
+        </div>
+        <div class="form-group">
+          <label for="saida">Horário de Saída</label>
+          <input type="time" id="saida" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function parseTime(str) {
+    const [h, m] = str.split(':').map(Number);
+    return h * 60 + m;
+  }
+
+  function formatMinutes(min) {
+    const h = Math.floor(min / 60);
+    const m = min % 60;
+    return h + 'h ' + m + 'min';
+  }
+
+  function calcular() {
+    const entrada = parseTime(document.getElementById('entrada').value);
+    const saidaAlmoco = parseTime(document.getElementById('saidaAlmoco').value);
+    const voltaAlmoco = parseTime(document.getElementById('voltaAlmoco').value);
+    const saida = parseTime(document.getElementById('saida').value);
+
+    if (saidaAlmoco <= entrada || voltaAlmoco <= saidaAlmoco || saida <= voltaAlmoco) {
+      document.getElementById('valorResultado').textContent = 'Horários inválidos';
+      document.getElementById('detalheResultado').textContent = '';
+      return false;
+    }
+
+    const manha = saidaAlmoco - entrada;
+    const tarde = saida - voltaAlmoco;
+    const almoco = voltaAlmoco - saidaAlmoco;
+    const total = manha + tarde;
+
+    document.getElementById('valorResultado').textContent = formatMinutes(total);
+    document.getElementById('detalheResultado').textContent =
+      'Manhã: ' + formatMinutes(manha) +
+      ' | Almoço: ' + formatMinutes(almoco) +
+      ' | Tarde: ' + formatMinutes(tarde);
+    return false;
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Tamanho de Sutiã - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Calculadora de Tamanho de Sutiã</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Tamanho de Sutiã</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="medidaBusto">Medida em Volta do Busto (cm)</label>
+          <input type="number" id="medidaBusto" min="50" max="150" step="0.1" placeholder="Ex: 85" required>
+        </div>
+        <div class="form-group">
+          <label for="medidaTorax">Medida em Volta do Tórax / Baixo Busto (cm)</label>
+          <input type="number" id="medidaTorax" min="50" max="150" step="0.1" placeholder="Ex: 75" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const busto = parseFloat(document.getElementById('medidaBusto').value);
+    const torax = parseFloat(document.getElementById('medidaTorax').value);
+    const diferenca = busto - torax;
+
+    const tamanhosCopa = [
+      { min: 0, max: 2.5, letra: 'AA' },
+      { min: 2.5, max: 5, letra: 'A' },
+      { min: 5, max: 7.5, letra: 'B' },
+      { min: 7.5, max: 10, letra: 'C' },
+      { min: 10, max: 12.5, letra: 'D' },
+      { min: 12.5, max: 15, letra: 'E' },
+      { min: 15, max: 17.5, letra: 'F' },
+      { min: 17.5, max: 20, letra: 'G' },
+      { min: 20, max: 22.5, letra: 'H' },
+      { min: 22.5, max: 25, letra: 'I' }
+    ];
+
+    let copa = 'Não identificado';
+    for (const t of tamanhosCopa) {
+      if (diferenca >= t.min && diferenca < t.max) {
+        copa = t.letra;
+        break;
+      }
+    }
+    if (diferenca >= 25) copa = 'J+';
+
+    const bandas = [
+      { min: 63, max: 67, num: 30 },
+      { min: 68, max: 72, num: 32 },
+      { min: 73, max: 77, num: 34 },
+      { min: 78, max: 82, num: 36 },
+      { min: 83, max: 87, num: 38 },
+      { min: 88, max: 92, num: 40 },
+      { min: 93, max: 97, num: 42 },
+      { min: 98, max: 102, num: 44 },
+      { min: 103, max: 107, num: 46 },
+      { min: 108, max: 112, num: 48 }
+    ];
+
+    let banda = 'Não identificado';
+    for (const b of bandas) {
+      if (torax >= b.min && torax <= b.max) {
+        banda = b.num;
+        break;
+      }
+    }
+
+    document.getElementById('valorResultado').textContent = copa + ' ' + banda;
+    document.getElementById('detalheResultado').innerHTML =
+      'Diferença busto-tórax: ' + diferenca.toFixed(1) + ' cm<br>' +
+      'Copa: ' + copa + ' | Banda: ' + banda;
+    return false;
+  }
+  </script>
+</body>
+</html>

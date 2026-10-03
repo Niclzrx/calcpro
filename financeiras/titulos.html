@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Títulos - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Títulos</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Títulos</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="valorFace">Valor de Face (R$)</label>
+          <input type="number" id="valorFace" step="0.01" placeholder="Ex: 1000" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taxaCupom">Taxa do Cupom (% ao ano)</label>
+            <input type="number" id="taxaCupom" step="0.01" placeholder="Ex: 10" required>
+          </div>
+          <div class="form-group">
+            <label for="anos">Anos até o Vencimento</label>
+            <input type="number" id="anos" placeholder="Ex: 5" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="precoCompra">Preço de Compra (R$)</label>
+          <input type="number" id="precoCompra" step="0.01" placeholder="Ex: 950" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var face = val('valorFace');
+    var taxaCupom = val('taxaCupom') / 100;
+    var anos = val('anos');
+    var compra = val('precoCompra');
+
+    var cupomAnual = face * taxaCupom;
+    var totalCupons = cupomAnual * anos;
+    var ganhoCapital = face - compra;
+    var retornoTotal = totalCupons + ganhoCapital;
+    var lucro = retornoTotal - (face - compra);
+
+    // Yield to Maturity approximation (YTM)
+    var ytm = ((cupomAnual + (face - compra) / anos) / ((face + compra) / 2)) * 100;
+
+    document.getElementById('valorResultado').textContent = 'Yield to Maturity: ' + fmtPercent(ytm);
+    document.getElementById('detalheResultado').innerHTML =
+      'Valor de Face: ' + fmtCurrency(face) + '<br>' +
+      'Preço de Compra: ' + fmtCurrency(compra) + '<br>' +
+      'Cupom Anual: ' + fmtCurrency(cupomAnual) + '<br>' +
+      'Total de Cupons (' + anos + ' anos): ' + fmtCurrency(totalCupons) + '<br>' +
+      'Ganho de Capital: ' + fmtCurrency(ganhoCapital) + '<br>' +
+      'Retorno Total: ' + fmtCurrency(retornoTotal);
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

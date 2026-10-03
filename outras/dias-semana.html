@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Dias da Semana - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Calculadora de Dias da Semana</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Dias da Semana</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="data">Data</label>
+          <input type="date" id="data" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const data = new Date(document.getElementById('data').value + 'T00:00:00');
+    const diasSemana = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+    const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+      'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+
+    const diaSemana = diasSemana[data.getDay()];
+    const diaAno = Math.ceil((data - new Date(data.getFullYear(), 0, 1)) / (1000 * 60 * 60 * 24)) + 1;
+    const diasRestantes = 365 - diaAno;
+    const semanaAno = Math.ceil(diaAno / 7);
+
+    document.getElementById('valorResultado').textContent = diaSemana;
+    document.getElementById('detalheResultado').textContent =
+      data.getDate() + ' de ' + meses[data.getMonth()] + ' de ' + data.getFullYear() +
+      ' | Dia ' + diaAno + ' do ano | Semana ' + semanaAno + ' | ' + diasRestantes + ' dias restantes no ano';
+    document.getElementById('resultado').classList.add('show');
+    return false;
+  }
+  </script>
+</body>
+</html>

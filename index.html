@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadoras Financeiras</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="index.html" class="logo">CalcPro</a>
+      <div class="search-box">
+        <input type="text" id="search" placeholder="Buscar calculadora..." oninput="filterCalc()">
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="hero">
+      <h1>Calculadoras Financeiras</h1>
+      <p>Todas as calculadoras que você precisa, em um só lugar.</p>
+    </div>
+
+    <div class="categories" id="categories">
+      <a href="financeiras/index.html" class="category-card" data-name="financeiras calculadora hipoteca emprestimo juros aposentadoria investimento imposto">
+        <span class="icon">💰</span>
+        <h2>Calculadoras Financeiras</h2>
+        <p>Hipoteca, empréstimos, juros, investimentos, impostos e mais.</p>
+      </a>
+      <a href="saude/index.html" class="category-card" data-name="saude fitness imc calorias peso corpo gravidez">
+        <span class="icon">💪</span>
+        <h2>Saúde e Fitness</h2>
+        <p>IMC, calorias, gordura corporal, gravidez e mais.</p>
+      </a>
+      <a href="matematicas/index.html" class="category-card" data-name="matematica ciencia estatistica porcentagem fração">
+        <span class="icon">🔢</span>
+        <h2>Calculadoras Matemáticas</h2>
+        <p>Científica, frações, porcentagem, estatística e mais.</p>
+      </a>
+      <a href="outras/index.html" class="category-card" data-name="outras idade data tempo conversao horas notas">
+        <span class="icon">🔧</span>
+        <h2>Outras Calculadoras</h2>
+        <p>Idade, datas, tempo, conversão, notas e mais.</p>
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>© 2026 CalcPro — Todas as calculadoras de que você precisa.</p>
+    </div>
+  </footer>
+
+  <script>
+    function filterCalc() {
+      const q = document.getElementById('search').value.toLowerCase();
+      document.querySelectorAll('.category-card').forEach(c => {
+        const match = c.dataset.name.includes(q) || c.textContent.toLowerCase().includes(q);
+        c.style.display = match ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>

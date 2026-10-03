@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Idade - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Calculadora de Idade</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Idade</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="dataNascimento">Data de Nascimento</label>
+          <input type="date" id="dataNascimento" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const nascimento = new Date(document.getElementById('dataNascimento').value);
+    const hoje = new Date();
+
+    if (nascimento > hoje) {
+      document.getElementById('valorResultado').textContent = 'Data inválida';
+      document.getElementById('detalheResultado').textContent = '';
+      return false;
+    }
+
+    let anos = hoje.getFullYear() - nascimento.getFullYear();
+    let meses = hoje.getMonth() - nascimento.getMonth();
+    let dias = hoje.getDate() - nascimento.getDate();
+
+    if (dias < 0) {
+      meses--;
+      const ultimoMes = new Date(hoje.getFullYear(), hoje.getMonth(), 0);
+      dias += ultimoMes.getDate();
+    }
+    if (meses < 0) {
+      anos--;
+      meses += 12;
+    }
+
+    document.getElementById('valorResultado').textContent = anos + ' anos';
+    document.getElementById('detalheResultado').textContent = meses + ' meses e ' + dias + ' dias';
+    return false;
+  }
+  </script>
+</body>
+</html>

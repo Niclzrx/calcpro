@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Data de Vencimento - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Saúde</a> / Calculadora de Data de Vencimento</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Data de Vencimento</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="dum">Data do Último Menstruação</label>
+          <input type="date" id="dum" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>&copy; 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var dumStr = document.getElementById('dum').value;
+    if (!dumStr) {
+      alert('Por favor, selecione a data.');
+      return false;
+    }
+
+    var dum = new Date(dumStr + 'T00:00:00');
+    var dataVencimento = new Date(dum);
+    dataVencimento.setDate(dataVencimento.getDate() + 280);
+
+    var hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+
+    var diasDesdeDum = Math.floor((hoje - dum) / (1000 * 60 * 60 * 24));
+    var diasRestantes = Math.floor((dataVencimento - hoje) / (1000 * 60 * 60 * 24));
+
+    var opcoes = { day: '2-digit', month: '2-digit', year: 'numeric' };
+
+    document.getElementById('valorResultado').textContent = dataVencimento.toLocaleDateString('pt-BR', opcoes);
+    document.getElementById('detalheResultado').innerHTML =
+      'Data do último menstruação: ' + dum.toLocaleDateString('pt-BR', opcoes) + '<br>' +
+      'Dias desde a última menstruação: ' + diasDesdeDum + '<br>' +
+      'Dias restantes até o parto: ' + diasRestantes;
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

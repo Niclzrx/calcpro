@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Inclinação - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Calculadora de Inclinação</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Inclinação</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="x1">x₁</label>
+            <input type="number" id="x1" step="any" required placeholder="Ex: 1">
+          </div>
+          <div class="form-group">
+            <label for="y1">y₁</label>
+            <input type="number" id="y1" step="any" required placeholder="Ex: 2">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="x2">x₂</label>
+            <input type="number" id="x2" step="any" required placeholder="Ex: 5">
+          </div>
+          <div class="form-group">
+            <label for="y2">y₂</label>
+            <input type="number" id="y2" step="any" required placeholder="Ex: 8">
+          </div>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>&copy; 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var x1 = parseFloat(document.getElementById('x1').value);
+    var y1 = parseFloat(document.getElementById('y1').value);
+    var x2 = parseFloat(document.getElementById('x2').value);
+    var y2 = parseFloat(document.getElementById('y2').value);
+    if (isNaN(x1) || isNaN(y1) || isNaN(x2) || isNaN(y2)) {
+      alert('Por favor, insira valores válidos.');
+      return false;
+    }
+    var dx = x2 - x1;
+    if (dx === 0) {
+      alert('Inclinação indefinida (divisão por zero).');
+      return false;
+    }
+    var m = (y2 - y1) / dx;
+    var b = y1 - m * x1;
+    document.getElementById('valorResultado').textContent = 'm = ' + fmt(m);
+    document.getElementById('detalheResultado').textContent =
+      'Inclinação: ' + fmt(m) +
+      '\nEquação da reta: y = ' + fmt(m) + 'x + ' + fmt(b);
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+  </script>
+</body>
+</html>

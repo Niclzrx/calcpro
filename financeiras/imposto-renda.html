@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Imposto de Renda - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Imposto de Renda</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Imposto de Renda</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label>Renda Bruta Anual (R$)</label>
+          <input type="number" id="renda" step="0.01" placeholder="Ex: 96000">
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const rendaBruta = val('renda');
+    if (rendaBruta <= 0) { alert('Informe a renda bruta anual.'); return false; }
+
+    // Tabela progressiva IR 2024
+    const faixas = [
+      { ate: 2259.20, aliquota: 0, parcela: 0 },
+      { ate: 2826.65, aliquota: 7.5, parcela: 169.44 },
+      { ate: 3751.05, aliquota: 15, parcela: 381.44 },
+      { ate: 4664.68, aliquota: 22.5, parcela: 662.77 },
+      { ate: Infinity, aliquota: 27.5, parcela: 896.00 }
+    ];
+
+    const rendaMensal = rendaBruta / 12;
+    let aliquota = 0, parcelaDeducao = 0;
+
+    for (const faixa of faixas) {
+      if (rendaMensal <= faixa.ate) {
+        aliquota = faixa.aliquota;
+        parcelaDeducao = faixa.parcela;
+        break;
+      }
+    }
+
+    const impostoMensal = (rendaMensal * aliquota / 100) - parcelaDeducao;
+    const impostoAnual = Math.max(0, impostoMensal * 12);
+    const rendaLiquidaAnual = rendaBruta - impostoAnual;
+    const rendaLiquidaMensal = rendaLiquidaAnual / 12;
+
+    document.getElementById('valorResultado').textContent = `IR a pagar: ${fmtCurrency(impostoAnual)}`;
+    document.getElementById('detalheResultado').textContent = `Alíquota: ${fmtPercent(aliquota)} | Renda líquida anual: ${fmtCurrency(rendaLiquidaAnual)} | Renda líquida mensal: ${fmtCurrency(rendaLiquidaMensal)}`;
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Tipo Físico - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Saúde</a> / Calculadora de Tipo Físico</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Tipo Físico (Somatotipo)</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="pulso">Circunferência do Pulso (cm)</label>
+            <input type="number" id="pulso" step="0.1" min="10" max="30" required>
+          </div>
+          <div class="form-group">
+            <label for="altura">Altura (cm)</label>
+            <input type="number" id="altura" step="0.1" min="100" max="250" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="peso">Peso (kg)</label>
+          <input type="number" id="peso" step="0.1" min="20" max="300" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const pulso = val('pulso');
+    const altura = val('altura');
+    const peso = val('peso');
+
+    if (pulso <= 0 || altura <= 0 || peso <= 0) {
+      alert('Por favor, preencha todos os campos com valores válidos.');
+      return false;
+    }
+
+    const imc = peso / Math.pow(altura / 100, 2);
+    const estrutura = (pulso / altura) * 100;
+
+    let tipoFisico, descricao;
+
+    if (estrutura <= 5.2 && imc < 19) {
+      tipoFisico = 'Ectomorfo';
+      descricao = 'Corpo magro e longo, dificuldade para ganhar peso e massa muscular. Metabolismo acelerado. Recomenda-se treinos de força com cargas pesadas e alta ingestão calórica.';
+    } else if (estrutura >= 5.6 || imc >= 26) {
+      tipoFisico = 'Endomorfo';
+      descricao = 'Corpo mais arredondado, tendência a ganhar peso facilmente. Acumula gordura com mais facilidade. Recomenda-se exercícios aeróbicos e controle calórico mais rigoroso.';
+    } else {
+      tipoFisico = 'Mesomorfo';
+      descricao = 'Corpo musculoso e atlético, ganha massa muscular com facilidade. Estrutura óssea média. Combinação equilibrada de treinos de força e aeróbicos.';
+    }
+
+    document.getElementById('valorResultado').textContent = tipoFisico;
+    document.getElementById('detalheResultado').innerHTML =
+      descricao + '<br><br>' +
+      'IMC: ' + fmt(imc, 1) + '<br>' +
+      'Índice de estrutura: ' + fmt(estrutura, 2) + '<br>' +
+      'Circunferência do pulso: ' + fmt(pulso, 1) + ' cm';
+
+    showResult('resultado');
+    return false;
+  }
+  </script>
+</body>
+</html>

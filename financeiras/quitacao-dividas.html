@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Quitação de Dívidas - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Financeiras</a> / Quitação de Dívidas</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Quitação de Dívidas</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="divida">Valor da Dívida (R$)</label>
+          <input type="text" id="divida" required>
+        </div>
+        <div class="form-group">
+          <label for="taxaJuros">Taxa de Juros Mensal (%)</label>
+          <input type="number" id="taxaJuros" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="rendaMensal">Renda Mensal (R$)</label>
+          <input type="text" id="rendaMensal" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    var divida = parseFloat(document.getElementById('divida').value.replace(/[^\d,]/g, '').replace(',', '.'));
+    var taxaJuros = parseFloat(document.getElementById('taxaJuros').value) / 100;
+    var rendaMensal = parseFloat(document.getElementById('rendaMensal').value.replace(/[^\d,]/g, '').replace(',', '.'));
+
+    var percentualMaximo = 0.30;
+    var pagamentoMaximo = rendaMensal * percentualMaximo;
+
+    var cenarios = [];
+
+    var pagamentoMinimo = Math.max(divida * 0.05, divida * taxaJuros * 1.5);
+    cenarios.push(calcularQuitacao('Pagamento Mínimo (5% do saldo)', Math.max(pagamentoMinimo, divida * taxaJuros * 2)));
+
+    cenarios.push(calcularQuitacao('10% da Renda', rendaMensal * 0.10));
+    cenarios.push(calcularQuitacao('20% da Renda', rendaMensal * 0.20));
+    cenarios.push(calcularQuitacao('30% da Renda (Máximo Recomendado)', pagamentoMaximo));
+
+    var melhorCenario = cenarios[cenarios.length - 1];
+
+    document.getElementById('valorResultado').innerHTML = 'Melhor Estratégia: ' + melhorCenario.nome;
+    var html = '<strong>Comparação de Cenários:</strong><br><br>';
+    for (var i = 0; i < cenarios.length; i++) {
+      var c = cenarios[i];
+      html += '<strong>' + c.nome + ' (R$ ' + c.pagamento.toFixed(2) + '/mês):</strong><br>';
+      html += 'Tempo: ' + c.tempoTexto + '<br>';
+      html += 'Total Pago: R$ ' + c.totalPago.toFixed(2) + '<br>';
+      html += 'Juros Totais: R$ ' + c.totalJuros.toFixed(2) + '<br><br>';
+    }
+    document.getElementById('detalheResultado').innerHTML = html;
+    document.getElementById('resultado').style.display = 'block';
+    return false;
+  }
+
+  function calcularQuitacao(nome, pagamento) {
+    var divida = parseFloat(document.getElementById('divida').value.replace(/[^\d,]/g, '').replace(',', '.'));
+    var taxaJuros = parseFloat(document.getElementById('taxaJuros').value) / 100;
+
+    var saldoAtual = divida;
+    var meses = 0;
+    var totalPago = 0;
+    var totalJuros = 0;
+    var maxMeses = 600;
+
+    while (saldoAtual > 0 && meses < maxMeses) {
+      var jurosMes = saldoAtual * taxaJuros;
+      totalJuros += jurosMes;
+      saldoAtual += jurosMes;
+
+      var pag = Math.min(pagamento, saldoAtual);
+      saldoAtual -= pag;
+      totalPago += pag;
+      meses++;
+
+      if (pag < jurosMes && saldoAtual > 0) {
+        return {
+          nome: nome,
+          pagamento: pagamento,
+          tempoTexto: 'Nunca (pagamento insuficiente)',
+          totalPago: totalPago,
+          totalJuros: totalJuros
+        };
+      }
+    }
+
+    var tempoAnos = Math.floor(meses / 12);
+    var tempoMeses = meses % 12;
+    var tempoTexto = '';
+    if (tempoAnos > 0) tempoTexto += tempoAnos + ' ano(s) ';
+    if (tempoMeses > 0) tempoTexto += tempoMeses + ' mês(es)';
+    if (tempoTexto === '') tempoTexto = '0 meses';
+
+    return {
+      nome: nome,
+      pagamento: pagamento,
+      tempoTexto: tempoTexto,
+      totalPago: totalPago,
+      totalJuros: totalJuros
+    };
+  }
+  </script>
+</body>
+</html>

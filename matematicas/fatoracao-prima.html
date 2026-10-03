@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fatoração Prima - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Matemáticas</a> / Fatoração Prima</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora de Fatoração Prima</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="numero">Número</label>
+          <input type="number" id="numero" min="2" required>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    let n = parseInt(document.getElementById('numero').value);
+    if (isNaN(n) || n < 2) {
+      document.getElementById('valorResultado').textContent = 'Insira um número >= 2';
+      document.getElementById('detalheResultado').textContent = '';
+      return false;
+    }
+    const original = n;
+    const fatores = [];
+    for (let d = 2; d * d <= n; d++) {
+      while (n % d === 0) {
+        fatores.push(d);
+        n /= d;
+      }
+    }
+    if (n > 1) fatores.push(n);
+    const grouping = {};
+    fatores.forEach(f => grouping[f] = (grouping[f] || 0) + 1);
+    const expStr = Object.entries(grouping)
+      .map(([base, exp]) => exp > 1 ? `${base}^${exp}` : base)
+      .join(' × ');
+    document.getElementById('valorResultado').textContent = expStr;
+    document.getElementById('detalheResultado').textContent =
+      `${original} = ${expStr}\nFatores: ${fatores.join(' × ')}\n` +
+      `Fatores primos únicos: ${Object.keys(grouping).join(', ')}`;
+    return false;
+  }
+  </script>
+</body>
+</html>

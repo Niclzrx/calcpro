@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora BTU - CalcPro</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">CalcPro</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="index.html">Outras</a> / Calculadora BTU</div>
+    </div>
+    <div class="calc-card">
+      <h1>Calculadora BTU</h1>
+      <form onsubmit="return calcular()">
+        <div class="form-group">
+          <label for="area">Área (m²)</label>
+          <input type="number" id="area" step="0.01" min="1" placeholder="Ex: 20" required>
+        </div>
+        <div class="form-group">
+          <label for="pessoas">Número de Pessoas</label>
+          <input type="number" id="pessoas" min="1" value="2" required>
+        </div>
+        <div class="form-group">
+          <label for="exposicao">Exposição Solar</label>
+          <select id="exposicao" required>
+            <option value="1.0">Pouca ou nenhuma exposição solar</option>
+            <option value="1.2" selected>Exposição solar moderada</option>
+            <option value="1.4">Muita exposição solar</option>
+          </select>
+        </div>
+        <button type="submit" class="btn">Calcular</button>
+      </form>
+      <div class="result" id="resultado">
+        <h3>Resultado</h3>
+        <div class="value" id="valorResultado"></div>
+        <div class="detail" id="detalheResultado"></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="container"><p>© 2026 CalcPro</p></div></footer>
+  <script src="../js/utils.js"></script>
+  <script>
+  function calcular() {
+    const area = parseFloat(document.getElementById('area').value);
+    const pessoas = parseInt(document.getElementById('pessoas').value);
+    const exposicao = parseFloat(document.getElementById('exposicao').value);
+
+    if (isNaN(area) || isNaN(pessoas) || area <= 0 || pessoas <= 0) {
+      document.getElementById('valorResultado').textContent = 'Valores inválidos';
+      document.getElementById('detalheResultado').textContent = '';
+      return false;
+    }
+
+    const btuPorPessoa = 600;
+    const btuBase = area * 600;
+    const btuPessoas = pessoas * btuPorPessoa;
+    let btuTotal = (btuBase + btuPessoas) * exposicao;
+
+    if (pessoas > 2) {
+      btuTotal += (pessoas - 2) * 600;
+    }
+
+    const arCondicionado = btuTotal <= 9000 ? '9.000 BTUs' :
+                           btuTotal <= 12000 ? '12.000 BTUs' :
+                           btuTotal <= 18000 ? '18.000 BTUs' :
+                           btuTotal <= 24000 ? '24.000 BTUs' :
+                           btuTotal <= 30000 ? '30.000 BTUs' :
+                           btuTotal <= 36000 ? '36.000 BTUs' :
+                           btuTotal + ' BTUs (ar condicionado comercial)';
+
+    document.getElementById('valorResultado').textContent = Math.round(btuTotal).toLocaleString('pt-BR') + ' BTUs';
+    document.getElementById('detalheResultado').textContent = 'Recomendação: ' + arCondicionado;
+    return false;
+  }
+  </script>
+</body>
+</html>
